@@ -25,9 +25,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 		    }
 	    }
 
-	    $content = apply_filters( 'the_content', get_the_content($post_id) );
-	    if( empty($content) ) {
+	    if( has_excerpt($post_id) ) {
 		    $content = get_the_excerpt($post_id);
+	    } else {
+		    $content = apply_filters( 'the_content', get_the_content($post_id) );
 	    }
 
 	    $content  = preg_replace('#\[[^\]]+\]#', '', $content);
@@ -44,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			    $content  = wp_trim_words($content, $c_length);
 			    break;
 		    case 'excerpt_line_break' :
-			    preg_match('/>([^<]+).*(?:$|<br>)/m', $content, $matches);
+			    preg_match('/>([^<]+).*(?:$|<br)/m', $content, $matches);
 			    $content = $matches[1];
 			    break;
 	    endswitch;
