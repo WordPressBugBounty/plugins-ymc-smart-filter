@@ -719,12 +719,16 @@
             });
         }
 
+        /**
+         * Posts loaded on scroll
+         */
         function loadSelectedPosts(e) {
 
             let choicesList = $('#selection-posts .choices-list');
             let valuesCptArray = Array.from(document.querySelectorAll('#general #ymc-cpt-select option:checked')).map(el => el.value);
             let valuesCptString = valuesCptArray.join(',');
             let wrapper = this;
+            let container = $('#selection-posts .choices');
 
             const data = {
                 'action': 'ymc_selected_posts',
