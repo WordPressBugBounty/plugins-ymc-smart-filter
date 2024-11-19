@@ -719,56 +719,71 @@
             });
         }
 
+        // IntersectionObserver for Posts loaded on scroll
+        const postsObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+
+                if (entry.isIntersecting && !entry.target.classList.contains('isActive')) {
+
+                    entry.target.classList.add('isActive');
+
+                    let choicesList = $('#selection-posts .choices-list');
+                    let valuesCptArray = Array.from(document.querySelectorAll('#general #ymc-cpt-select option:checked')).map(el => el.value);
+                    let valuesCptString = valuesCptArray.join(',');
+                    let wrapper = this;
+                    let container = $('#selection-posts .choices');
+
+                    const data = {
+                        'action': 'ymc_selected_posts',
+                        'nonce_code' : _smart_filter_object.nonce,
+                        'cpt' : valuesCptString,
+                        'paged' : _smart_filter_object.current_page
+                    };
+
+                    $.ajax({
+                        type: 'POST',
+                        dataType: 'json',
+                        url: _smart_filter_object.ajax_url,
+                        data: data,
+                        beforeSend: function () {
+                            container.addClass('loading').
+                            prepend(`<img class="preloader" src="${pathPreloader}">`);
+                        },
+                        success: function (res) {
+                            container.removeClass('loading').find('.preloader').remove();
+                            _smart_filter_object.current_page++;
+
+                            // Get posts
+                            let dataPosts = (JSON.parse(res.lists_posts));
+
+                            if(Object.keys(dataPosts).length > 0) {
+                                for (let key in dataPosts) {
+                                    choicesList.append(dataPosts[key]);
+                                }
+                            }
+                            else {
+                                wrapper.dataset.loading = 'false';
+                            }
+                        },
+                        error: function (obj, err) {
+                            console.log( obj, err );
+                        }
+                    });
+
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            root: document.querySelector("#selection-posts .choices-list"),
+            rootMargin: '0px',
+            threshold: 0.8
+        });
+
         /**
          * Posts loaded on scroll
          */
         function loadSelectedPosts(e) {
-
-            let choicesList = $('#selection-posts .choices-list');
-            let valuesCptArray = Array.from(document.querySelectorAll('#general #ymc-cpt-select option:checked')).map(el => el.value);
-            let valuesCptString = valuesCptArray.join(',');
-            let wrapper = this;
-            let container = $('#selection-posts .choices');
-
-            const data = {
-                'action': 'ymc_selected_posts',
-                'nonce_code' : _smart_filter_object.nonce,
-                'cpt' : valuesCptString,
-                'paged' : _smart_filter_object.current_page
-            };
-
-            if (this.scrollHeight - this.scrollTop === this.clientHeight && wrapper.dataset.loading === 'true')
-            {
-                $.ajax({
-                   type: 'POST',
-                   dataType: 'json',
-                   url: _smart_filter_object.ajax_url,
-                   data: data,
-                   beforeSend: function () {
-                       container.addClass('loading').
-                       prepend(`<img class="preloader" src="${pathPreloader}">`);
-                   },
-                   success: function (res) {
-                       container.removeClass('loading').find('.preloader').remove();
-                       _smart_filter_object.current_page++;
-
-                       // Get posts
-                       let dataPosts = (JSON.parse(res.lists_posts));
-
-                       if(Object.keys(dataPosts).length > 0) {
-                           for (let key in dataPosts) {
-                               choicesList.append(dataPosts[key]);
-                           }
-                       }
-                       else {
-                           wrapper.dataset.loading = 'false';
-                       }
-                   },
-                   error: function (obj, err) {
-                       console.log( obj, err );
-                   }
-               });
-            }
+            postsObserver.observe(document.querySelector('#selection-posts .choices-list li:last-child'));
         }
 
         function resetSelectedPosts() {
@@ -776,6 +791,57 @@
             document.querySelector('#selection-posts .choices-list').dataset.loading = 'true';
             choicesList.scrollTop(0);
             _smart_filter_object.current_page = 1;
+        }
+
+        /**
+         * Search posts
+         */
+        function searchPosts() {
+            let keyword = document.querySelector('#general .search-posts .input-field').value.toLowerCase();
+            let valuesCptArray = Array.from(document.querySelectorAll('#general #ymc-cpt-select option:checked')).map(el => el.value);
+            let valuesCptString = valuesCptArray.join(',');
+            let choicesList = $('#selection-posts .choices-list');
+            let container = $('#selection-posts .choices');
+
+            document.querySelector('#selection-posts .choices-list').dataset.loading = 'false';
+
+            const data = {
+                'action'     : 'ymc_search_posts',
+                'nonce_code' : _smart_filter_object.nonce,
+                'phrase'     : keyword,
+                'cpt'        : valuesCptString
+            };
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                url: _smart_filter_object.ajax_url,
+                data: data,
+                beforeSend: function () {
+                    container.addClass('loading').
+                    prepend(`<img class="preloader" src="${pathPreloader}">`);
+                },
+                success: function (res) {
+                    container.removeClass('loading').find('.preloader').remove();
+
+                    // Get posts
+                    let dataPosts = (JSON.parse(res.lists_posts));
+                    container.find('.number-posts').html(res.found_posts);
+                    choicesList.empty();
+
+                    if(Object.keys(dataPosts).length > 0) {
+                        for (let key in dataPosts) {
+                            choicesList.append(dataPosts[key]);
+                        }
+                    }
+                    else {
+                        choicesList.append('<li class="no-result">No results found</li>');
+                    }
+                },
+                error: function (obj, err) {
+                    console.log( obj, err );
+                }
+            });
         }
 
 
@@ -1165,63 +1231,18 @@
         });
 
         // Search Posts in Choices Box
-        $(document).on('input','#general .search-posts .input-field', function (e) {
-
-            let keyword = e.target.value.toLowerCase();
-            let valuesCptArray = Array.from(document.querySelectorAll('#general #ymc-cpt-select option:checked')).map(el => el.value);
-            let valuesCptString = valuesCptArray.join(',');
-            let choicesList = $('#selection-posts .choices-list');
-            let container = $('#selection-posts .choices');
-            let btnClear = $('.search-posts .clear-button');
-            let input = e.target;
-
-            if( keyword.length >= 3 ) {
-
-                document.querySelector('#selection-posts .choices-list').dataset.loading = 'false';
-
-                const data = {
-                    'action'     : 'ymc_search_posts',
-                    'nonce_code' : _smart_filter_object.nonce,
-                    'phrase'     : keyword,
-                    'cpt'        : valuesCptString
-                };
-
-                $.ajax({
-                    type: 'POST',
-                    dataType: 'json',
-                    url: _smart_filter_object.ajax_url,
-                    data: data,
-                    beforeSend: function () {
-                        container.addClass('loading').
-                        prepend(`<img class="preloader" src="${pathPreloader}">`);
-                        //input.setAttribute('disabled', 'disabled');
-                        btnClear.addClass('active');
-                    },
-                    success: function (res) {
-                        container.removeClass('loading').find('.preloader').remove();
-                        //input.removeAttribute('disabled');
-                        input.focus();
-
-                        // Get posts
-                        let dataPosts = (JSON.parse(res.lists_posts));
-                        container.find('.number-posts').html(res.found_posts);
-                        choicesList.empty();
-
-                        if(Object.keys(dataPosts).length > 0) {
-                            for (let key in dataPosts) {
-                                choicesList.append(dataPosts[key]);
-                            }
-                        }
-                        else {
-                            choicesList.append('<li class="no-result">No results found</li>');
-                        }
-                    },
-                    error: function (obj, err) {
-                        console.log( obj, err );
-                    }
-                });
+        $(document).on('click','#general .search-posts .btn-submit', function (e) {
+            e.preventDefault();
+            let keyword = document.querySelector('#general .search-posts .input-field').value;
+            if( keyword.length > 0 ) {
+                searchPosts();
             }
+        });
 
+        $(document).on('input','#general .search-posts .input-field', function (e) {
+            let keyword = document.querySelector('#general .search-posts .input-field').value.toLowerCase();
+            let btnClear = $('.search-posts .clear-button');
+            btnClear.addClass('active');
             if( keyword.length === 0 ) {
                 $('#general .search-posts .clear-button').trigger('click');
             }
