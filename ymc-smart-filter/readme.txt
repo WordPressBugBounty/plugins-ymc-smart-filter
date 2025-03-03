@@ -1,8 +1,8 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 2.9.62
-Donate link: https://www.paypal.com/donate/?hosted_button_id=B2MHM5LM29UGW
+Version: 2.9.63
+Donate link: https://github.com/YMC-22/smart-filter
 Tags: filter, grid, ajax, search, sort
 Requires at least: 5.5
 Tested up to: 6.7
