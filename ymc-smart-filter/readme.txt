@@ -1,7 +1,7 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 2.9.67
+Version: 2.9.68
 Donate link: https://github.com/YMC-22/smart-filter
 Tags: filter, grid, ajax, search, sort
 Requires at least: 5.5
@@ -79,7 +79,6 @@ Detailed information can be found on GitHub at this <a target="_blank" href="htt
 = Posts in the filter grid not loading? =
 
 If your posts are not loading, you should check on your site or theme:
-- the jQuery Migrate plugin is enabled. Open the browser console and make sure there is a message: Migrate is installed, version >= 3.4.1
 - check if the wp-hooks WordPress core library is connected. If not, you should connect it in your theme in the functions.php file with the following code:
 // Manually load the wp-hooks script.
 wp_enqueue_script( 'wp-hooks' );
