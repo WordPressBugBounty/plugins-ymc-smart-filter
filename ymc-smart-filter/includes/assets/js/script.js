@@ -724,6 +724,7 @@
             let params = JSON.parse(document.querySelector(target).dataset.params);
             let filterID = params.filter_id;
             let targetID = params.target_id;
+            let classAnimation = params.popup_animation;
 
             const data = {
                 'action'     : 'get_post_popup',
@@ -739,15 +740,23 @@
                     dataType: 'json',
                     url: _smart_filter_object.ajax_url,
                     data: data,
-                    beforeSend: function () {},
+                    beforeSend: function () {
+                        // Add Hook: before open popup
+                        wp.hooks.doAction('ymc_before_popup_open');
+                        wp.hooks.doAction('ymc_before_popup_open_'+params.filter_id);
+                        wp.hooks.doAction('ymc_before_popup_open_'+params.filter_id+'_'+params.target_id);
+                    },
                     success: function (res) {
                         if(res.data !== '') {
                             popupContainer.html(res.data);
                             popupOverlay.css({'display':'block','opacity':'1'});
                             bodyHtml.css({'overflow' : 'hidden'});
+                            popupContainer.closest('.ymc-popup-wrp').addClass(classAnimation);
                         }
 
                         // Add Hook: after open popup
+                        wp.hooks.doAction('ymc_after_popup_open', res.data);
+                        wp.hooks.doAction('ymc_after_popup_open_'+params.filter_id, res.data);
                         wp.hooks.doAction('ymc_after_popup_open_'+params.filter_id+'_'+params.target_id, res.data);
                     },
                     error: function (obj, err) {
