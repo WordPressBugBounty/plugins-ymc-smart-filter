@@ -16,6 +16,20 @@ class Meta_Boxes {
 		add_action( 'save_post_ymc_filters', array($this, 'ymc_save_meta_box'), 10, 2);
 		add_action( 'wp_dashboard_setup', array($this, 'ymc_filter_grids_widget'));
 		add_action( 'admin_bar_menu', array($this, 'ymc_admin_bar_menu'), 120);
+		add_action( 'current_screen', array($this, 'current_screen'));
+	}
+
+	public function in_admin_header() {
+		include dirname( __FILE__ ) . '/admin-header/tmpl-admin-header.php';
+	}
+
+	public function current_screen( $screen ) {
+		// New or Edit Filter Grid or Filter Grids List
+		if ( 'ymc_filters' === $screen->post_type &&
+           ( in_array( $screen->id, array('ymc_filters'), true ) ||
+             in_array( $screen->id, array('edit-ymc_filters'), true ))) {
+			add_action('in_admin_header', array($this, 'in_admin_header'));
+		}
 	}
 
 	public function ymc_save_meta_box( $post_id, $post ) {

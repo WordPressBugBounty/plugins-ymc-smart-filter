@@ -34,16 +34,12 @@ class Load_Scripts {
 		wp_enqueue_style( 'filter-grids-' . $this->generate_handle(), YMC_SMART_FILTER_URL . 'includes/assets/css/admin.css', array(), YMC_SMART_FILTER_VERSION);
 
 
-		if ( in_array( $screen->id, array( 'ymc_filters' )) )
-		{
-
+		if (in_array( $screen->id, array('ymc_filters'), true )) {
 			wp_enqueue_style( 'codemirror-css-' . $this->generate_handle(), YMC_SMART_FILTER_URL . 'includes/assets/css/codemirror/codemirror.css', array(), YMC_SMART_FILTER_VERSION);
 			wp_enqueue_style( 'codemirror-theme-' . $this->generate_handle(), YMC_SMART_FILTER_URL . 'includes/assets/css/codemirror/eclipse.css', array(), YMC_SMART_FILTER_VERSION);
 			wp_enqueue_style( 'codemirror-hint-' . $this->generate_handle(), YMC_SMART_FILTER_URL . 'includes/assets/css/codemirror/show-hint.css', array(), YMC_SMART_FILTER_VERSION);
 
-
 			wp_enqueue_style('thickbox');
-
 			wp_enqueue_script('thickbox');
 			wp_enqueue_script( 'wp-color-picker');
 
@@ -64,7 +60,15 @@ class Load_Scripts {
 					'current_page' => 1,
 					'path' => YMC_SMART_FILTER_URL
 				));
+		}
 
+		if (in_array( $screen->id, array('edit-ymc_filters','ymc_filters'), true )) {
+			wp_enqueue_script( 'filter-grids-update', YMC_SMART_FILTER_URL . 'includes/assets/js/updatePluginVer.js', array( 'jquery' ), YMC_SMART_FILTER_VERSION, true );
+			wp_localize_script( 'filter-grids-update', '_ymc_fg_object',
+				array(
+					'ajax_url' => admin_url('admin-ajax.php'),
+					'nonce'    => wp_create_nonce(Plugin::$instance->token_b)
+			));
 		}
 	}
 

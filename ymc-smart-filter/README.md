@@ -1,1013 +1,563 @@
-![This is an image](/includes/assets/images/YMC-logos.png)
+<img src="/Logo_3.0.0.png" alt="Filter & Grids Logo" width="250" />
 
-#  Filter & Grids
-> <a href="https://wordpress.org/plugins/ymc-smart-filter/">Plugin Filter & Grids</a> - Filter posts/custom post types by custom taxonomy/category without page reload and with pagination too. It has a different filter and post layouts. The plugin allows you to create multiple filters on one page. To use custom templates for the filter bar and plugin postcards, you need a basic understanding of technologies: HTML JavaScript, CSS and PHP. This plugin allows you to customize your post and filter templates, giving you total freedom in your presentation. JS API interface allows you to interact with the filter from the outside. This allows you to develop all sorts of complex post filtering interfaces.
+# YMC Filter Grids 
 
-### Usage
+**Filter & Grids** is a powerful and flexible WordPress plugin that allows you to easily filter and display your posts, custom post types, and other content in beautifully designed grid layouts.  
+With an intuitive interface and customizable filters, you can create dynamic, responsive, and visually appealing content grids without touching a single line of code.
+
+### Key Features
+- **Advanced filtering** — filter posts by categories, tags, taxonomies, custom fields, and more.
+- **Multiple grid layouts** — choose from a variety of pre-designed layouts or create your own.
+- **Responsive design** — works perfectly on desktop, tablet, and mobile devices.
+- **Ajax-powered loading** — load filtered results without reloading the page.
+- **Easy integration** — insert grids anywhere with a shortcode or block editor.
+
+Whether you’re building a portfolio, a product catalog, or a news feed, **Filter & Grids** gives you full control over how your content is displayed and how your visitors interact with it.
+
+---
+
+# Filter & Grids
+
+[![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](UPGRADE-NOTICE.md)
+
+**Filter & Grids** is a powerful and flexible WordPress plugin that allows you to easily filter and display posts, custom post types, and other content in beautifully designed grid layouts.
+
+---
+
+## 📢 Upgrade Notice
+⚠️ **Important:** Before updating to the latest version, please read the [Upgrade Notice](UPGRADE-NOTICE.md) for important information about compatibility, migration steps, and potential changes that might affect your site.
+
+---
+
+## Key Features
+- Advanced filtering — filter posts by categories, tags, taxonomies, custom fields, and more.
+- Multiple grid layouts — choose from pre-designed templates or create your own.
+- Responsive design — works perfectly on desktop, tablet, and mobile devices.
+- Ajax-powered loading — load filtered results without reloading the page.
+- Easy integration — insert grids anywhere with a shortcode or block editor.
+
+---
+
+## Installation
+1. Download the plugin.
+2. Upload it to your WordPress plugins directory.
+3. Activate the plugin through the **Plugins** menu in WordPress.
+
+---
+
+## License
+This plugin is licensed under the [GPL v2 or later](LICENSE).
+
+
+
+
+
+# 🎛️ Developer Hooks
+
+This documentation describes available **WordPress filter hooks** for customizing the output and behavior of the **YMC Filter Grids** plugin.
+
+
+## 🧭 Table of Contents
+
+- [Introduction](#introduction)
+- [Usage](#usage)
+- [Filter Hook Categories](#filter-hook-categories)
+    - [Post Layout Filters](#post-layout-filters)
+    - [Post Layout Actions](#post-layout-actions)
+    - [Grid Layout Actions](#grid-layout-actions)
+    - [Filter Layout Actions](#filter-layout-actions)
+    - [Pagination Filters](#pagination-filters)
+    - [Search Filters](#search-filters)
+    - [Popup Layout Filters](#popup-layout-filters)
+    - [Custom Filter Layout](#custom-filter-layout)
+    - [Custom Post Layout](#custom-post-layout)
+    - [JavaScript Integration Hooks](#javascript-integration-hooks)
+    - [Advanced Developer Hooks](#advanced-developer-hooks)
+- [YMCFilterGrid: Global Object API](#ymcfiltergrid-global-object-api)
+- [Changelog](#changelog)
+
+---
+
+## 📘 Introduction
+
+YMC Filter Grids provides flexible rendering of post filters with options to extend, override, or manipulate components using WordPress native `apply_filters()` functionality.
+
+This document helps developers understand where and how to hook into the plugin's logic.
+
+---
+
+## ⚙️ Usage
+
+To use a filter hook, add the following to your theme or plugin:
+
 - Activate Plugin or upload the entire 'ymc-smart-filter' folder to the '/wp-content/plugins/' directory.
 - Add new Filter & Grids
 - Copy Filter & Grids shortcode and paste to any page or post
-- Set setting for each post 
-
-### List Filters
-Add code to `function.php` to your theme
-
-`FilterID` is ID of the filter inside Filter & Grids Admin Panel Shortcode tab [ymc_filter id='545']
-
-`LayoutID` is serial number of the custom filter layout on the page. Can be find by inspecting the filter css class like: data-target-ymc545-1
+- Set setting for each post
 
 
-**Change previous or next numbered paginator arrows:**
+## ⚙️ Filter Hook Categories
+
+Add code to `functions.php` to your theme
+
+- `$filter_id` unique ID of the filter (e.g., 72)  Shortcode tab [ymc_filter id='72']
+- `$instance_index` instance number of this filter on the page
+
+
+### Post Layout Filters
+
+Customize the date format used in post layout.
 ```php
-add_filter('ymc_pagination_prev_text_FilterID', $ymc_pagination_prev_text, 10, 1);
-add_filter('ymc_pagination_prev_text_FilterID_LayoutID', $ymc_pagination_prev_text, 10, 1);
-add_filter('ymc_pagination_next_text_FilterID', $ymc_pagination_next_text, 10, 1);
-add_filter('ymc_pagination_next_text_FilterID_LayoutID', $ymc_pagination_next_text, 10, 1);
-
-// Usage example:
-add_filter('ymc_pagination_next_text_545_1', function() {
-   return 'My Text';
-}, 10, 1);
-
+apply_filters('ymc/post/layout/date_format', $date_format);
+apply_filters('ymc/post/layout/date_format_{filter_id}', $date_format);
+apply_filters('ymc/post/layout/date_format_{filter_id}_{$instance_index}', $date_format);
 ```
-**Change button text Load More**
+Usage Example:
 ```php
-add_filter('ymc_pagination_load_more_FilterID', $ymc_pagination_load_more, 10, 1);
-add_filter('ymc_pagination_load_more_FilterID_LayoutID', $ymc_pagination_load_more, 10, 1);
-
-// Usage example:
-add_filter('ymc_pagination_load_more_545_1', function ($load){
-    $load = 'Button More';
-    return $load;
-}, 10, 1);
-```
-**Change publication date of a post in grid of cards**
-```php
-add_filter('ymc_post_date_format_FilterID', $ymc_post_date_format, 10, 1);
-add_filter('ymc_post_date_format_FilterID_LayoutID', $ymc_post_date_format, 10, 1);
-
-// Usage example:
-add_filter('ymc_post_date_format_545_1', function () {
-   return 'Y-m-d';
-}, 10, 1);
-```
-**Change post text length (excerpt)**
-```php
-add_filter('ymc_post_excerpt_length_FilterID_LayoutID', $ymc_post_excerpt_length, 10, 1);
-
-// Usage example:
-add_filter('ymc_post_excerpt_length_545_1', function () {
-   return 10;
-}, 10, 1);
-```
-**Change button text in post item**
-```php
-add_filter('ymc_post_read_more_FilterID', $ymc_post_read_more, 10, 1);
-add_filter('ymc_post_read_more_FilterID_LayoutID', $ymc_post_read_more, 10, 1);
-
-// Usage example:
-add_filter('ymc_post_read_more_545_1', function () {
-    return 'Read...';
-}, 10, 1);
+add_filter('ymc/post/layout/date_format_72', function ($date_format) {
+    return 'F j, Y';
+});
 ```
 
-**Change result text: "# posts selected". Parameters: $layouts, $found_posts**
-```php
-add_filter('ymc_posts_selected_FilterID', 'ymc_posts_selected', 10, 2);
-add_filter('ymc_posts_selected_FilterID_LayoutID', 'ymc_posts_selected', 10, 2);
+### Post Layout Actions
+Insert Hooks.
+Use this hook to insert custom content before or after each post item in the grid layout.
+These hooks are triggered for each post in the loop, and you can attach your custom render logic via add_action()
 
-// Usage example:
-function ymc_posts_selected($layouts, $founded_post) {
-    $layouts = 'Posts found: ' . $founded_post .'';
-    return $layouts;
-}
-add_filter('ymc_posts_selected_545_1', 'ymc_posts_selected', 10, 2);
+Parameters:
+
+- `$post_number` (int): Sequence number of the post in the loop (starting from 1).
+- `$post_id` (int): The WordPress post ID.
+- `$paged` (int): Current page number (useful for paginated grids).
+- `$per_page` (int): Number of posts per page.
+
+#### Before Post Layout
+```php
+do_action('ymc/post/layout/before/post_item', $post_number, $post_id, $paged, $per_page);
+do_action('ymc/post/layout/before/post_item_{filter_id}', $post_number, $post_id, $paged, $per_page);
+do_action('ymc/post/layout/before/post_item_{filter_id}_{$instance_index}', $post_number, $post_id, $paged, $per_page);
+```
+#### After Post Layout
+```php
+do_action('ymc/post/layout/after/post_item', $post_number, $post_id, $paged, $per_page);
+do_action('ymc/post/layout/after/post_item_{filter_id}', $post_number, $post_id, $paged, $per_page);
+do_action('ymc/post/layout/after/post_item_{filter_id}_{$instance_index}', $post_number, $post_id, $paged, $per_page);
+```
+Usage Example:
+```php
+add_action( "ymc/post/layout/before/post_item_72", function($post_number, $post_id, $paged, $per_page) {
+  if($post_number === 2) {
+      echo "<div>Insert post number {$post_number}. Post ID: {$post_id}. Paged: {$paged}. Per page: {$per_page}</div>";
+  }
+}, 10, 4);
 ```
 
-**Change list of post sort items**
+### Grid Layout Actions
+#### Before Post Layout
 ```php
-add_filter('ymc_sort_posts_by_FilterID', '$ymc_sort_posts', 10, 1);
-add_filter('ymc_sort_posts_by_FilterID_LayoutID', '$ymc_sort_posts', 10, 1);
+do_action('ymc/grid/before_post_layout');
+do_action('ymc/grid/before_post_layout_{filter_id}');
+do_action('ymc/grid/before_post_layout_{filter_id}_{$instance_index}');
+```
 
-// Usage example:
-// List of fields for sorting posts: ID, author, title, name, date, modified, type, parent, rand, comment_count
-// Important! Keep HTML structure with all attributes as in the example below.
-// Add a new item for sorting posts by the 'name' field:
+#### After Post Layout
+```php
+do_action('ymc/grid/after_post_layout');
+do_action('ymc/grid/after_post_layout_{filter_id}');
+do_action('ymc/grid/after_post_layout_{filter_id}_{$instance_index}');
+```
 
-function ymc_sort_posts($layouts) {
-   $layouts .= '<div class="menu-passive__item">
-                <a class="menu-link" data-order="'.esc_attr('desc').'" data-orderby="'.esc_attr('name').'" href="#">'.
-                esc_html__('Sort by Name', 'ymc-smart-filter').'</a></div>';
-   return $layouts;
-}
-add_filter('ymc_sort_posts_by_545_1', 'ymc_sort_posts', 10, 1);
+### Filter Layout Actions
+#### Top Position
+```php
+do_action('ymc/filter/layout/top/before');
+do_action('ymc/filter/layout/top/before_{filter_id}');
+do_action('ymc/filter/layout/top/before_{filter_id}_{$instance_index}');
+
+do_action('ymc/filter/layout/top/after');
+do_action('ymc/filter/layout/top/after_{filter_id}');
+do_action('ymc/filter/layout/top/after_{filter_id}_{$instance_index}');
+```
+
+#### Left Position
+```php
+do_action('ymc/filter/layout/left/before');
+do_action('ymc/filter/layout/left/before_{filter_id}');
+do_action('ymc/filter/layout/left/before_{filter_id}_{$instance_index}'x);
+
+do_action('ymc/filter/layout/left/after');
+do_action('ymc/filter/layout/left/after_{filter_id}');
+do_action('ymc/filter/layout/left/after_{filter_id}_{$instance_index}');
+```
+
+#### Right Position
+```php
+do_action('ymc/filter/layout/right/before');
+do_action('ymc/filter/layout/right/before_{filter_id}');
+do_action('ymc/filter/layout/right/before_{filter_id}_{$instance_index}');
+
+do_action('ymc/filter/layout/right/after');
+do_action('ymc/filter/layout/right/after_{filter_id}');
+do_action('ymc/filter/layout/right/after_{filter_id}_{$instance_index}');
 ```
 
 
-**Change text of Show All button in filter panel**
+### Pagination Filters
+`ymc/pagination/prev_text`
+Filter the "Previous" button text in pagination.
 ```php
-add_filter('ymc_button_show_all_FilterID', $ymc_button_show_all, 10, 1);
-add_filter('ymc_button_show_all_FilterID_LayoutID', $ymc_button_show_all, 10, 1);
-
-// Usage example:
-add_filter('ymc_button_show_all_545_1', function () {
-    return 'My All';
-}, 10, 1);
+apply_filters('ymc/pagination/prev_text', $prev_button_text);
+apply_filters('ymc/pagination/prev_text_{filter_id}', $prev_button_text);
+apply_filters('ymc/pagination/prev_text_{filter_id}_{$instance_index}', $prev_button_text);
+```
+`ymc/pagination/next_text`
+Filter the "Next" button text in pagination.
+```php
+apply_filters('ymc/pagination/next_text', $next_button_text);
+apply_filters('ymc/pagination/next_text_{filter_id}', $next_button_text);
+apply_filters('ymc/pagination/next_text_{filter_id}_{$instance_index}', $next_button_text);
+```
+`ymc/pagination/load_more_text`
+```php
+apply_filters('ymc/pagination/load_more_text', $load_more_text);
+apply_filters('ymc/pagination/load_more_text_{filter_id}', $load_more_text);
+apply_filters('ymc/pagination/load_more_text_{filter_id}_{$instance_index}', $load_more_text);
 ```
 
-**Change the placeholder "All" for the filter named Dropdown Filter Compact**
+Usage Example:
 ```php
-add_filter('ymc_placeholder_dropdown_FilterID', $ymc_placeholder_all, 10, 1);
-add_filter('ymc_placeholder_dropdown_FilterID_LayoutID', $ymc_placeholder_all, 10, 1);
-
-// Usage example:
-add_filter('ymc_placeholder_dropdown_545_1', function () {
-    return 'My Taxonomy';
-}, 10, 1);
+add_filter('ymc/pagination/prev_text_72', function ($prev_button_text) {
+    return 'Previous Page';
+});
+add_filter('ymc/pagination/next_text_72_1', function ($next_button_text) {
+    return 'Next Page';
+});
+add_filter('ymc/pagination/load_more_text_72', function ($load_more_text) {
+    return 'Custom Load More Text';
+});
 ```
 
-**Change the "All" placeholder for the filter named "Compact Dropdown Filter" individually for each taxonomy**
+### Search Filters
+`ymc/search/results_found_text`
+Filter the "Previous" button text in pagination.
 ```php
-add_filter('ymc_placeholder_dropdown_FilterID_tax-slug', $ymc_placeholder_all, 10, 1);
-add_filter('ymc_placeholder_dropdown_FilterID_LayoutID_tax-slug', $ymc_placeholder_all, 10, 1);
-
-// Usage example:
-add_filter('ymc_placeholder_dropdown_72_1_post_tag', function () {
-	return 'My Tags';
-}, 10, 1);
-
-add_filter('ymc_placeholder_dropdown_72_1_category', function () {
-	return 'My Category';
-}, 10, 1);
+apply_filters('ymc/search/results_found_text', $results_found_text);
+apply_filters('ymc/search/results_found_text_{filter_id}', $results_found_text);
+apply_filters('ymc/search/results_found_text_{filter_id}_{$instance_index}', $results_found_text);
+```
+Usage Example:
+```php
+add_filter('ymc/search/results_found_text_72', function ($results_found_text) {
+    return 'Custom Results Found Text';
+  });
 ```
 
-**Change the text of the “Sort” button on the sort panel**
-```php
-add_filter('ymc_sort_text_FilterID', $ymc_button_show_all, 10, 1);
-add_filter('ymc_sort_text_FilterID_LayoutID', $ymc_button_show_all, 10, 1);
+### Popup Layout Filters
+`ymc/popup/custom_layout` 
 
-// Usage example:
-add_filter('ymc_sort_text_545_1', function () {
-    return 'My Sort';
-}, 10, 1);
+Inject or override popup content layout.
+
+```php
+apply_filters('ymc/popup/custom_layout', $content, $post_id);
+apply_filters('ymc/popup/custom_layout_{filter_id}', $content, $post_id);
+apply_filters('ymc/popup/custom_layout_{filter_id}_{$instance_index}', $content, $post_id);
 ```
+Parameters:
+- `string $content`: The content to be displayed in the popup.
+- `int $post_id`: The ID of the post for which the popup is being displayed.
 
-**Change the name of the category (taxonomy) in the dropdown list button filters on the filter panel.**
+Usage Example:
 ```php
-add_filter('ymc_tax_name_FilterID_slugTax', $ymc_button_show_all, 10, 1);
-add_filter('ymc_tax_name_FilterID_LayoutID_slugTax', $ymc_button_show_all, 10, 1);
-- slugTax - category (taxonomy) slug
-
-// Usage example:
-add_filter('ymc_tax_name_545_1_category', function () {
-    return 'My Tax Name';
-}, 10, 1);
-```
-
-**Add your content before or after the filter bar**
-```php
-add_action("ymc_before_filter_layout_FilterID");
-add_action("ymc_before_filter_layout_FilterID_LayoutID");
-add_action("ymc_after_filter_layout_FilterID");
-add_action("ymc_after_filter_layout_FilterID_LayoutID");
-```
-**Add your content before or after the post grid layout**
-```php
-add_action("ymc_before_post_layout_FilterID");
-add_action("ymc_before_post_layout_FilterID_LayoutID");
-add_action("ymc_after_post_layout_FilterID");
-add_action("ymc_after_post_layout_FilterID_LayoutID");
-```
-
-### Shortcodes
-**The plugin provides a list of shortcodes to display different components of the plugin. This allows you to separately place plugin components in different places on the page without being tied to the current grid of posts, which makes the plugin more flexible and compact. The entire list of shortcodes can be found in the Shortcodes section.**
-
-**The plugin has the following shortcodes:**
-
-#### `[ymc_extra_filter id="545"]`
-
-**Shortcode for displaying the "Filter" component. It includes all standard plugin layouts (Default Filter, Grouped Filter, Dropdown Filter, Sidebar Filter, Alphabetical Navigation, Custom Filter Extra Layout). To select the filter layout type use: Advanced  ->  Extra Filter Layout**
-
-#### `[ymc_extra_search id='545']`
-
-**Shortcode for displaying the "Search" component.**
-
-#### `[ymc_extra_sort id='545']`
-
-**Shortcode for displaying the "Sorting" component.**
-
-
-### Layouts
-**This filter allows you to change the post template**
-```php
-add_filter('ymc_post_custom_layout_FilterID', 'custom_post_layout', 10, 5);
-add_filter('ymc_post_custom_layout_FilterID_LayoutID', 'custom_post_layout', 10, 5);
-
-Important! Keep HTML structure with all attributes as in the example below.
-```
-**Required ID:**
-- `FilterID & LayoutID (Number)`
-
-Usage example:
-```php
-/**
- * Creating a custom post template
- * @param {string} layout - HTML markup
- * @param {int} post_id - Post ID
- * @param {int} filter_id - Filter ID
- * @param {int} increment_post - post counter
- * @param {array} arrOptions - array of additional post parameters. It includes: 
-     - arrOptions['paged'] - page number
-     - arrOptions['per_page'] - number of posts per page
-     - arrOptions['total'] - number of all posts
-     - arrOptions['class_popup'] - class btn popup. Set for btn post. Value: string or empty
-     - arrOptions['terms_settings'] - array of all terms with their settings. Value: object with the following properties. Default empty array.            
-        - termid - ID term
-        - bg - background term. Hex Color Codes (ex: #dd3333)
-        - color - color term. Hex Color Codes (ex: #dd3333)
-        - class - custom name class of the term
-        - status - selected term. Value: checked or empty
-        - alignterm - align icon in term
-        - coloricon - color icon
-        - classicon - name class icon (Font Awesome Icons. ex. far fa-arrow-alt-circle-down) 
-        - status - term status (checked)
-        - default - (string) default term (checked)
-        - name - (string) custom term name
- * @returns {string} HTML markup card post
- */
-function my_custom_post_layout($layout, $post_id, $filter_id, $increment_post, $arrOptions) {  
-   $layout  = '<h2>'.get_the_title($post_id).'</h2>';
-   $layout .= '<p>'.wp_trim_words(get_the_content($post_id), 30).'</p>';
-   $layout .= '<a href="'.get_the_permalink($post_id).'">Read More</a>'; 
-   // $layout .= '<a class="'.esc_attr($arrOptions['class_popup']).'" data-postid="'.esc_attr($post_id).'" href="#">Open Popup</a>';  
-   return $layout;
-}
-add_filter('ymc_post_custom_layout_545_1', 'my_custom_post_layout', 10, 5);
-```  
-
-**This action allows you to change the post grid template**
-```php
-add_action('ymc_before_custom_layout_FilterID', 'my_before_custom_layout', 10, 2);
-add_action('ymc_before_custom_layout_FilterID_LayoutID', 'my_before_custom_layout', 10, 2);
-add_action('ymc_after_custom_layout_FilterID', 'my_after_custom_layout', 10, 2);
-add_action('ymc_after_custom_layout_FilterID_LayoutID', 'my_after_custom_layout', 10, 2);
-```
-It will be possible to insert any content in the place you need (before or after the selected post).
-
-**Required ID:**
-- `Filter & ID_LayoutID (Number)`
- 
-**Example add custom action after selected post**
-```php
-/**
- * Add custom content after every second post
- * @param {int} increment_post - post counter
- * @param {array} arrOptions - array of additional post parameters. It includes: 
-     - arrOptions['paged'] - page number
-     - arrOptions['per_page'] - number of posts per page
-     - arrOptions['total'] - number of all posts
-     - arrOptions['terms_settings'] - array of all terms with their settings. See options in filter ymc_post_custom_layout.
- * @returns {string} HTML markup card post
- */
- function ymc_after_custom_layout( $increment, $arrOptions ) {
-    if( $increment === 2 || $increment === ( 2 + $arrOptions['per_page'] ) ) {
-      echo '<article class="post-item">
-              <h3>My Header</h3>
-	      <div>Custom text</div> 
-            </article>';
-    }
-}
-add_action( 'ymc_after_custom_layout_545_1', 'ymc_after_custom_layout', 10, 2 ); 
-```
-
-**This filter allows you to change the Filter Custom Layout**
-```php
-add_filter('ymc_filter_custom_layout_FilterID', 'custom_filter_layout', 10, 6);
-add_filter('ymc_filter_custom_layout_FilterID_LayoutID', 'custom_filter_layout', 10, 6);
-```
-If you need to create your custom filter bar, you can use the filter which will allow you to create your filter bar. In the example, it is indicated how you can use the settings and output of a custom filter. 
-***For your filter to work correctly, follow the following class and attribute names in your HTML markup:***
-
-Important! Keep HTML structure with all attributes as in the example below.
-Use, for example, following WordPress functions to get the required data: get_taxonomy(), get_term() and etc.
-
-**Required ID:**
-- `FilterID & LayoutID - Filter ID and Filter Counter`
-
-**Required Classes:**
-- `all`
-- `active`
-
-**Required Date Attributes:**
-- `data-selected`
-- `data-termid`
-
-Usage example:
-
-```php
-/**
- * Creating a Custom Filter Layout
- * @param {string} layout - HTML markup filter
- * @param {array} terms - list ids terms
- * @param {array} taxonomy - list sorted slugs taxonomies
- * @param {int} multiple - multiple or single selection of posts (0/1)
- * @param {string} target - name class target element
- * @param {array} options - array of all terms with their settings. Value: object with the following properties. Default empty array.
-      - termid - (string) ID term
-      - bg - (string) background term. Hex Color Codes (ex: #dd3333)
-      - color - (string) color term. Hex Color Codes (ex: #dd3333)
-      - class - (string) custom name class of the term
-      - status - (string) selected term. Value: checked or empty
-      - alignterm - (string) align icon in term
-      - coloricon - (string) color icon
-      - classicon - (string) name class icon (Font Awesome Icons. ex. far fa-arrow-alt-circle-down) 
-      - status - (string) term status (checked)
-      - default - (string) default term (checked)
-      - name - (string) custom term name
- * @returns {string} HTML markup filter bar
- */
- 
-function my_custom_filter_layout( $layout, $terms, $taxonomy, $multiple, $target, $options ) { ?>
-
-<script>   
-   window.addEventListener('DOMContentLoaded', () => {   
-         let _target = "<?php echo $target; ?>";
-         
-         document.querySelectorAll( _target + ' [data-termid]' ).forEach((el) => {         
-               el.addEventListener('click', function (e) {
-               e.preventDefault();
-               
-               let ymc = YMCTools({
-                   target: _target,
-                   self: this
-               });
-               ymc.updateParams();
-               ymc.getFilterPosts();
-           });
-       });
-   });
-</script>
-   
-<?php
-  if( !empty($terms) ) {
-  
-      $multiple = ( $multiple ) ? 'multiple' : '';
-      $terms_list = implode(",", $terms);
-      $layout  = '<ul>';
-      $layout .= '<li><a class="all active" href="#" data-selected="all" data-termid="'. esc_attr($terms_list) .'">'.esc_html__('ALL','theme').'</a></li>';
-    
-    foreach ($taxonomy as $tax) {
-      $layout .= '<li>';
-      $layout .= '<header>'.get_taxonomy( $tax )->label.'</header>';
-      $layout .= '<ul>';
-      foreach ( $terms as $term ) {
-      if( $tax === get_term( $term )->taxonomy ) {      
-        $class_icon = '';
-        $color_icon = '';
-        
-        // Optional
-        foreach ( $options as $obj ) {
-            if( $obj->termid === $term ) {
-                  $class_icon = $obj->classicon;
-                  $color_icon = $obj->coloricon;
-                  break;
-                }
-             }     
-             $layout .= '<li><a class="'. $multiple .'" href="#" data-selected="'. esc_attr(get_term($term)->slug).'" data-termid="'. esc_attr($term) .'">'.
-             '<i class="'. esc_attr($class_icon) .'" style="color:'. esc_attr($color_icon) .'"></i>'. esc_html(get_term($term)->name) .'</a></li>';
-         }
-     }
-     $layout .= '</ul></li>';   
-   }
-    $layout .= '</ul>';
-    $layout .= '<div class="posts-found"></div>';
- }
- return $layout;
-}
-add_filter('ymc_filter_custom_layout_545_1', 'my_custom_filter_layout', 10, 6);
-```
-
-**This filter allows you to change the Extra Filter Custom Layout**
-```php
-add_filter('ymc_filter_custom_extra_layout_FilterID', 'custom_extra_filter_layout', 10, 6);
-add_filter('ymc_filter_custom_extra_layout_FilterID_LayoutID', 'custom_extra_filter_layout', 10, 6);
-```
-This filter allows you to change the layout of an extra filter outside of the main filter. All parameters for extra filter are the same as for the custom filter layout.
-
-Usage example:
-```php
-function custom_filter_extra_layout( $layout, $terms, $taxonomy, $multiple, $target, $options ) { ?>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-        
-            let extraFilter = "<?php echo $target; ?>";
-            let extraFilterCounter = document.querySelector(extraFilter).dataset.extraFilterCounter;
-            let _target = `.data-target-ymc${extraFilterCounter}`;
-
-            document.querySelectorAll( extraFilter + ' [data-termid]' ).forEach((el) => {            
-                el.addEventListener('click', function (e) {
-                    e.preventDefault();
-
-                    let ymc = YMCTools({
-                        target: _target,
-                        self: this
-                    });
-                    ymc.updateParams();
-                    ymc.getFilterPosts();
-                });
-            });
-        });
-
-    </script>
-
-	<?php
-
-	if( !empty($terms) ) {
-		$multiple = ( $multiple ) ? 'multiple' : '';
-		$terms_list = implode(",", $terms);
-
-		$layout = '<ul>';
-		$layout .= '<li><a class="all active" href="#" data-selected="all" data-termid="'. esc_attr($terms_list) .'">'.esc_html__('ALL','theme').'</a></li>';
-
-		foreach ($taxonomy as $tax) {
-			$layout .= '<li>';
-			$layout .= '<header>'.get_taxonomy( $tax )->label.'</header>';
-			$layout .= '<ul>';
-
-			foreach ( $terms as $term ) {
-				if( $tax === get_term( $term )->taxonomy ) {
-				$class_icon = '';
-				$color_icon = '';
-				
-				// Optional               
-				foreach ( $options as $obj ) {
-				    if( $obj->termid === $term ) {
-				        $class_icon = $obj->classicon;
-				        $color_icon = $obj->coloricon;
-				        break;
-				    }
-			    }
-			$layout .= '<li><a class="'. $multiple .'" href="#" data-selected="'. esc_attr(get_term($term)->slug).'" data-termid="'.esc_attr($term).'">' .
-			           '<i class="'. esc_attr($class_icon) . '" style="color: '. esc_attr($color_icon) .';"></i>' . esc_html(get_term($term)->name).'</a></li>';
-				}
-			}
-			$layout .= '</ul>';
-			$layout .= '</li>';
-		}
-
-		$layout .= '</ul>';
-	}
-
-	return $layout;
-}
-add_filter('ymc_filter_custom_extra_layout_545_1', 'custom_filter_extra_layout', 10, 6);
-```
-
-**This filter allows you to change the popup custom layout**
-
-```php
-add_filter('ymc_popup_custom_layout_FilterID', 'func_custom', 10, 2);
-add_filter('ymc_popup_custom_layout_FilterID_LayoutID', 'func_custom', 10, 2);
-```
-Usage example:
-
-```php
-/**
- * @param {string} layout - HTML markup
- * @param {int} post_id - Post ID
- */
-add_filter('ymc_popup_custom_layout_545_1', function ( $layout, $post_id ) {
-
-    $output = '<h2>Custom Text: '. get_the_title($post_id) .'</h2>';
-	return $output;
-	
+add_filter('ymc/popup/custom_layout_72', function ($content, $post_id) {
+	$content = 'Custom Layout HTML';
+    return $content;
 }, 10, 2);
 ```
 
-**This filter allows you to change the carousel custom layout**
+### Custom Filter Layout
+Inject or override custom filter layout.
 ```php
-add_filter('ymc_post_carousel_custom_FilterID_LayoutID', 'post_carousel_custom_layout', 10, 4);
+apply_filters('ymc/filter/layout/{placement}/custom', $output, $filter_id, $tax_name, $term_settings, $container_class);
+apply_filters('ymc/filter/layout/{placement}/custom_' . $filter_id, $output, $filter_id, $tax_name, $term_settings, $container_class);
+apply_filters('ymc/filter/layout/{placement}/custom_' . $filter_id . '_' . $instance_index, $output, $filter_id, $tax_name, $term_settings, $container_class);
 ```
-Usage example:
+`{placement}` can be: `left`, `right`, `top`
 
+Parameters:
+- `string $output`: The content to be displayed in the custom filter layout.
+- `int $filter_id`: The ID of the custom filter.
+- `string $tax_name`: The name of the taxonomy associated with the custom filter.
+- `array $term_settings`: An array of term settings for the custom filter.
+- `string $container_class`:  CSS Filter container classes.
+
+Array $term_settings is an array of term settings for the custom filter.
+Array structure:
 ```php
-/**
- * Creating a Custom Carousel Layout
- * @param {string} layout - HTML markup
- * @param {int} post_id - Post ID
- * @param {int} filter_id - Filter ID 
- * @param {array} arrOptions - array of additional post parameters. It includes: 
-     - arrOptions['total'] - number of all posts
-     - arrOptions['class_popup'] - class btn popup. Set for btn post. Value: string or empty
-     - arrOptions['terms_settings'] - array of all terms with their settings. Value: object with the following properties. Default empty array.            
-        - termid - ID term
-        - bg - background term. Hex Color Codes (ex: #dd3333)
-        - color - color term. Hex Color Codes (ex: #dd3333)
-        - class - custom name class of the term
-        - status - selected term. Value: checked or empty
-        - alignterm - align icon in term
-        - coloricon - color icon
-        - classicon - name class icon (Font Awesome Icons. ex. far fa-arrow-alt-circle-down) 
-        - status - term status (checked)
-        - default - (string) default term (checked)
-        - name - (string) custom term name
- * @returns {string} HTML markup card post
- */
-add_filter('ymc_post_carousel_custom_layout_545_1', function ( $layouts, $post_id, $filter_id, $arrOptions ) {
-    $output =  '<h2>Header: '. get_the_title($post_id) .'</h2>';
-    $output .= '<div>Content: '. get_the_content($post_id) .'</div>';
-	return $output;	
-}, 10, 4);
+$term_settings = array(
+    'taxonomy' => 'category',
+    'terms' => array(
+        $term_id => array(
+            'term_id' => $term_id, // int The ID of the term.
+            'term_name' => $term_name, // string The name of the term.
+            'term_slug' => $term_slug, // string The slug of the term.
+            'term_background' => $term_background, // string The background color of the term.
+            'term_color' => $term_color, // string The text color of the term.
+            'term_class' => $term_class, // string The CSS class for styling the term.
+            'term_default' => $term_default, // bool The default state of the term.
+            'term_visible' => $term_visible, // bool The visibility state of the term.
+            'term_checked' => $term_checked, // bool The checked state of the term.
+            'term_icon_class' => $term_icon_class, // string The icon class for the term.
+            'term_icon' => $term_icon, // string The icon for the term.
+            'term_icon_position' => $term_icon_position, // string The position of the icon within the term.
+            'term_icon_url' => $term_icon_position, // string The relative URL of the term's URL icon uploaded.
+        ),
+    ),
+);  
 ```
 
-**This filter allows you to change the featured custom post layout**
+Usage Example:
 ```php
-add_filter('ymc_featured_post_custom_layout_FilterID', 'func_custom', 10, 2);
-add_filter('ymc_featured_post_custom_layout_FilterID_LayoutID', 'func_custom', 10, 2);
+add_filter('ymc/filter/layout/left/custom_72_1', function ($output, $filter_id, $taxonomies, $term_settings, $container_class) {
+    $terms = '';
+    foreach ($taxonomies as $taxonomy) {
+      foreach ($term_settings[$taxonomy]['terms'] as $term_id => $term_info) {
+        // For example, output all visible terms
+        if ($term_info['term_visible']) {
+          $terms .= "<div class=\"{$term_info['term_class']}\">{$term_info['term_name']}</div>";
+         }
+      }
+   }
+    return $terms;
+}, 10, 5);
 ```
-Usage example:
+
+### Custom Post Layout
+Inject or override custom post layout.
 ```php
-/**
- * Creating a featured custom post template
- * @param {string} layout - HTML markup
- * @param {int} post_id - Post ID
- * @param {int} filter_id - Filter ID
- * @param {array} arrOptions - array of additional post parameters. It includes:
-- arrOptions['class_popup'] - string class btn popup
-- arrOptions['terms_settings'] - (array) array terms settings. Default empty array. List of object properties:
-- termid - ID term
-- bg - background term. Hex Color Codes (ex: #dd3333)
-- color - color term. Hex Color Codes (ex: #dd3333)
-- class - custom name class of the term
-- status - checked term
-- alignterm - align icon in term
-- coloricon - color icon
-- classicon - name class icon (Font Awesome Icons. ex. far fa-arrow-alt-circle-down)
-- status - term status (checked)
-- default - (string) default term (checked)
-- name - (string) custom term name
- * @returns {string} HTML markup card post
- */
-add_filter('ymc_featured_post_custom_layout_545_1', function ( $layouts, $post_id, $filter_id, $arrOptions ) {
-    $output =  '<h2>'. get_the_title($post_id) .'</h2>';
-    $output .= '<div>'. get_the_content($post_id) .'</div>';
-    return $output;	
-}, 10, 4);
+apply_filters('ymc/post/layout/custom', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+apply_filters('ymc/post/layout/custom_{filter_id}', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+apply_filters('ymc/post/layout/custom_{filter_id}_{$instance_index}', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+```
+Parameters:
+- `string $output`: The content to be displayed in the custom post layout.
+- `int $post_id`: The ID of the post.
+- `int $filter_id`: The ID of the custom filter.
+- `string $popup_class`: The CSS class for styling the popup.
+- `array $post_term_settings`: An array of term settings for the post.
+
+Array $term_settings is an array of term settings for the custom post.
+Array structure:
+```php
+$term_settings = array(     
+    $term_id => array(
+        'term_id' => $term_id, // int The ID of the term.
+        'term_name' => $term_name, // string The name of the term.
+        'term_slug' => $term_slug, // string The slug of the term.
+        'term_background' => $term_background, // string The background color of the term.
+        'term_color' => $term_color, // string The text color of the term.
+        'term_class' => $term_class, // string The CSS class for styling the term.
+        'term_default' => $term_default, // bool The default state of the term.
+        'term_visible' => $term_visible, // bool The visibility state of the term.
+        'term_checked' => $term_checked, // bool The checked state of the term.
+        'term_icon_class' => $term_icon_class, // string The icon class for the term.
+        'term_icon' => $term_icon, // string The icon for the term.
+        'term_icon_position' => $term_icon_position, // string The position of the icon within the term.
+        'term_icon_url' => $term_icon_position, // string The relative URL of the term's URL icon uploaded.
+    ),   
+); 
 ```
 
+Usage Example:
+```php
+add_filter('ymc/post/layout/custom_72', function($output, $post_id, $filter_id, $popup_class, $term_settings) {
+$output  = '<h2>'.get_the_title($post_id).'</h2>';
+$tags = '';
 
-### JS API Filter & Grids
-
-To control the post filter via javascript, use the following methods of the Filter's global YMCTools object. All parameters, their name and values that are passed to the object, are built on the principles and rules of the global WP_Query object in the WordPress core. Therefore, please, refer to the relevant documentation for using the WP_Query object for clarification. All of these methods should be used when creating event handlers. but for example, when clicking on a button or link, call one or another method.
-
-**Note**: calling the YMCTools() object when the page is fully loaded should be placed in the block document.addEventListener("DOMContentLoaded", (e) => { ... });
-In some cases, this object is used in handler function callbacks.
-
-
-
-**This method allows to get posts by ID terms of different taxonomies.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", terms: "termID"}).apiTermUpdate( option );
-```
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `termID - ID term (String). It is a string data type and is enclosed in quotes. Can set several ID terms separated by commas, for example: "11,35,47"`
-
-**Optional params:**
-- `taxRel - define the interaction between different taxonomies in the query. The default is "AND". If set "all" will match the relation "OR". Installed in the admin panel Filter -> Tab Ganeral -> Taxonomy Relation.`
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-Usage example:
-```js
-     YMCTools({
-         target: '.data-target-ymc545-1',
-         terms: 'termID'            
-     }).apiTermUpdate();  
-
-```
-
-**This method allows to get posts by meta fields.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", meta: [params]}).apiMetaUpdate( option );
-```
-All parameters correspond to the parameters of the global WP_Query object. 
-To make a correct request, specify all the necessary parameters in JSON format. All parameters in double quotes.
-
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `meta - (Array) is an array of objects that include in the request settings. All objects must be in josn data format.`
-
-**Optional params:**
-- `relation - defines a logical relationship between nested arrays. Default is "AND"`
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-Usage example:
-```js
-    YMCTools({
-	target: '.data-target-ymc545-1',
-        meta : [
-                 { "relation" : "OR" },
-                 { "key" : "color", "value" : "blue" },
-                 { "key" : "price", "value" : "10", "compare": "LIKE" },
-                 { "key" : "grant_value", "value" : ["100", "200"], "compare": "BETWEEN", "type" : "NUMERIC" }
-               ]
-	}).apiMetaUpdate();
-
-```
-
-**This method allows to get posts by date.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", date: [params]}).apiDateUpdate( option );
-```
-All parameters correspond to the parameters of the global WP_Query object. 
-To make a correct request, specify all the necessary parameters in JSON format. All parameters in double quotes.
-
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `date - (Array) is an array of objects that include in the request settings. All objects must be in josn data format.`
-
-**Optional params:**
-- `relation - defines a logical relationship between nested arrays. Default is "AND"`
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true` 
-
-Usage example:
-```js
-      YMCTools({
-	  target: '.data-target-ymc545-1',
-          date : [                  
-                   { "monthnum" : "1", "compare" : "=" },
-                   { "year" : "2023", "compare" : "=" },
-                   { "day" : "10", "compare" : ">=" }
-                ]
-	 }).apiDateUpdate();     
-	 
-```
-
-**This method allows to search for posts by keyword.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", search: 'keyword'}).apiSearchPosts( option, terms );
-```
-
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `search - (String) Phrase for which posts are searched.`
-
-**Optional params:**
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-- `terms - (array)  list ids terms. Default is empty`
-
-Usage example:
-```js
-      YMCTools({
-	    target: '.data-target-ymc545-1',
-            search: 'keyword',
-      }).apiSearchPosts(true, [7,11,15]); 	 
-```
-
-**This method allows Include / Exclude posts in the post grid.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", choicesPosts: '7,9,11', excludePosts: 'off'}).apiChoicesPosts( option );
-```
-
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `choicesPosts - (String) ID posts.`
-- `excludePosts - (String) on / off. By default excludePosts is "off"". (Optional)`
-**Optional params:**
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-Usage example:
-```js
-      YMCTools({
-	    target: '.data-target-ymc545-1',
-            choicesPosts: '7,9,11',
-            excludePosts: 'off'
-      }).apiChoicesPosts(); 	 
-```
-
-
-**This method allows to sort posts by different criteria.**
-
-```js
-YMCTools({target: ".data-target-ymcFilterID-LayoutID", sortOrder: 'asc', sortOrderBy: 'title'}).apiSortPosts( option );
-```
-
-**Required params:**
-- `.data-target-ymcFilterID-LayoutID - class name of the filter container on the page.`
-- `sortOrder - (String) asc / desc.`
-- `sortOrderBy - (String) List of fields for sorting posts: ID, author, title, name, date, modified, type, parent, rand, comment_count. If set meta key set options: meta_value or meta_value_num (for numbers) to sort by meta field`
-  
-**Optional params:**
-- `metaKey - (String) Value of meta_key parameter (field data key).`
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-Usage example:
-```js
-        YMCTools({
-          target: '.data-target-ymc545-1',
-          sortOrder: 'desc',
-          sortOrderBy: 'meta_value_num',
-          metaKey: 'amount'
-        }).apiSortPosts(); 	 
-```
-
-**This method allows to clear query parameters in the filter by terms.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiTermClear( option );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-**This method allows to clear query parameters in the filter by meta fields.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiMetaClear( option );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-**This method allows to clear query parameters in the filter by date.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiDateClear( option );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-**This method allows to clear sort parameters in the filter by sort posts.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiSortClear( option );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-**This method allows you to clear the query parameters in the filter by the first letter of the alphabet.**
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiLetterAlphabetClear( option );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-
-**This method allows you to make a request to receive posts by previously specified parameters.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiGetPosts();
-```
-
-First we change the request parameters, and then we send the data. You should pass the value false to the methods parameters.
-
-Usage example:
-```js
-YMCTools({
-  target: '.data-target-ymc545-1',
-  terms: '5,7,9'
-}).apiTermUpdate(false);
-
-YMCTools({
-  target: '.data-target-ymc545-1',
-  meta : [ { "key" : "amount", "value" : "100" } ]
-}).apiMetaUpdate(false);        
-
-YMCTools({target: '.data-target-ymc545-1'}).apiGetPosts();	 
-```
-
-**This method allows you to move to a specific page of posts in grid.**
-
-```js
-YMCTools({target: '.data-target-ymcFilterID-LayoutID'}).apiPageUpdated( page );
-```
-- `page - (Number) - page number in the grid Default is 1`
-
-Usage example:
-```js
-YMCTools({ target: '.data-target-ymc545-1'}).apiPageUpdated(3); 
-```
-
-**This method allows you to open a popup post and load content into it.**
-
-```js
-YMCTools({ target: '.data-target-ymcFilterID-LayoutID' }).apiPopup( postID );
-```
-**Required params:**
-- `postID - (Number) - post ID`
-
-Usage example:
-```js
-YMCTools({ target: '.data-target-ymc545-1'}).apiPopup(15); 
-```
-
-**This method allows you to display different post types with their different taxonomies in a grid.**
-
-**Required params:**
-```js
-YMCTools({ target: '.data-target-ymcFilterID-LayoutID' }).apiMultiplePosts( option, cpt = '', tax = '', terms = '' );
-```
-- `option - (bool) true / false - parameter allows to control sending of request. Default is true`
-- `cpt - name of post types (String). Can set several post types separated by commas, for example: "blogs,books"`
-- `tax - name of taxonomies (String). Can set several taxonomies separated by commas, for example: "people,science"`
-- `terms - ID terms (String). Create a list of all terms related to all specified taxonomies, separated by commas, for example: “11,35,47,55,77,95”.`
-- `IMPORTANT! Define the relationship between different taxonomies in a query. The default is "AND".
-   Set the option to "OR" to display all posts in the grid. This can be configured in the admin panel Filter -> General Tab -> Taxonomy. `
-
-
-`Let's override the global filter settings. To do this, stop loading posts and run the filter with new updated parameters:`
-
-Usage example:
-```js
-wp.hooks.addAction('ymc_stop_loading_data', 'smartfilter', function(el) {
-   if( el.classList.contains('data-target-ymc545-1') ) {
-   el.dataset.loading = 'false';
-
-   YMCTools({
-      target: '.data-target-ymc545-1'
-   }).apiMultiplePosts( 
-          true,
-          'post,books',
-          'category,people,science',
-          '5,6,19,15,20,7,55'
-   );
+foreach ($term_settings as $term_info) {
+  if ($term_info['term_visible'] === 'true') {
+      $style_color = !empty($term_info['term_color']) ? 'style="color: '.$term_info['term_color'] .'"' : '';
+      $tags .= '<span class="tag" '.$style_color. '> '. esc_html($term_info['term_name']) .'</span>';
+  }
 }
+$output .= $tags;
+$output .= '<p>'.wp_trim_words(get_the_content($post_id), 30).'</p>';
+$output .= '<a href="'.get_the_permalink($post_id).'">'.esc_html('Read More').'</a>';
+// if needed you can add a popup trigger
+// data-counter="1" is $instance_index
+$output .= '<a class="'.esc_attr($popup_class).'" data-grid-id="'.esc_attr($filter_id).'" data-post-id="'.esc_attr($post_id).'" data-counter="1" href="#">'.esc_html('Open Popup').'</a>';
+
+return $output;
+}, 10, 5);
+```
+
+Inject or override custom carousel layout.
+```php
+apply_filters('ymc/post/carousel/content/custom', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+apply_filters('ymc/post/carousel/content/custom_{filter_id}', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+apply_filters('ymc/post/carousel/content/custom_{filter_id}_{$instance_index}', $output, $post_id, $filter_id, $popup_class, $post_term_settings);
+```
+Parameters:
+- `string $output`: The content to be displayed in the custom post layout.
+- `int $post_id`: The ID of the post.
+- `int $filter_id`: The ID of the custom filter.
+- `string $popup_class`: The CSS class for styling the popup.
+- `array $post_term_settings`: An array of term settings for the post.
+
+Array $term_settings is an array of term settings for the custom post. The structure is the same as for custom post layout.
+
+Usage Example:
+```php
+add_filter('ymc/post/carousel/content/custom_72', function($output, $post_id, $filter_id, $popup_class, $term_settings) {
+$output  = '<h2>'.get_the_title($post_id).'</h2>';
+$tags = '';
+
+foreach ($term_settings as $term_info) {
+  if ($term_info['term_visible'] === 'true') {
+      $style_color = !empty($term_info['term_color']) ? 'style="color: '.$term_info['term_color'] .'"' : '';
+      $tags .= '<span class="tag" '.$style_color. '> '. esc_html($term_info['term_name']) .'</span>';
+  }
+}
+$output .= $tags;
+$output .= '<p>'.wp_trim_words(get_the_content($post_id), 30).'</p>';
+$output .= '<a href="'.get_the_permalink($post_id).'">'.esc_html('Read More').'</a>';
+// if needed you can add a popup trigger
+// data-counter="1" is $instance_index
+$output .= '<a class="'.esc_attr($popup_class).'" data-grid-id="'.esc_attr($filter_id).'" data-post-id="'.esc_attr($post_id).'" data-counter="1" href="#">'.esc_html('Open Popup').'</a>';
+
+return $output;
+}, 10, 5);
+```
+
+
+
+
+
+### JavaScript Integration Hooks
+
+#### Grid Lifecycle Events
+These hooks allow you to integrate custom logic at different stages of the grid’s fetch/update process.
+
+`filter_id`: unique ID of the filter (e.g., 72)  Shortcode tab [ymc_filter id='72'].
+
+`instance_index`: instance number of this filter on the page.
+
+- `ymcHooks.doAction('ymc/grid/cancel_fetch', filter);` 
+
+Triggered before a fetch request is made. Useful to cancel or modify the behavior.
+
+Parameters:
+- `filter (object)`: The current filter configuration object.
+
+Usage Example:
+```js
+ymcHooks.addAction('ymc/grid/cancel_fetch', function(filter) {
+  if (filter.classList.contains('ymc-filter-72')) {
+    target.dataset.loadingEnabled = 'false';
+  }
 });
 ```
 
+- `ymcHooks.doAction('ymc/grid/before_update', container);`
+- `ymcHooks.doAction('ymc/grid/before_update_filter_id', container);`
+- `ymcHooks.doAction('ymc/grid/before_update_filter_id_instance_index', container);`
 
-### Hooks JS.
+Fires just before grid data is rendered into the DOM.
 
-**Note**: hooks should be used in: 
+Parameters:
+- `container (HTMLElement)`: The DOM element that contains the grid content.
 
-**Vanilla javascript**
-- document.addEventListener('DOMContentLoaded', (e) => {...});
- 
-**jQuery**
-- $(document).on('ready', function(e) {...});
-
-**Stop loading posts on page load.**
-
+Usage Example:
 ```js
-wp.hooks.addAction('ymc_stop_loading_data', 'smartfilter', 'callback(elem)');
-```
-Set the selected filter's data-loading attribute to false ( data-loading="false" )
-
-**Params function callback:**
-- `elem - DOM container filter.`
-
-Usage example:
-```js
-wp.hooks.addAction('ymc_stop_loading_data', 'smartfilter', function(elem) {
-     if( elem.classList.contains('data-target-ymc545-1') ) {
-            elem.dataset.loading = 'false';
-     }
+ymcHooks.addAction('ymc/grid/before_update_72', function(container) {
+    console.log('Hook works!', container);  
 });
 ```
 
-**Note**: this hook only works when the page is loaded. By default, it stops all posts from loading. Therefore, inside this hook, you must specify the class of the selected filter.
+- `ymcHooks.doAction('ymc/grid/after_update', data, container);`
+- `ymcHooks.doAction('ymc/grid/after_update_filter_id', data, container);`
+- `ymcHooks.doAction('ymc/grid/after_update_filter_id_instance_index', data, container);`
 
+Triggered immediately after the DOM has been updated.
 
-**Before loaded all posts.**
+Parameters:
+- `container` (HTMLElement). The DOM element that contains the grid content.
+- `data`: Server response with loaded data (posts, pagination, etc.).
 
+Usage Example:
 ```js
-wp.hooks.addAction('ymc_before_loaded_data', 'smartfilter', 'callback(class_name)');
-wp.hooks.addAction('ymc_before_loaded_data_FilterID', 'smartfilter', 'callback(class_name)');
-wp.hooks.addAction('ymc_before_loaded_data_FilterID_LayoutID', 'smartfilter', 'callback(class_name)');
-```
-
-Hook works before loading all posts.
-
-**Params function callback:**
-- `class_name - is the name of the filter container class.`
-
-Usage example:
-```js
-wp.hooks.addAction('ymc_before_loaded_data_545_1', 'smartfilter', function(class_name){
-   console.log('Before loading all posts: ' + class_name);
+ymcHooks.addAction('ymc/grid/after_update', function(data, container) {
+  console.log('Posts are inserted into the DOM:', container);
+  console.log('Server response data:', data);
 });
 ```
 
+- `ymcHooks.doAction('ymc/grid/after_complete', response.status, container);`
+- `ymcHooks.doAction('ymc/grid/after_complete_filter_id', response.status, container);`
+- `ymcHooks.doAction('ymc/grid/after_complete_filter_id_instance_index', response.status, container);`
 
+Fires when the full grid update cycle is complete.
 
-**After loaded all posts.** 
+Parameters:
+- `container (HTMLElement)`: The DOM element that contains the grid content.
+- `response.status`: The HTTP status code of the response.
 
+Usage Example:
 ```js
-wp.hooks.addAction('ymc_after_loaded_data', 'smartfilter', 'callback(class_name, response)');
-wp.hooks.addAction('ymc_after_loaded_data_FilterID', 'smartfilter', 'callback(class_name, response)');
-wp.hooks.addAction('ymc_after_loaded_data_FilterID_LayoutID', 'smartfilter', 'callback(class_name, response)');
-```
-
-Hook works after loading all posts.
-
-**Params function callback:**
-- `class_name - is the name of the filter container class.`
-- `response - returned data object, includes the following properties:`
-  - `post_count - number of displayed posts per page;`
-  - `max_num_pages - maximum number of pages;`
-  - `found - number of found posts;`
-  - `post_type - post type name;`
-
-
-Usage example:
-```js
-wp.hooks.addAction('ymc_after_loaded_data_545_1', 'smartfilter', function(class_name, response){
-      console.log('Container class: ' + class_name);
-      console.log('Post count: ' + response.post_count);
-      console.log('Number of found posts: ' + response.found);
-   });
-```
-
-**Complete loaded all data.**
-
-This hook is called regardless of if the request was successful, or not. 
-You will always receive a complete callback, even for synchronous requests.
-
-```js
-wp.hooks.addAction('ymc_complete_loaded_data', 'smartfilter', 'callback(class_name, status)');
-wp.hooks.addAction('ymc_complete_loaded_data_FilterID', 'smartfilter', 'callback(class_name, status)');
-wp.hooks.addAction('ymc_complete_loaded_data_FilterID_LayoutID', 'smartfilter', 'callback(class_name, status)');
-```
-
-**Params function callback:**
-- `class_name - is the name of the filter container class.`
-- `status - a string categorizing the status of the request ("success", "notmodified", "nocontent", "error", "timeout", "abort", or "parsererror").`
-
-Usage example:
-```js
-wp.hooks.addAction('ymc_complete_loaded_data_545_1', 'smartfilter', function(class_name, status){
-      console.log('Complete loaded all data:' + class_name + ' status:' + status);
-   });
-```
-
-**An example of using hooks in combination with the YMCTools object and its methods**
-
-Stop loading posts for the selected filter and then load posts for the selected term
-
-Usage example:
-```js 
-    wp.hooks.addAction('ymc_stop_loading_data', 'smartfilter', function(el){
-        if( el.classList.contains('data-target-ymc545-1') ) {
-            el.dataset.loading = 'false';
-           
-            YMCTools({
-               target: '.data-target-ymc545-1',
-               terms: '7'
-            }).apiTermUpdate();           
-        }
-    });    
-
-```
-
-**Calling a script point before / after opening a popup and loading content into it.**
-
-This hook allows you to run any desired script after opening a popup for each post
-
-```js
-wp.hooks.addAction('ymc_before_popup_open', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_before_popup_open_FilterID', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_before_popup_open_FilterID_LayoutID', 'smartfilter', 'callback');
-
-wp.hooks.addAction('ymc_after_popup_open', 'smartfilter', 'callback(data)');
-wp.hooks.addAction('ymc_after_popup_open_FilterID', 'smartfilter', 'callback(data)');
-wp.hooks.addAction('ymc_after_popup_open_FilterID_LayoutID', 'smartfilter', 'callback(data)');
-```
-
-**Params function callback:**
-- `data - data that is loaded into the popup container.`
-
-Usage example:
-```js 
-wp.hooks.addAction('ymc_after_popup_open_545_1', 'smartfilter', function(data){
-    console.log('Loaded data: '  + data);
-}); 
-```
-
-**Change custom preloader:**
-
-This filter allows you to override preloader when loading grid posts or other content into opening popups.
-```js
-wp.hooks.addFilter('ymc_custom_popup_preloader', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_custom_popup_preloader_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_custom_popup_preloader_FilterID_LayoutID', 'smartfilter', 'callback');
-
-wp.hooks.addFilter('ymc_custom_grid_preloader', 'smartfilter', 'callback(data)');
-wp.hooks.addFilter('ymc_custom_grid_preloader_FilterID', 'smartfilter', 'callback(data)');
-wp.hooks.addFilter('ymc_custom_grid_preloader_FilterID_LayoutID', 'smartfilter', 'callback(data)');
-```
-Usage example:
-```js 
-wp.hooks.addFilter('ymc_custom_popup_preloader_545_1', 'smartfilter', function(stylePreloader) {
-    stylePreloader = '/wp-content/themes/myTheme/images/icon.svg';
-    return stylePreloader;
+ymcHooks.addAction('ymc/grid/after_complete', function(status, container) {
+  if (status === 200) {
+    console.log('The request was completed successfully.');
+  }
 });
 ```
 
+#### Popup
+- `ymcHooks.doAction('ymc/popup/before_open', popup);`
+- `ymcHooks.doAction('ymc/popup/before_open_filter_id, popup);`
+- `ymcHooks.doAction('ymc/popup/after_open', popup, data);`
+- `ymcHooks.doAction('ymc/popup/after_open_filter_id, popup, data);`
 
+These hooks are triggered during the lifecycle of opening a popup in the system. They allow you to run custom code at specific moments before and after the popup opens.
 
+- `ymcHooks.doAction('ymc/popup/before_open', popup);`
 
-### Masonry Layout.
+Fires before the popup starts opening, passing the popup DOM element as an argument.
 
-To build post cards in Masonry form, use the ymc_after_loaded_data_FilterID_LayoutID hooks and the Masonry mini library MagicGrid. To do this, you need to use the following code:
-The MagicGrid object has the following settings:
+- `ymcHooks.doAction('ymc/popup/after_open', popup, data);`
 
+Fires immediately after the popup has been opened and content has been loaded.
+
+Usage Example:
+```js
+// Before open
+ymcHooks.addAction('ymc/popup/before_open_72', function(popup) {
+  console.log('Popup before open', popup);
+});
+// After open
+ymcHooks.addAction('ymc/popup/after_open_72', function(popup, data) {
+  console.log('Popup after open', popup, data);
+});
+```
+
+#### Preloader
+- `ymcHooks.applyFilters('ymc/grid/preloader', defaultPreloader);`
+- `ymcHooks.applyFilters('ymc/grid/preloader_filter_id', defaultPreloader);`
+
+This filter allows you to customize the loading spinner image used during AJAX content loading in the plugin.
+Returns a string containing the full path or URL to the custom preloader image.
+
+Parameters:
+- `defaultPreloader` (string) The default preloader image path.
+
+Usage Example:
+```js
+ymcHooks.addFilter('ymc/grid/preloader_72', function(preloader) {
+  return 'https://example.com/preloaders/default-spinner.svg';
+});
+```
+
+#### MagicGrid
+
+To build post cards in Masonry form, use the 'ymc/grid/after_update_{filter_id}' hooks and the Masonry mini library MagicGrid. To do this, you need to use the following code: The MagicGrid object has the following settings:
 - `container: "#container", // Required. Can be a class, id, or an HTMLElement.`
 - `static: false, // Required for static content. Default: false.`
 - `items: 30, // Required for dynamic content. Initial number of items in the container.`
@@ -1018,178 +568,438 @@ The MagicGrid object has the following settings:
 - `animate: true, // Optional. Animate item positioning? Default: false.`
 - `center: true, //Optional. Center the grid items? Default: true.`
 
-To correctly display the grid, set styles for the post item, for example:
-
+Usage Example:
+```js
+ymcHooks.addAction('ymc/grid/after_update_72', function(data, container) {
+  const grid = new MagicGrid({
+      container: container,
+      static: false,
+      items: data.posts_count,
+      gutter: 30,
+      maxColumns: 5,
+      useMin: true,
+      useTransform: true,
+      animate: true,
+      center: true
+     });
+  });
+});
+```
+To correctly display the grid, set styles for the post card, for example:
 ```css
-    .data-target-ymc1 .container-posts .post-entry .post-item {
-        width: 250px;
-    }
+.posts-grid--masonry .post-card {
+    width: 320px;
+}
 ```
+List of Filters and Actions to override default settings of the Masonry Grid
 
-Usage example:
+#### Static content
+- `ymcHooks.applyFilters('ymc/grid/masonry/staticContent', staticContent);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/staticContent_filter_id', staticContent);`
+#### Space between items
+- `ymcHooks.applyFilters('ymc/grid/masonry/gutter', gutter);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/gutter_filter_id', gutter);`
+#### Maximum number of columns
+- `ymcHooks.applyFilters('ymc/grid/masonry/maxColumns', maxColumns);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/maxColumns_filter_id', maxColumns);`
+#### Prioritize shorter columns when positioning items
+- `ymcHooks.applyFilters('ymc/grid/masonry/useMin', useMin);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/useMin_filter_id', useMin);`
+#### Position items using CSS transform
+- `ymcHooks.applyFilters('ymc/grid/masonry/useTransform', useTransform);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/useTransform_filter_id', useTransform);`
+#### Animate item positioning
+- `ymcHooks.applyFilters('ymc/grid/masonry/animate', animate);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/animate_filter_id', animate);`
+#### Center the grid items
+- `ymcHooks.applyFilters('ymc/grid/masonry/center', center);`
+- `ymcHooks.applyFilters('ymc/grid/masonry/center_filter_id', center);`
+#### Adds a listener that executes a function once the grid is ready.
+- `ymcHooks.doAction('ymc/grid/masonry/magicGrid_ready', container);`
+- `ymcHooks.doAction('ymc/grid/masonry/magicGrid_ready_filter_id', container);`
+#### Adds a listener that executes a function whenever positionItems is called. Note: positionItems is called during initial setup and whenever the container or window is resized
+- `ymcHooks.doAction('ymc/grid/masonry/magicGrid_position_complete', container);`
+- `ymcHooks.doAction('ymc/grid/masonry/magicGrid_position_complete_filter_id', container);`
+
+Usage Example:
 ```js
-wp.hooks.addAction('ymc_after_loaded_data_545_1', 'smartfilter', function(class_name, response) {
-    const magicGrid = new MagicGrid({
-          container: '.' + class_name + ' .post-entry',
-          items: response.post_count,
-          center: false,
-          gutter: 20                
-   });    
-   magicGrid.listen();
+ymcHooks.addAction('ymc/grid/after_update_72', function(data, container) {
+    ymcHooks.addFilter('ymc/grid/masonry/maxColumns_72', function(maxColumns) {
+      maxColumns = 3;
+      return maxColumns;
+    });
+    ymcHooks.addFilter('ymc/grid/masonry/center_72', function(center) {
+      center = true;
+      return center;
+    });
+    ymcHooks.addAction('ymc/grid/masonry/magicGrid_ready_72', function(container) {
+      console.log('Magic Grid Ready', container);
+    });
 });
+
 ```
 
-**List of Filters and Actions to override default settings of the Masonry Grid**
+
+### YMCFilterGrid: Global Object API
+
+The `YMCFilterGrid` global object provides core methods to interact with the filtered post grid system in real-time via JavaScript.
+To use this object, enable this option in the plugin settings: Appearance - API JS Settings
+
+#### Available Methods
+
+`.init(container)`
+
+Initializes the YMCFilterGrid object with the specified container selector.
+
+Parameters:
+- `container (string)`: The selector for the container element containing the filtered post grid.
+
+Usage Example:
 ```js
-
-// Static content
-wp.hooks.addFilter('ymc_magicGrid_staticContent', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_staticContent_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_staticContent_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Space between items
-wp.hooks.addFilter('ymc_magicGrid_gutter', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_gutter_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_gutter_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Maximum number of columns
-wp.hooks.addFilter('ymc_magicGrid_maxColumns', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_maxColumns_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_maxColumns_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Prioritize shorter columns when positioning items
-wp.hooks.addFilter('ymc_magicGrid_useMin', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_useMin_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_useMin_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Position items using CSS transform
-wp.hooks.addFilter('ymc_magicGrid_useTransform', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_useTransform_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_useTransform_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Animate item positioning
-wp.hooks.addFilter('ymc_magicGrid_animate', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_animate_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_animate_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Center the grid items
-wp.hooks.addFilter('ymc_magicGrid_center', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_center_FilterID', 'smartfilter', 'callback');
-wp.hooks.addFilter('ymc_magicGrid_center_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Adds a listener that executes a function once the grid is ready.
-wp.hooks.addAction('ymc_magicGrid_ready', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_magicGrid_ready_FilterID', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_magicGrid_ready_FilterID_LayoutID', 'smartfilter', 'callback');
-
-// Adds a listener that executes a function whenever positionItems is called. Note: positionItems is called during initial setup and whenever the container or window is resized
-wp.hooks.addAction('ymc_magicGrid_position_complete', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_magicGrid_position_complete_FilterID', 'smartfilter', 'callback');
-wp.hooks.addAction('ymc_magicGrid_position_complete_FilterID_LayoutID', 'smartfilter', 'callback');
+YMCFilterGrid.init('#ymc-filter-1');
 ```
-Usage example:
+
+`YMCFilterGrid.filterByTerm(taxonomy, termId, sendRequest = true)`
+
+Filters the grid by a specific taxonomy and term ID.
+
+Parameters:
+- `taxonomy (string)`: The name of the taxonomy to filter by.
+- `termId (string)`: The ID of the term to filter by.
+- `sendRequest (boolean, optional)`: Whether to send the filter request to the server. Default is true.
+
+Usage Example:
 ```js
-wp.hooks.addFilter('ymc_magicGrid_gutter_545_1', 'smartfilter', function(gutter) {
-    gutter = 30; // Change the space between items
-    return gutter;
+YMCFilterGrid.filterByTerm('category, post_tag', '12,34');
+```
+
+`YMCFilterGrid.filterByPostStatus(status, sendRequest = true)`
+
+Filters the grid by a specific post status.
+
+Parameters:
+- `status (string)`: The post status to filter by.
+- `sendRequest (boolean, optional)`: Whether to send the filter request to the server. Default is true.
+
+Usage Example:
+```js
+YMCFilterGrid.filterByPostStatus('publish');
+```
+
+`YMCFilterGrid.sortPosts(orderBy, orderDirection = 'desc', options = {})`
+
+Sorts posts by various criteria, including standard fields (date, title, etc.), custom fields (meta_key), and multiple fields (multiple_fields).
+
+Parameters:
+- `orderBy (string)`: Sorting key: `'date'`, `'title'`, `'meta_key'`, `'multiple_fields'`, etc.
+- `orderDirection (string)`: Sort direction: `'asc'` or `'desc'` (default is `'asc'`)
+- `options (object)`:  Additional parameters for specific sort types
+- `options.metaKey`:  The name of the `meta_key` to sort by
+- `options.metaValue` Sorting method by meta value: `'meta_value'`, `'meta_value_num'`, etc.
+- `options.multipleFields` Array of objects of the form `{ field_name: string, order_type: string }`
+- `options.sendRequest` Whether to send the request immediately. Defaults to `true`
+
+Usage Example:
+```js
+// Sort by date:
+YMCFilterGrid.sortPosts('date', 'desc');
+
+// Sorting by meta key (meta_key):
+YMCFilterGrid.sortPosts('meta_key', 'asc', {
+  metaKey: 'rating',
+  metaValue: 'meta_value_num'
 });
 
-wp.hooks.addAction('ymc_magicGrid_ready_545_1', 'smartfilter', function() {
-    console.log('Magic Grid Ready'); // Example function
-});
-
-wp.hooks.addAction('ymc_magicGrid_position_complete_545_1', 'smartfilter', function() {
-    console.log("Grid Has Been Resized"); // Example function
+// Sorting by multiple fields (multiple_fields):
+YMCFilterGrid.sortPosts('multiple_fields', null, {
+  multipleFields: [
+    { field_name: 'menu_order', order_type: 'asc' },
+    { field_name: 'date', order_type: 'desc' }
+  ]
 });
 ```
 
-### Advanced Query.
-When using a plugin that displays different posts based on different criteria, there are built-in settings to control which posts are displayed, so you can choose how many to display, include or exclude terms, change the order, etc. However, if you need more complex queries, The plugin offers an "Advanced" query type that allows you to return exactly the arguments you need for your query.
-To do this, you will need to enable the ability to use your own query based on the global WP_query object. Go to the Advanced -> Advanced Query tab and turn the slider to "ON".
-Once this setting is enabled, you will see a new field called Query Type. From the drop-down list, select one of two ways to build a query:
-- Advanced (custom arguments)
-- Callback (theme function)
+`YMCFilterGrid.filterByMeta(metaQuery, relation = 'AND', sendRequest = true)`
 
-##### **Query String (custom arguments)**
+Filters posts by custom fields (postmeta) using WordPress meta_query. The method allows you to specify an array of conditions by which posts on the server will be selected, as well as to set a logical connection between these conditions (AND or OR).
 
-A [query string](https://www.php.net/manual/en/function.http-build-query.php) is a string that contains parameters which looks something like this:
+Parameters:
+- `metaQuery (array)`: An array of meta_query conditions. Array of conditions for filtering. Each element of the array is an object with fields:
+  - `key (string)`: Meta field key
+  - `value (mixed)`: Meta field value
+  - `compare (string)`: Meta field comparison operator. (optional, defaults to "=") — comparison operator (=, !=, <, >, IN, LIKE, etc.)
+  - `type (string)`: Meta field type. (optional, defaults to "CHAR") - data type (CHAR, NUMERIC, DATE, etc.)
+- `relation (string)`: Logical connection between meta_query conditions: `'AND'` or `'OR'` (default is `'AND'`)
+- `sendRequest (boolean)`: Whether to send the filter request to the server. Default is true.
+
+Usage Example:
+```js
+// Will select posts with a meta field color equal to blue and a price less than or equal to 100.
+YMCFilterGrid.filterByMeta([
+  {
+    key: 'color',
+    value: 'blue',
+    compare: '=',
+    type: 'CHAR'
+  },
+  {
+    key: 'price',
+    value: 100,
+    compare: '<=',
+    type: 'NUMERIC'
+  }
+], 'AND');
+```
+
+`YMCFilterGrid.filterByDate(dateQuery, sendRequest = true)`
+
+The filterByDate() method is used to filter posts by publication date using the WordPress date_query parameters.
+
+Parameters:
+- `dateQuery (object)`: WP_Query compatible `date_query` options array
+- `sendRequest (boolean)`: Whether to send the filter request to the server. Default is true.
+
+Please note that date_query must be passed from the frontend in a format compatible with WP_Query, for example:
+
+`
+[
+'after'     => '2023-01-01',
+'before'    => '2023-12-31',
+'inclusive' => true,
+]`
+
+Usage Example:
+```js
+// Range between two dates (string format):
+YMCFilterGrid.filterByDate({
+  after: '2023-01-01',
+  before: '2023-12-31',
+  inclusive: true
+});
+```
+```js
+// By specific date with object:
+YMCFilterGrid.filterByDate({
+  after: { year: 2024, month: 6, day: 1 },
+  before: { year: 2024, month: 6, day: 14 },
+  inclusive: true
+});
+```
+```js
+// Only after a certain date:
+YMCFilterGrid.filterByDate({
+  after: '2024-01-01'
+});
+```
+```js
+// Example using relation: 'OR'
+// It will return posts that were either: published in January 2024, or published in May 2024.
+YMCFilterGrid.filterByDate({
+  relation: 'OR',
+  0: {
+    after: '2024-01-01',
+    before: '2024-01-31',
+    inclusive: true
+  },
+  1: {
+    after: '2024-05-01',
+    before: '2024-05-31',
+    inclusive: true
+  }
+});
+```
+```js
+// Example using relation: 'AND'
+// Searches for posts that: were published after January 1, 2024, and modified before June 1, 2024.
+YMCFilterGrid.filterByDate({
+  relation: 'AND',
+  0: {
+    column: 'post_date_gmt',
+    after: '2024-01-01',
+    inclusive: true
+  },
+  1: {
+    column: 'post_modified',
+    before: '2024-06-01',
+    inclusive: true
+  }
+});
+```
+`YMCFilterGrid.search(keyword, termIds = [], sendRequest = true)`
+
+Performs a post search by keyword, optionally filtering by specific term IDs.
+
+Parameters:
+- `keyword (string)`: Search keyword or phrase.
+- `termIds (Array | string)`: Array of term IDs or a comma-separated string of IDs. If empty, term filtering will not be applied.
+- `sendRequest (boolean)`: Whether to send the search request to the server. Default is true.
+
+Usage Example:
+
+```js
+// Search by keyword only
+YMCFilterGrid.search('news');
+
+// Search by keyword and an array of term IDs
+YMCFilterGrid.search('sports', [12, 15, 18]);
+
+// Search by keyword and term IDs as a string
+YMCFilterGrid.search('music', '5, 9, 22');
+
+// Set search filters without sending a request
+YMCFilterGrid.search('technology', [7, 14], false);
+```
+
+`YMCFilterGrid.choicePosts(selectedPosts = [], excludedPosts = 'no', sendRequest = true)`
+
+Selects or excludes specific posts from the grid by their IDs
+
+Parameters:
+- `selectedPosts (Array | string)`: Array of post IDs or a comma-separated string of IDs to include or exclude.
+- `excludedPosts (string)`: 'no' – include only the selected posts (post__in); 'yes' – exclude the selected posts (post__not_in).
+- `sendRequest (boolean)`: Whether to send the search request to the server. Default is true.
+
+Usage Example:
+
+```js
+// Include only specific posts
+YMCFilterGrid.choicePosts([101, 102, 103], 'no');
+
+// Exclude specific posts
+YMCFilterGrid.choicePosts('201, 202', 'yes');
+
+// Set filters without sending a request
+YMCFilterGrid.choicePosts([401], 'no', [], false);
+```
+
+`YMCFilterGrid.getPosts()`
+
+Sends a request to fetch posts using all previously configured filters without modifying them.
+This method is useful when you want to configure multiple filters first (with sendRequest = false) and then send them to the server in a single request.
+
+Usage Flow
+Configure filters using methods like filterByTerm(), filterByMeta(), filterByDate(), search(), choicePosts(), etc., with the sendRequest parameter set to false.
+
+Call getPosts() to send all accumulated filter settings to the server.
+
+```js
+// Step 1: Set filters without sending a request
+YMCFilterGrid.filterByTerm('category', '5,7', false);
+YMCFilterGrid.filterByPostStatus('publish', false);
+YMCFilterGrid.sortPosts('date', 'desc', { sendRequest: false });
+
+// Step 2: Send all filters in one request
+YMCFilterGrid.getPosts();
+```
+
+`YMCFilterGrid.pageUpdated(page)`
+
+Loads posts from a specific page in the grid while preserving all previously configured filters.
+
+Parameters:
+- `page (number)`: The page number to load.
+
+Usage Example:
+
+```js
+// Go to page 3
+YMCFilterGrid.pageUpdated(3);
+
+// Go to the first page (equivalent to resetting pagination)
+YMCFilterGrid.pageUpdated(1);
+```
+
+`YMCFilterGrid.openFilterPopup(postId)`
+
+Opens the filter popup for a specific post in the grid by its post ID.
+
+Parameters:
+- `postId (string | number)`: The ID of the post for which the popup should be opened.
+
+Usage Example:
+
+```js
+// Open the filter popup for post with ID 55
+YMCFilterGrid.openFilterPopup(55);
+```
+
+
+
+
+### Advanced Developer Hooks
+
+When using a plugin that displays different posts based on different criteria, there are built-in settings to control which posts are displayed, so you can choose how many to display, include or exclude terms, change the order, etc. However, if you need more complex queries, The plugin offers an "Advanced" query type that allows you to return exactly the arguments you need for your query. To do this, you will need to enable the ability to use your own query based on the global WP_query object. Go to the Advanced -> Advanced Query tab and turn the slider to "ON". Once this setting is enabled, you will see a new field called Query Type. From the drop-down list, select one of two ways to build a query:
+
+- Advanced
+- Callback
+
+Query String
+A query string is a string that contains parameters which looks something like this:
+
+`posts_per_page=-1&post_type=portfolio&post_status=publish&orderby=title&tax_query[0][taxonomy]=portfolio_category&tax_query[0][field]=slug&tax_query[0][terms][]=inspiration`
+
+Callback Function
+
+`ymc/filter/query/wp/allowed_callbacks`
+
+Allows you to modify the list of approved callback functions that can be used to filter or modify WP_Query parameters. This is typically used to whitelist safe callbacks when building dynamic or user-defined queries.
 ```php
-posts_per_page=-1&post_type=portfolio&post_status=publish&orderby=title&tax_query[0][taxonomy]=portfolio_category&tax_query[0][field]=slug&tax_query[0][terms][]=inspiration
+apply_filters( 'ymc/filter/query/wp/allowed_callbacks', $callbacks );
+apply_filters( 'ymc/filter/query/wp/allowed_callbacks_{filter_id}', $callbacks );
 ```
-##### **Callback Function**
-To use a callback for your query arguments simply enter your function name in the field and then add this function to your child theme's functions.php file. Your function should have a unique name and return an array of the arguments to pass onto WP_Query.
-Whitelisting Callbacks - **Important!** Your callback functions must be whitelisted in order for them to work. This is an important security measure.
-How to Whitelist Callback Functions for Elements? 
-In order to white list functions you need to define the “YMC_CALLBACK_FUNCTION_WHITELIST” constant via your child theme.
+Parameters:
+- `array $content`: Array of callback functions.
+- `int $filter_id`: The ID of the filter.
 
+Usage Example:
 ```php
-/*
- * White list functions for use in Theme Core functions.php shortcodes.
+add_filter('ymc/filter/query/wp/allowed_callbacks', function($callbacks) {
+	$callbacks[] = 'custom_query_modifier';
+	$callbacks[] = 'custom_query_modifier_2';
+	return $callbacks;
+});
+
+/**
+ * Callback function to modify WP_Query arguments.
+ *
+ * @param array $args {
+ *     An associative array of context data passed to the callback.
+ *
+ *     @type array  $post_type List of post types to query.
+ *     @type array  $taxonomy  List of taxonomy slugs relevant to the query.
+ *     @type array  $terms     List of term IDs to filter by.
+ *     @type int    $page_id   Current page ID where the query is being executed.
+ * }
+ *
+ * @return array Modified or extended WP_Query arguments.
  */
- 
- if ( ! defined( 'YMC_CALLBACK_FUNCTION_WHITELIST' ) ) { 
- 
-     define( 'YMC_CALLBACK_FUNCTION_WHITELIST', array(
-        'my_custom_function_name_1',
-        'my_custom_function_name_2',
-        'my_custom_function_name_3',
-    ) ); 
- }
- 
-
-```
-Once you have defined the YMC_CALLBACK_FUNCTION_WHITELIST constant, you can register (define) a function from an existing list in an array.<br>
-The $atts function argument is an array of dynamic data set in the plugin settings.
-- $atts['cpt']  - ( Array ) array of selected post types
-- $atts['tax']  - ( Array | Bool ) array of all selected taxonomies or false
-- $atts['term'] - ( Array | Bool ) array of all taxonomy terms or false
-- $atts['page_id'] - (int ) ID of the page where the filter is located
-- 
-Example of use:
-```php
-function my_custom_function_name_1( $atts ) {
-   	$term_ids = [];
-
-    // Get all terms related to the post_tag taxonomy
-	if( is_array($atts['term']) && ! empty($atts['term']) ) :
-
-		foreach ( $atts['term'] as $term ) :
-			if( 'post_tag' === get_term( $term )->taxonomy) :
-				$term_ids[] = (int) $term;
-			endif;
-		endforeach;
-
-	endif;
-
-	return [
-		'post_type' => ['post'],
-		'posts_per_page' => 9,
-		'tax_query' => array(
-			array(
-				'taxonomy' => 'category',
-				'field' => 'id',
-				'terms' => [6, 7, 15]
-			),
-			array(
-				'taxonomy' => 'post_tag',
-				'field' => 'id',
-				'terms' => $term_ids
-			),
-		)
-	];
+function custom_query_modifier( $args ) {
+    return [
+        'post_type'       => ['post', 'book'],
+        'posts_per_page'  => 10,
+        'tax_query' => [
+            [
+                'taxonomy' => 'category',
+                'field' => 'id',
+                'terms' => [6, 7, 15]
+            ]
+        ]		
+    ];
 }
 ```
 
-After that, in the plugin settings, add the new function you registered to the list.
-Building your queries: Check out the **[WordPress WP_Query Codex](https://developer.wordpress.org/reference/classes/wp_query/)** for all the different parameters you can use in the your query.
+### Changelog
 
-### Visual Hook Guide: Grid Posts
-![This is an image](/includes/assets/images/Visual_Hook_Guide.png)
+### 3.0.0 — 2025-09-10
 
-### Support
-For support questions, please write to: wss.office21@gmail.com
-
-### Youtube
-https://www.youtube.com/watch?v=FIBNE0Ix6Vg
+- Complete redesign of plugin architecture for better performance and scalability.
+- Added **combined filter constructor** for building complex filters in grids.
+- Improved UI/UX for filter management and grid customization.
+- Added **rollback option** to restore previous plugin version after update.
+- Old settings are preserved during update (no data loss).
+- Optimized rendering engine for faster loading of grids.
+- Extended developer API (new JS hooks, WP Query integration, custom templates).
+- Improved compatibility with WPML and other multilingual plugins.
+- Fixed multiple bugs from previous versions (pagination, sliders, masonry layout).  
 
 

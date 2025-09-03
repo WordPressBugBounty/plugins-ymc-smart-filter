@@ -57,6 +57,25 @@ class Ajax {
 
 		add_action('wp_ajax_ymc_loaded_featured_posts',array($this, 'ymc_loaded_featured_posts'));
 
+		add_action('wp_ajax_ymc_update_plugin_version',array($this, 'ymc_update_plugin_version'));
+	}
+
+
+	/**
+	 * Update plugin version
+	 * @return void
+	 */
+	public function ymc_update_plugin_version() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( [ 'message' => 'Permission denied' ] );
+		}
+		if ( ! isset( $_POST['nonce_code'] ) ||
+		     ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce_code'] ) ), $this->token ) ) {
+			wp_send_json_error( [ 'message' => 'Invalid nonce' ] );
+		}
+		update_option( 'ymc_plugin_legacy_is', 'no', false );
+
+		wp_send_json_success( [ 'message' => 'OK' ] );
 	}
 
 	/**

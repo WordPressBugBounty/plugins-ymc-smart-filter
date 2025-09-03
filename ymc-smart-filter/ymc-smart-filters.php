@@ -3,37 +3,36 @@
 /**
  *
  * Plugin Name:       Filter & Grids
- * Description:       Filter posts by categories without reloading the page. Create posts grids.
- * Version:           2.9.71
+ * Description:       A powerful and flexible plugin to filter and display posts, custom post types, and other content in responsive grid layouts.
+ * Version:           3.0.1
  * Author:            YMC
- * Author URI:        https://github.com/YMC-22/smart-filter
- * License:           GPL-2.0+
+ * Author URI:        https://github.com/YMC-22/Filter-Grids/
+ * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       ymc-smart-filter
+ * Text Domain:       ymc-smart-filters
  *
  * Copyright 2022-2025 YMC (email : wss.office21@gmail.com)
  *
- * Filter & Grids is free software: you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 2 of the License, or
- * any later version.
+ * (at your option) any later version.
  *
- * Filter & Grids is distributed in the hope that it will be useful,
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Password. If not, see http://www.gnu.org/licenses/gpl-2.0.txt.
+ * along with this program. If not, see https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**-------------------------------------------------------------------------------
  *    DEFINES
  * -------------------------------------------------------------------------------*/
+
 
 if ( ! defined('YMC_SMART_FILTER_VERSION') ) {
 
@@ -51,7 +50,50 @@ if ( ! defined('YMC_SMART_FILTER_URL') ) {
 }
 
 
-require_once( plugin_dir_path( __FILE__ ) . 'includes/Plugin.php' );
+/**-------------------------------------------------------------------------------
+ *    LOAD PLUGIN
+ * -------------------------------------------------------------------------------*/
 
+
+
+/**
+ * Include the main YMC_Filter_Grids class.
+ * @since 3.0.0
+ */
+if ( file_exists( YMC_SMART_FILTER_DIR . 'ymc2/YMC_Filter_Grids.php') ) {
+	require_once YMC_SMART_FILTER_DIR . 'ymc2/YMC_Filter_Grids.php';
+}
+
+
+if ( class_exists( YMC_Filter_Grids::class, false ) ) {
+
+	/**
+	 * Include version plugin
+	 * @since 3.0.0
+	 */
+	if ( 'no' === YMC_Filter_Grids::is_legacy() ) {
+		YMC_Filter_Grids::instance();
+
+		/**
+		 * Returns the main instance of FG.
+		 *
+		 * @since  3.0.0
+		 * @return YMC_Filter_Grids
+		 */
+		function YMC() {
+			return YMC_Filter_Grids::instance();
+		}
+
+	} else {
+		/**
+		 * Include legacy plugin
+		 */
+		if ( file_exists( YMC_SMART_FILTER_DIR . 'includes/Plugin.php' ) ) {
+			require_once YMC_SMART_FILTER_DIR . 'includes/Plugin.php';
+		} else {
+			wp_die( 'Filter & Grids: Legacy version file not found.' );
+		}
+	}
+}
 
 
