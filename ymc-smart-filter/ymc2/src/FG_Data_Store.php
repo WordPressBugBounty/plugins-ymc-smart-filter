@@ -89,6 +89,8 @@ class FG_Data_Store {
 
 		'ymc_fg_post_button_text'      => 'Read More',
 
+		'ymc_fg_filtered_posts_label'  => 'Results: ',
+
 		'ymc_fg_target_option'         => '_self',
 
 		'ymc_fg_post_excerpt_length'   => 30,

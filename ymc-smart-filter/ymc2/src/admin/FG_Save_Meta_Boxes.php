@@ -200,6 +200,12 @@ class FG_Save_Meta_Boxes {
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_post_excerpt_length'])) : 30;
 		update_post_meta($post_id, 'ymc_fg_post_excerpt_length', $post_excerpt_length);
 
+		// Filtered posts Label
+		$filtered_posts_label = isset($_POST['ymc_fg_filtered_posts_label'])
+			? sanitize_text_field(wp_unslash($_POST['ymc_fg_filtered_posts_label'])) : 'Filtered posts';
+		update_post_meta($post_id, 'ymc_fg_filtered_posts_label', $filtered_posts_label);
+
+
 		// Custom Post Read Time
 		$post_custom_read_time = isset($_POST['ymc_fg_post_custom_read_time'])
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_post_custom_read_time'])) : 200;

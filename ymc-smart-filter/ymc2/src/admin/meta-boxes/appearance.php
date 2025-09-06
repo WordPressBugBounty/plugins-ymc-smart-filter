@@ -321,6 +321,13 @@ if (!defined( 'ABSPATH')) exit;
                            value="<?php echo esc_attr($ymc_fg_post_excerpt_length); ?>">
                     <div class="spacer-25"></div>
 
+	                <?php ymc_render_field_header('Filtered Posts Counter Label',
+		                'Text shown before the number of filtered posts (e.g., "Results:"). 
+		                Enter "none" to hide this text.'); ?>
+                    <input class="form-input" type="text" placeholder="Results" name="ymc_fg_filtered_posts_label"
+                           value="<?php echo esc_attr($ymc_fg_filtered_posts_label); ?>">
+                    <div class="spacer-25"></div>
+
 	                <?php ymc_render_field_header('Custom Read Time (minutes)',
 		                'Estimated time (in minutes) it takes to read this post. Leave empty to calculate automatically. Default is 200 words per minute.'); ?>
                     <input class="form-input" type="number" placeholder="200" min="0" name="ymc_fg_post_custom_read_time"

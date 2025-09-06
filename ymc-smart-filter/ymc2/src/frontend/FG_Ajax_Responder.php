@@ -44,14 +44,12 @@ class FG_Ajax_Responder {
 			], 400);
 		}
 
-		// Данные которые отправляются в запросе ($params), но не будут изменяться
         $filter_id           = $params['filter_id'];
 		$counter             = $params['counter'] ?? 1;
 		$page_id             = $params['page_id'] ?? '';
 		$paged               = $params['paged'] ?? 1;
 		$data_response       = [];
 		$pagination_rendered = '';
-		$results_found_text  = '';
 
 		// Post types
 		$post_types          = $params['post_types'] ?? ['post'];
@@ -111,6 +109,7 @@ class FG_Ajax_Responder {
 		$suppress_filters   = Data_Store::get_meta_value($filter_id, 'ymc_fg_advanced_suppress_filters');
 		$scroll_to_filters_on_load  = Data_Store::get_meta_value($filter_id, 'ymc_fg_scroll_to_filters_on_load');
 		$debug_mode         = Data_Store::get_meta_value($filter_id, 'ymc_fg_debug_mode');
+		$filtered_posts_label = Data_Store::get_meta_value($filter_id, 'ymc_fg_filtered_posts_label');
 
 		// Arguments
 		$args = [
@@ -393,6 +392,7 @@ class FG_Ajax_Responder {
 		$data_response['paged']               = $paged;
 		$data_response['pagination_type']     = $pagination_type;
 		$data_response['scroll_filter_bar']   = $scroll_to_filters_on_load;
+		$data_response['filtered_posts_label'] = $filtered_posts_label;
 
 		// Debug Mode
 		if($debug_mode === 'yes') {

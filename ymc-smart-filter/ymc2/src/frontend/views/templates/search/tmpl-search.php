@@ -25,7 +25,6 @@ if (!defined( 'ABSPATH' )) exit;
         <button class="button button--primary js-search-button" type="button">
             <?php echo esc_attr($submit_button_text); ?></button>
     </div>
-    <div class="results-found js-results-found"></div>
 </div>
 
 
