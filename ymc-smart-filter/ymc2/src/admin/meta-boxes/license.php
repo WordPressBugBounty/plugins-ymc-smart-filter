@@ -10,7 +10,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="license_updates">
             <span class="inner">
                 <span class="dashicons dashicons-admin-network"></span>
-                <span class="text"><?php esc_html_e('License Information', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('License Information', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>

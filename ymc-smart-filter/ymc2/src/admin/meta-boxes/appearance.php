@@ -13,7 +13,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="filter_settings">
             <span class="inner">
                 <i class="fas fa-filter"></i>
-                <span class="text"><?php echo esc_html__('Filter Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Filter Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -24,8 +24,8 @@ if (!defined( 'ABSPATH')) exit;
                     <input type="checkbox" name="ymc_fg_filter_hidden" value="yes"
                         <?php checked( $ymc_fg_filter_hidden, 'yes' ); ?>>
                     <span class="slider round">
-                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filters'); ?></span>
-                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filters'); ?></span>
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
                     </span>
                 </label>
             </fieldset>
@@ -42,7 +42,7 @@ if (!defined( 'ABSPATH')) exit;
                      <li><b>Selected Terms (Hide Empty)</b> Show selected terms, but hide those with no posts.</li>
                      <li><b>All Terms (Auto Populate)</b> Display all terms, with an option to hide empty terms.</li>
                      <li><b>All Terms (Hide Empty)</b> Auto display all terms, excluding those with no posts.</li>
-                     </ul>'); ?>
+                     </ul><br> Impotent: This option does not apply to filter type: <b>Dependent Filter.</b>'); ?>
 	                <?php $display_terms_mode = UiLabels::all('display_terms_mode'); ?>
                     <select class="form-select" name="ymc_fg_display_terms_mode" id="ymc_fg_display_terms_mode">
 		                <?php
@@ -111,7 +111,7 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox" type="checkbox" value="multiple" name="ymc_fg_selection_mode"
                            id="ymc_fg_selection_mode" <?php checked( $ymc_fg_selection_mode, 'multiple' );  ?>>
                     <label class="field-label" for="ymc_fg_selection_mode">
-                        <?php esc_html_e('Use multiple taxonomy filters', 'ymc-smart-filters'); ?></label>
+                        <?php esc_html_e('Use multiple taxonomy filters', 'ymc-smart-filter'); ?></label>
                     <div class="spacer-25"></div>
                 </div>
 
@@ -179,11 +179,11 @@ if (!defined( 'ABSPATH')) exit;
                            endforeach;
                         else :
                             printf('<div class="notification notification--info">%s</div>',
-                                esc_html__('No taxonomies selected', 'ymc-smart-filters'));
+                                esc_html__('No taxonomies selected', 'ymc-smart-filter'));
                         endif;
                         if($number_of_iterations === 0) :
                             printf('<div class="notification notification--info">%s</div>',
-                                esc_html__('This will only apply to the Default filter type.', 'ymc-smart-filters'));
+                                esc_html__('This will only apply to the Default filter type.', 'ymc-smart-filter'));
                         endif; ?>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="post_settings">
             <span class="inner">
                 <i class="far fa-address-card"></i>
-                <span class="text"><?php echo esc_html__('Post Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Post Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -202,7 +202,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg post-display-settings">
                 <div class="group-elements">
                     <legend class="form-legend">
-		            <?php esc_html_e('Post Elements','ymc-smart-filters'); ?></legend>
+		            <?php esc_html_e('Post Elements','ymc-smart-filter'); ?></legend>
 	                <?php ymc_render_field_header('Post Display Settings',
 		                'Control which elements of the post are visible on the front end.'); ?>
 	                <?php $post_display_settings = UiLabels::all('post_display_settings'); ?>
@@ -213,9 +213,9 @@ if (!defined( 'ABSPATH')) exit;
 	                                <?php ymc_render_field_header($item['label'], $item['tooltip']); ?>
                                     <select class="form-select" name="ymc_fg_post_display_settings[<?php echo esc_attr($key); ?>]">
                                         <option value="show" <?php selected($ymc_fg_post_display_settings[$key], 'show'); ?>>
-                                            <?php esc_html_e('Show', 'ymc-smart-filters'); ?></option>
+                                            <?php esc_html_e('Show', 'ymc-smart-filter'); ?></option>
                                         <option value="hide" <?php selected($ymc_fg_post_display_settings[$key], 'hide'); ?>>
-                                            <?php esc_html_e('Hide', 'ymc-smart-filters'); ?></option>
+                                            <?php esc_html_e('Hide', 'ymc-smart-filter'); ?></option>
                                     </select>
                                 </div>
 			                <?php endforeach; ?>
@@ -228,7 +228,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg">
                 <div class="group-elements">
                     <legend class="form-legend">
-                        <?php esc_html_e('Image settings','ymc-smart-filters'); ?></legend>
+                        <?php esc_html_e('Image settings','ymc-smart-filter'); ?></legend>
 	                <?php ymc_render_field_header('Post Image Size',
                         'Select the size of the image to display in the post. Options: Thumbnail, Medium, Large, 
                         or Full size based on your media settings.'); ?>
@@ -254,14 +254,14 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_image_clickable" id="ymc_fg_image_clickable"
                     <?php checked( $ymc_fg_image_clickable, 'yes' ); ?>>
                     <label class="field-label" for="ymc_fg_image_clickable">
-		                <?php esc_html_e('Make Image Clickable', 'ymc-smart-filters'); ?></label>
+		                <?php esc_html_e('Make Image Clickable', 'ymc-smart-filter'); ?></label>
                 </div>
             </fieldset>
 
             <fieldset class="form-group form-group--with-bg">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Button settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Button settings','ymc-smart-filter'); ?></legend>
 
 	                <?php ymc_render_field_header('Button Text','Edit button text.'); ?>
                     <input class="form-input" type="text" placeholder="Read More" name="ymc_fg_post_button_text"
@@ -290,7 +290,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Post settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Post settings','ymc-smart-filter'); ?></legend>
 
 	                <?php ymc_render_field_header('Truncate Post Excerpt',
 		                'Limit the post excerpt to a specific length, ending with an ellipsis if it exceeds the set limit.
@@ -434,7 +434,7 @@ if (!defined( 'ABSPATH')) exit;
                                         </div>
                                         <div class="cel">
                                             <button type="button" class="button--secondary js-remove-order-field">
-			                                    <?php esc_html_e('Delete','ymc-smart-filters'); ?></button>
+			                                    <?php esc_html_e('Delete','ymc-smart-filter'); ?></button>
                                         </div>
                                     </div>
 		                        <?php endforeach;
@@ -481,12 +481,12 @@ if (!defined( 'ABSPATH')) exit;
                                 </div>
                                 <div class="cel">
                                     <button type="button" class="button--secondary js-remove-order-field">
-                                        <?php esc_html_e('Delete','ymc-smart-filters'); ?></button>
+                                        <?php esc_html_e('Delete','ymc-smart-filter'); ?></button>
                                 </div>
                             </div>
                         </template>
                         <button type="button" class="button button--primary js-add-order-multiple-field">
-                            <i class="fa-solid fa-plus"></i> <?php esc_html_e('Add Field', 'ymc-smart-filters'); ?></button>
+                            <i class="fa-solid fa-plus"></i> <?php esc_html_e('Add Field', 'ymc-smart-filter'); ?></button>
                         <div class="spacer-25"></div>
                     </div>
 
@@ -520,7 +520,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Animation settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Animation settings','ymc-smart-filter'); ?></legend>
 	                <?php ymc_render_field_header('Animation Effect',
 		                'Select how posts animate when they appear (e.g., Fade In, Bounce, Zoom).'); ?>
 	                <?php $post_animation_effect = UiLabels::all('post_animation_effect'); ?>
@@ -546,7 +546,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="popup_settings">
             <span class="inner">
                 <i class="fas fa-window-restore"></i>
-                <span class="text"><?php echo esc_html__('Popup Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Popup Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -559,8 +559,8 @@ if (!defined( 'ABSPATH')) exit;
                         <input type="checkbox" name="ymc_fg_popup_enable" value="yes"
 			                <?php checked( $ymc_fg_popup_enable, 'yes' ); ?>>
                         <span class="slider round">
-                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filters'); ?></span>
-                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filters'); ?></span>
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
                     </span>
                     </label>
                 </div>
@@ -679,7 +679,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="pagination_settings">
             <span class="inner">
                 <i class="fas fa-sort-numeric-down-alt"></i>
-                <span class="text"><?php echo esc_html__('Pagination Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Pagination Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -691,8 +691,8 @@ if (!defined( 'ABSPATH')) exit;
                         <input type="checkbox" name="ymc_fg_pagination_hidden" value="yes"
 			                <?php checked( $ymc_fg_pagination_hidden, 'yes' ); ?>>
                         <span class="slider round">
-                            <span class="on"><?php esc_html_e('ON', 'ymc-smart-filters'); ?></span>
-                            <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filters'); ?></span>
+                            <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                            <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
                         </span>
                     </label>
                 </div>

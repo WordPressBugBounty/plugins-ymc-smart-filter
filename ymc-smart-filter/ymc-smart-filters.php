@@ -4,12 +4,12 @@
  *
  * Plugin Name:       Filter & Grids
  * Description:       A powerful and flexible plugin to filter and display posts, custom post types, and other content in responsive grid layouts.
- * Version:           3.0.2
+ * Version:           3.1.0
  * Author:            YMC
  * Author URI:        https://github.com/YMC-22/Filter-Grids/
  * License:           GPL-2.0-or-later
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       ymc-smart-filters
+ * Text Domain:       ymc-smart-filter
  *
  * Copyright 2022-2025 YMC (email : wss.office21@gmail.com)
  *

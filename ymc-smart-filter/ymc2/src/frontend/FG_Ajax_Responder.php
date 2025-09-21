@@ -25,6 +25,9 @@ class FG_Ajax_Responder {
 		add_action('wp_ajax_get_autocomplete_suggestions',  array( __CLASS__, 'get_autocomplete_suggestions'));
 		add_action('wp_ajax_nopriv_get_autocomplete_suggestions', array( __CLASS__, 'get_autocomplete_suggestions'));
 
+		add_action('wp_ajax_load_dependent_terms',  array( __CLASS__, 'load_dependent_terms'));
+		add_action('wp_ajax_nopriv_load_dependent_terms', array( __CLASS__, 'load_dependent_terms'));
+
 	}
 
 	/**
@@ -40,7 +43,7 @@ class FG_Ajax_Responder {
 
 		if (empty($params) || !is_array($params) || empty($params['filter_id'])) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -429,7 +432,7 @@ class FG_Ajax_Responder {
 
 		if (empty($post_id) || empty($grid_id) || empty($counter)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -476,7 +479,7 @@ class FG_Ajax_Responder {
 
 		if(empty($keyword) || empty($grid_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -726,6 +729,7 @@ class FG_Ajax_Responder {
 
 	/**
 	 * Grouped search filters
+	 *
 	 * @return void
 	 */
 	public static function add_search_filters() : void {
@@ -735,6 +739,99 @@ class FG_Ajax_Responder {
 	}
 
 
+	/**
+	 * Load dependent terms
+	 *
+	 * @return void
+	 */
+	public static function load_dependent_terms() : void {
+		check_ajax_referer('load_dependent_terms-ajax-nonce', 'nonce_code');
+
+		$payload_raw = $_POST['payload'] ?? '';
+		$payload     = json_decode(stripslashes($payload_raw), true);
+
+		if (!is_array($payload)) {
+			wp_send_json_error(['message' => 'Invalid payload']);
+		}
+
+		$filter_id = intval($payload['filter_id'] ?? 0);
+		$taxonomy  = sanitize_text_field($payload['taxonomy'] ?? '');
+		$selected  = array_map('intval', $payload['selected'] ?? []);
+
+		if (!$filter_id || !$taxonomy) {
+			wp_send_json_error(['message' => __('Invalid params', 'ymc-smart-filter')]);
+		}
+
+		$settings = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_dependent_settings');
+		if (is_string($settings)) {
+			$settings = maybe_unserialize($settings);
+		}
+
+		$sequence       = array_map('trim', explode(',', $settings['tax_sequence']));
+		$current_index  = array_search($taxonomy, $sequence, true);
+
+		if ($current_index === false || !isset($sequence[$current_index + 1])) {
+			wp_send_json_error(['message' => __('No next taxonomy', 'ymc-smart-filter')]);
+		}
+
+		$next_taxonomy = $sequence[$current_index + 1];
+
+		// Related terms
+		$term_attrs = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_attrs');
+		$term_attrs = is_array($term_attrs) ? $term_attrs : maybe_unserialize($term_attrs);
+
+		$related_ids = [];
+
+		foreach ($term_attrs as $attr) {
+			if (in_array((int)$attr['term_id'], $selected, true)) {
+				$ids = !empty($attr['related_terms'])
+					? json_decode($attr['related_terms'], true)
+					: [];
+				if (is_array($ids)) {
+					$related_ids = array_merge($related_ids, $ids);
+				}
+			}
+		}
+
+		$related_ids = array_unique($related_ids);
+
+		// Fallback: children by hierarchy
+		if (empty($related_ids)) {
+			$children = [];
+			foreach ($selected as $parent_id) {
+				$terms = get_terms([
+					'taxonomy'   => $next_taxonomy,
+					'parent'     => $parent_id,
+					'hide_empty' => false
+				]);
+				foreach ($terms as $t) {
+					$children[] = $t->term_id;
+				}
+			}
+			$related_ids = array_unique($children);
+		}
+
+		// Fetch terms
+		$terms = !empty($related_ids)
+			? get_terms([
+				'taxonomy'   => $next_taxonomy,
+				'include'    => $related_ids,
+				'hide_empty' => false
+			])
+			: [];
+
+		// Render HTML
+		$filter = new \YMCFilterGrids\frontend\FG_Filter_Dependent();
+		$mode   = $filter->get_tax_mode($next_taxonomy, $settings);
+		$html   = $filter->render_dropdown($next_taxonomy, $terms, $mode, '',false, $filter_id);
+		$html   = preg_replace('/\s+/', ' ', $html);
+		$html   = trim(preg_replace('/[\r\n\t]+/', '', $html));
+
+		wp_send_json_success([
+			'taxonomy' => $next_taxonomy,
+			'html'     => $html
+		]);
+	}
 
 }
 

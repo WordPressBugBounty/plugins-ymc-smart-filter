@@ -11,7 +11,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="shortcode_posts_grid">
             <span class="inner">
                 <i class="dashicons dashicons-shortcode"></i>
-                <span class="text"><?php esc_html_e('Shortcode Posts Grid', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Shortcode Posts Grid', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -37,7 +37,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="shortcode_extra_components">
             <span class="inner">
                 <i class="dashicons dashicons-shortcode"></i>
-                <span class="text"><?php esc_html_e('Shortcode Extra Components', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Shortcode Extra Components', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>

@@ -313,10 +313,16 @@ class FG_Data_Store {
 			'scrollbar'  => [
 				'visible'          => 'true',
 			]
+		],
+
+		'ymc_fg_filter_dependent_settings' => [
+			'tax_sequence' => '',
+			'root_source'  => 'top_level',
+			'root_terms'   => [],
+			'tax_settings' => [],
+			'display_all_levels' => 'true',
+			'update_mode' => 'auto'
 		]
-
-
-
 
 
 	];

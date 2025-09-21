@@ -5,6 +5,7 @@ namespace YMCFilterGrids\frontend;
 use YMCFilterGrids\abstracts\FG_Abstract_Filter as Abstract_Filter;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Default as Filter_Default;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Dropdown as Filter_Dropdown;
+use YMCFilterGrids\abstracts\FG_Creator_Filter_Dependent as Filter_Dependent;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Range_Slider as Filter_Range_Slider;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Date_Picker as Filter_Date_Picker;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Custom as Filter_Custom;
@@ -36,7 +37,7 @@ class FG_Components {
 		ob_start();
 
 		if (!get_post_status($filter_id)) {
-			echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filters' ).'</div>';
+			echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filter' ).'</div>';
 			return ob_get_clean();
 		}
 
@@ -81,6 +82,7 @@ class FG_Components {
 			'dropdown'     => Filter_Dropdown::class,
 			'range_slider' => Filter_Range_Slider::class,
 			'date_picker'  => Filter_Date_Picker::class,
+			'dependent'    => Filter_Dependent::class,
 			'custom'       => Filter_Custom::class
 		];
 
@@ -121,7 +123,7 @@ class FG_Components {
 
 		if(empty($filter_options) || !is_array($filter_options)) {
 			echo '<div class="notification notification--warning">' .
-			      esc_html__('There are no options filter.', 'ymc-smart-filters') .'</div>';
+			      esc_html__('There are no options filter.', 'ymc-smart-filter') .'</div>';
 			return ob_get_clean();
 		}
 

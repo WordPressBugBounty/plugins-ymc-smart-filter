@@ -62,7 +62,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 				}
                 ?>
 
-			    <div class="filter filter-dropdown filter-dropdown-<?php echo esc_attr($placement); ?>  filter-<?php echo esc_attr($class_by_name_taxonomy); ?> filter-<?php echo esc_attr($filter_id); ?>"
+			     <div class="filter filter-dropdown filter-dropdown-<?php echo esc_attr($placement); ?>  filter-<?php echo esc_attr($class_by_name_taxonomy); ?> filter-<?php echo esc_attr($filter_id); ?>"
 			     data-filter-type="dropdown"
                  data-selection-mode="<?php echo esc_attr( $is_multiple_mode ); ?>">
                  <div class="filter-dropdown-inner">
@@ -93,8 +93,8 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		                    ?>
                         </ul>
                     </div>
-                </div>
-            </div>
+                 </div>
+                 </div>
 
         <?php
 

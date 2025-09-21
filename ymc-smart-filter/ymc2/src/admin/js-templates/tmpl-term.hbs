@@ -8,6 +8,7 @@
         {{#each terms}}
             <div class="term-item"
                  data-term-id="{{term_id}}"
+                 data-term-taxonomy="{{../tax_slug}}"
                  data-term-slug="{{slug}}"
                  data-term-name-orig="{{name}}"
                  data-term-name="{{name}}"
@@ -21,7 +22,8 @@
                  data-term-icon-class
                  data-term-icon-alignment
                  data-term-icon-color
-                 data-term-icon-url>
+                 data-term-icon-url
+                 data-term-related-terms>
                 <i class="fa-solid fa-up-down-left-right icon-is-drag js-term-handle"></i>
                 <input class="checkbox-control js-tax-checkbox" id="tax-{{term_id}}" type="checkbox" name="ymc_fg_terms[]" value="{{term_id}}">
                 <label class="field-label" for="tax-{{term_id}}">{{name}} <span class="count">[{{count}}]</span></label>

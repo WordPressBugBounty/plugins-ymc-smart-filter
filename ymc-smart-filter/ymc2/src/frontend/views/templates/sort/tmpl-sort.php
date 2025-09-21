@@ -6,19 +6,19 @@
 if (!defined( 'ABSPATH' )) exit;
 
 $sortable_fields = [
-	'ID'             => __( 'ID', 'ymc-smart-filters' ),
-	'author'         => __( 'Author', 'ymc-smart-filters' ),
-	'title'          => __( 'Title', 'ymc-smart-filters' ),
-	'name'           => __( 'Name', 'ymc-smart-filters' ),
-	'date'           => __( 'Date', 'ymc-smart-filters' ),
-	'modified'       => __( 'Modified', 'ymc-smart-filters' ),
-	'type'           => __( 'Type', 'ymc-smart-filters' ),
-	'parent'         => __( 'Parent', 'ymc-smart-filters' ),
-	'rand'           => __( 'Random', 'ymc-smart-filters' ),
-	'comment_count'  => __( 'Comment count', 'ymc-smart-filters' ),
-	'menu_order'     => __( 'Menu order', 'ymc-smart-filters' ),
-	'meta_value'     => __( 'Meta value', 'ymc-smart-filters' ),
-	'meta_value_num' => __( 'Meta value num', 'ymc-smart-filters' ),
+	'ID'             => __( 'ID', 'ymc-smart-filter' ),
+	'author'         => __( 'Author', 'ymc-smart-filter' ),
+	'title'          => __( 'Title', 'ymc-smart-filter' ),
+	'name'           => __( 'Name', 'ymc-smart-filter' ),
+	'date'           => __( 'Date', 'ymc-smart-filter' ),
+	'modified'       => __( 'Modified', 'ymc-smart-filter' ),
+	'type'           => __( 'Type', 'ymc-smart-filter' ),
+	'parent'         => __( 'Parent', 'ymc-smart-filter' ),
+	'rand'           => __( 'Random', 'ymc-smart-filter' ),
+	'comment_count'  => __( 'Comment count', 'ymc-smart-filter' ),
+	'menu_order'     => __( 'Menu order', 'ymc-smart-filter' ),
+	'meta_value'     => __( 'Meta value', 'ymc-smart-filter' ),
+	'meta_value_num' => __( 'Meta value num', 'ymc-smart-filter' ),
 ];
 
 
@@ -31,7 +31,7 @@ $sortable_fields = [
             <span class="dropdown-arrow"></span>
         </div>
         <ul class="dropdown-menu js-sort-dropdown-menu">
-            <li class="sort-item js-sort-item" data-orderby="title" data-order="DESC"><?php esc_html_e('Default sorting', 'ymc-smart-filters'); ?></li>
+            <li class="sort-item js-sort-item" data-orderby="title" data-order="DESC"><?php esc_html_e('Default sorting', 'ymc-smart-filter'); ?></li>
 			<?php foreach ($sortable_fields as $key => $label) :
 				if (in_array($key, $allowed_sort_fields, true)) : ?>
                     <li class="sort-item js-sort-item" data-orderby="<?php echo esc_attr($key); ?>" data-order="ASC"><?php echo esc_html($label); ?></li>

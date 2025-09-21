@@ -78,7 +78,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
                         <span class="text">
                         <?php
                         // phpcs:ignore WordPress
-                        echo esc_html(sprintf(__( '%s', 'ymc-smart-filters' ), $all_button_label)); ?></span>
+                        echo esc_html(sprintf(__( '%s', 'ymc-smart-filter' ), $all_button_label)); ?></span>
                     </button>
 
                     <?php

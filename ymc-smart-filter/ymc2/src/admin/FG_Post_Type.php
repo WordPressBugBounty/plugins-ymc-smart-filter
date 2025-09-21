@@ -34,17 +34,17 @@ class FG_Post_Type {
 			'ymc_filters',
 			array(
 				'labels'                 => array(
-					'name'               => __( 'Filter & Grids', 'ymc-smart-filters' ),
-					'singular_name'      => __( 'Filter & Grids', 'ymc-smart-filters' ),
-					'add_new'            => __( 'Add Filter', 'ymc-smart-filters' ),
-					'add_new_item'       => __( 'Add New Filter', 'ymc-smart-filters' ),
-					'edit_item'          => __( 'Edit Filter', 'ymc-smart-filters' ),
-					'new_item'           => __( 'New Filter', 'ymc-smart-filters' ),
-					'view_item'          => __( 'View Filter', 'ymc-smart-filters' ),
-					'search_items'       => __( 'Search Filters', 'ymc-smart-filters' ),
-					'not_found'          => __( 'No filters found', 'ymc-smart-filters' ),
-					'not_found_in_trash' => __( 'No filters found in Trash', 'ymc-smart-filters' ),
-					'all_items'          => __( 'All Filters', 'ymc-smart-filters' ),
+					'name'               => __( 'Filter & Grids', 'ymc-smart-filter' ),
+					'singular_name'      => __( 'Filter & Grids', 'ymc-smart-filter' ),
+					'add_new'            => __( 'Add Filter', 'ymc-smart-filter' ),
+					'add_new_item'       => __( 'Add New Filter', 'ymc-smart-filter' ),
+					'edit_item'          => __( 'Edit Filter', 'ymc-smart-filter' ),
+					'new_item'           => __( 'New Filter', 'ymc-smart-filter' ),
+					'view_item'          => __( 'View Filter', 'ymc-smart-filter' ),
+					'search_items'       => __( 'Search Filters', 'ymc-smart-filter' ),
+					'not_found'          => __( 'No filters found', 'ymc-smart-filter' ),
+					'not_found_in_trash' => __( 'No filters found in Trash', 'ymc-smart-filter' ),
+					'all_items'          => __( 'All Filters', 'ymc-smart-filter' ),
 				),
 				'public'              => false,
 				'hierarchical'        => false,
@@ -64,10 +64,10 @@ class FG_Post_Type {
 
 			$columns = array(
 				'cb'        => '&lt;input type="checkbox" />',
-				'title'     => __('Title', 'ymc-smart-filters'),
-				'shortcode' => __('Shortcode', 'ymc-smart-filters'),
-				'id'        => __('ID', 'ymc-smart-filters'),
-				'date'      => __('Date', 'ymc-smart-filters')
+				'title'     => __('Title', 'ymc-smart-filter'),
+				'shortcode' => __('Shortcode', 'ymc-smart-filter'),
+				'id'        => __('ID', 'ymc-smart-filter'),
+				'date'      => __('Date', 'ymc-smart-filter')
 			);
 
 			return $columns;

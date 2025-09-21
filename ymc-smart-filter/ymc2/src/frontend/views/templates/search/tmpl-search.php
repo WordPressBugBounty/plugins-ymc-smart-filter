@@ -19,7 +19,7 @@ if (!defined( 'ABSPATH' )) exit;
                    data-search-mode="<?php echo esc_attr($search_mode); ?>"
                    data-post-title
                    value="" />
-            <span class="clear-button js-clear-button" title="<?php esc_html_e('Clear', 'ymc-smart-filters'); ?>">&times;</span>
+            <span class="clear-button js-clear-button" title="<?php esc_html_e('Clear', 'ymc-smart-filter'); ?>">&times;</span>
         </div>
         <div class="autocomplete-results js-autocomplete-results"></div>
         <button class="button button--primary js-search-button" type="button">

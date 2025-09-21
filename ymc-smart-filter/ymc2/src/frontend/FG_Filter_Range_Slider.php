@@ -71,7 +71,7 @@ class FG_Filter_Range_Slider extends FG_Abstract_Filter_Impl implements IFilter 
                              data-all-terms="<?php echo esc_attr(json_encode($tagAllIds)); ?>"
                              data-selected-tags='<?php echo esc_attr($tag_ids); ?>'>
                             <span class="range1"></span>
-                            <span> <?php echo !empty($all_terms) ? '&dash;' : esc_html__('No tags','ymc-smart-filters'); ?></span>
+                            <span> <?php echo !empty($all_terms) ? '&dash;' : esc_html__('No tags','ymc-smart-filter'); ?></span>
                             <span class="range2"></span>
                         </div>
 
@@ -82,7 +82,7 @@ class FG_Filter_Range_Slider extends FG_Abstract_Filter_Impl implements IFilter 
                                 <input class="slider-2" type="range" min="0" max="" value="">
                             </div>
                             <div class="range__component apply-button">
-                                <button class="apply-button__inner"><?php esc_html_e('Apply','ymc-smart-filters'); ?></button>
+                                <button class="apply-button__inner"><?php esc_html_e('Apply','ymc-smart-filter'); ?></button>
                             </div>
 						<?php endif; ?>
                     </div>

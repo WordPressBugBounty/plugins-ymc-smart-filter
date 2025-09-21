@@ -176,7 +176,8 @@ $meta_keys = [
 	"ymc_fg_debug_mode",
 	"ymc_fg_grid_style",
 	"ymc_fg_carousel_settings",
-	"ymc_fg_filtered_posts_label"
+	"ymc_fg_filtered_posts_label",
+	"ymc_fg_filter_dependent_settings"
 
 ];
 

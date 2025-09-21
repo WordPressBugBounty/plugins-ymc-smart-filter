@@ -13,7 +13,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="filter_layout">
             <span class="inner">
                 <i class="fas fa-th-large"></i>
-                <span class="text"><?php echo esc_html__('Filter Layout', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Filter Layout', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -24,7 +24,7 @@ if (!defined( 'ABSPATH')) exit;
             ?>
             <fieldset class="form-group js-is-disabled-filter-notification<?php echo esc_attr($is_hidden_notification); ?>">
                 <div class="notification notification--info">
-                    <?php esc_html_e('Filter is hidden on the frontend if "Disable Filter" is checked.', 'ymc-smart-filters');  ?>
+                    <?php esc_html_e('Filter is hidden on the frontend if "Disable Filter" is checked.', 'ymc-smart-filter');  ?>
                 </div>
             </fieldset>
 
@@ -61,7 +61,7 @@ if (!defined( 'ABSPATH')) exit;
                             </div>
                             <div class="filter-builder-header-cell filter-builder-header-cell--filter-type">
 				                <?php ymc_render_field_header('Filter Type', 'Select filter type(s).<br> 
-                                For the filter type "Date Selection" categories are ignored.'); ?>
+                                For the filters type "Date Picker", "Dependent Filter" categories are ignored.'); ?>
                             </div>
                             <div class="filter-builder-header-cell filter-builder-header-cell--placement">
 				                <?php ymc_render_field_header('Filter Position', 'Select the filter placement zone.'); ?>
@@ -96,7 +96,7 @@ if (!defined( 'ABSPATH')) exit;
 							                <?php endforeach; ?>
 						                <?php else : ?>
                                             <option value="">
-								                <?php esc_html_e('Taxonomy not selected', 'ymc-smart-filters'); ?></option>
+								                <?php esc_html_e('Taxonomy not selected', 'ymc-smart-filter'); ?></option>
 						                <?php endif; ?>
                                     </select>
 
@@ -121,14 +121,14 @@ if (!defined( 'ABSPATH')) exit;
                                     </select>
 
                                     <button class="button button--secondary js-remove-filter" type="button">
-						                <?php esc_html_e('Delete', 'ymc-smart-filters'); ?>
+						                <?php esc_html_e('Delete', 'ymc-smart-filter'); ?>
                                     </button>
                                 </div>
 			                <?php endforeach; ?>
                         </div>
                         <button class="button button--primary js-add-filter" type="button">
                             <i class="fa-solid fa-plus"></i>
-			                <?php esc_html_e('Add Filter', 'ymc-smart-filters'); ?></button>
+			                <?php esc_html_e('Add Filter', 'ymc-smart-filter'); ?></button>
                     </div>
                 </div>
 
@@ -138,7 +138,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="post_layout">
             <span class="inner">
                 <i class="fas fa-th-large"></i>
-                <span class="text"><?php echo esc_html__('Post Layout', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php echo esc_html__('Post Layout', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -169,7 +169,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg js-grid-settings<?php echo esc_attr($is_hidden_grid_settings); ?>">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Grid Settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Grid Settings','ymc-smart-filter'); ?></legend>
 	                <?php ymc_render_field_header('Column Layout',
 		                'Select the number of columns for different screen sizes. 
 		                Set the <b>Posts Per Page</b> parameter (Appearance - Pagination Settings) which allows to display the number of posts per page'); ?>
@@ -247,7 +247,7 @@ if (!defined( 'ABSPATH')) exit;
 	            <?php $is_hidden_carousel_default_settings = $ymc_fg_carousel_settings['use_custom_settings'] === 'true' ? ' is-hidden' : ''; ?>
                 <div class="group-elements js-default-carousel-settings<?php echo esc_attr($is_hidden_carousel_default_settings); ?>">
                     <legend class="form-legend">
-		                <?php esc_html_e('Carousel Settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Carousel Settings','ymc-smart-filter'); ?></legend>
                     <div class="swiper-settings">
 	                    <?php ymc_render_field_header('General Settings',
 		                    'Basic display options for the carousel.'); ?>
@@ -596,7 +596,7 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox js-checkbox-custom-carousel-settings" type="checkbox" value="true" name="ymc_fg_carousel_settings[use_custom_settings]"
                            id="ymc_fg_carousel_custom_settings" <?php checked( $ymc_fg_carousel_settings['use_custom_settings'], 'true' ); ?>>
                     <label class="field-label" for="ymc_fg_carousel_custom_settings">
-			            <?php esc_html_e('Use Custom Swiper Settings', 'ymc-smart-filters'); ?></label>
+			            <?php esc_html_e('Use Custom Swiper Settings', 'ymc-smart-filter'); ?></label>
                 </div>
 
             </fieldset>

@@ -29,10 +29,10 @@ class FG_Meta_Boxes {
 	}
 
     public static function custom_post_updated_messages( $messages ) : array {
-		$messages['ymc_filters'][1]  = __('Filter updated.', 'ymc-smart-filters');
-		$messages['ymc_filters'][6]  = __('Filter published.', 'ymc-smart-filters');
-		$messages['ymc_filters'][7]  = __('Filter published.', 'ymc-smart-filters');
-		$messages['ymc_filters'][10] = __('Filter draft updated.', 'ymc-smart-filters');
+		$messages['ymc_filters'][1]  = __('Filter updated.', 'ymc-smart-filter');
+		$messages['ymc_filters'][6]  = __('Filter published.', 'ymc-smart-filter');
+		$messages['ymc_filters'][7]  = __('Filter published.', 'ymc-smart-filter');
+		$messages['ymc_filters'][10] = __('Filter draft updated.', 'ymc-smart-filter');
 
 		return $messages;
 	}
@@ -88,8 +88,8 @@ class FG_Meta_Boxes {
 	}
 
 	public static function add_metabox() : void {
-		add_meta_box( 'ymc_main_meta_box' , __('Settings', 'ymc-smart-filters'), array(__CLASS__,'top_meta_box'), 'ymc_filters', 'normal', 'core');
-		add_meta_box( 'ymc_side_meta_box' , __('Filter & Grids Features', 'ymc-smart-filters'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
+		add_meta_box( 'ymc_main_meta_box' , __('Settings', 'ymc-smart-filter'), array(__CLASS__,'top_meta_box'), 'ymc_filters', 'normal', 'core');
+		add_meta_box( 'ymc_side_meta_box' , __('Filter & Grids Features', 'ymc-smart-filter'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
     }
 
 	public static function top_meta_box() : void {
@@ -101,72 +101,72 @@ class FG_Meta_Boxes {
                     <ul class="nav__list">
                         <li class="nav__item is-current" data-hash="general">
                             <button class="button" type="button" aria-label="button">
-	                            <span class="button__text"><?php echo esc_html__('General','ymc-smart-filters'); ?></span>
+	                            <span class="button__text"><?php echo esc_html__('General','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Post type, categories','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Post type, categories','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-admin-tools"></span>
                         </li>
                         <li class="nav__item" data-hash="layouts">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Layouts','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Layouts','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Post layout, filter layout','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Post layout, filter layout','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-editor-table"></span>
                         </li>
                         <li class="nav__item" data-hash="appearance">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Appearance','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Appearance','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Post, filter, popup, pagination settings','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Post, filter, popup, pagination settings','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-visibility"></span>
                         </li>
                         <li class="nav__item" data-hash="search">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Search','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Search','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Posts search','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Posts search','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-search"></span>
                         </li>
                         <li class="nav__item" data-hash="typography">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Typography','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Typography','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Title, description fonts','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Title, description fonts','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-editor-spellcheck"></span>
                         </li>
                         <li class="nav__item" data-hash="advanced">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Advanced','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Advanced','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Add extra classes to post','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Add extra classes to post','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-tag"></span>
                         </li>
                         <li class="nav__item" data-hash="shortcode">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Shortcode','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Shortcode','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Get your shortcode','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Get your shortcode','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-shortcode"></span>
                         </li>
                         <li class="nav__item" data-hash="tools">
                             <button class="button" type="button" aria-label="button">
-                                <span class="button__text"><?php echo esc_html__('Tools','ymc-smart-filters'); ?></span>
+                                <span class="button__text"><?php echo esc_html__('Tools','ymc-smart-filter'); ?></span>
                                 <span class="button__description">
-                                    <?php echo esc_html__('Export / Import settings','ymc-smart-filters'); ?>
+                                    <?php echo esc_html__('Export / Import settings','ymc-smart-filter'); ?>
                                 </span>
                             </button>
                             <span class="dashicons dashicons-controls-repeat"></span>
@@ -177,6 +177,9 @@ class FG_Meta_Boxes {
             <div class="tabs-content">
                 <?php
                     $data = Data_Store::get_all_meta_values($post_id);
+                    $filter_type = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_type');
+                    $filter_dependent_settings = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_dependent_settings');
+                    $filter_options = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_options');
 
                     $tabs = [
                         'general'    => 'General',
@@ -202,7 +205,12 @@ class FG_Meta_Boxes {
             </div>
             <?php
                 Template::render(dirname( __FILE__ ) . '/php-templates/tmpl-thickbox-taxonomy.php');
-                Template::render(dirname( __FILE__ ) . '/php-templates/tmpl-thickbox-term.php');
+                Template::render(dirname( __FILE__ ) . '/php-templates/tmpl-thickbox-term.php',
+                    [
+                        'filter_type' => $filter_type,
+                        'filter_dependent_settings' => $filter_dependent_settings,
+                        'filter_options' => $filter_options
+                    ]);
             ?>
         </div>
 	<?php }
@@ -215,7 +223,7 @@ class FG_Meta_Boxes {
 
 		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
 		$icon = '<span class="ab-icon" style="background-image: url('. $icon_url . ') !important; background-repeat: no-repeat; background-position: center; width: 18px; height: 18px; margin-top: 3px;"></span>';
-		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filters') . '</span>';
+		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filter') . '</span>';
 
 		$wp_admin_bar->add_menu(array(
 			'id'    => 'ymc-filter-grids',
@@ -239,7 +247,7 @@ class FG_Meta_Boxes {
 
 		add_meta_box(
 			'fg-attached-filters',
-			__('Filter & Grids', 'ymc-smart-filters'),
+			__('Filter & Grids', 'ymc-smart-filter'),
 			function() use ($matches) {
 				echo '<ul>';
 				foreach ($matches[1] as $filter_id) {
@@ -263,7 +271,7 @@ class FG_Meta_Boxes {
 	public static function filter_grids_widget() {
 		wp_add_dashboard_widget(
 			'ymc_filter_grids_display',
-			__( 'Filter & Grids', 'ymc-smart-filters' ),
+			__( 'Filter & Grids', 'ymc-smart-filter' ),
 			array( __CLASS__, 'filter_grids_callback' )
 		);
 	}
@@ -275,27 +283,27 @@ class FG_Meta_Boxes {
 		$filters_count = wp_count_posts( 'ymc_filters' )->publish ?? 0;
 		?>
         <div class="ymc-dashboard-widget" style="font-size: 13px; line-height: 1.5;">
-            <p><strong><?php esc_html_e( 'Welcome to Filter & Grids.', 'ymc-smart-filters' ); ?></strong></p>
-            <p><?php esc_html_e( 'This plugin allows you to easily and quickly create all kinds of post grids with their filters.', 'ymc-smart-filters' ); ?></p>
+            <p><strong><?php esc_html_e( 'Welcome to Filter & Grids.', 'ymc-smart-filter' ); ?></strong></p>
+            <p><?php esc_html_e( 'This plugin allows you to easily and quickly create all kinds of post grids with their filters.', 'ymc-smart-filter' ); ?></p>
 
             <p>
-                <strong><?php esc_html_e( 'Total Filters:', 'ymc-smart-filters' ); ?></strong>
+                <strong><?php esc_html_e( 'Total Filters:', 'ymc-smart-filter' ); ?></strong>
 				<?php echo intval( $filters_count ); ?>
             </p>
 
             <p>
                 <a href="<?php echo esc_url( $create_url ); ?>" class="button button-primary">
-					<?php esc_html_e( 'Create New Filter', 'ymc-smart-filters' ); ?>
+					<?php esc_html_e( 'Create New Filter', 'ymc-smart-filter' ); ?>
                 </a>
                 <a href="<?php echo esc_url( $manage_url ); ?>" class="button">
-					<?php esc_html_e( 'Manage Filters', 'ymc-smart-filters' ); ?>
+					<?php esc_html_e( 'Manage Filters', 'ymc-smart-filter' ); ?>
                 </a>
             </p>
 
             <p>
-				<?php esc_html_e( 'For more detailed information, see the', 'ymc-smart-filters' ); ?>
+				<?php esc_html_e( 'For more detailed information, see the', 'ymc-smart-filter' ); ?>
                 <a target="_blank" href="<?php echo esc_url( $doc_url ); ?>">
-					<?php esc_html_e( 'documentation', 'ymc-smart-filters' ); ?>
+					<?php esc_html_e( 'documentation', 'ymc-smart-filter' ); ?>
                     <span class="dashicons dashicons-external" style="text-decoration: none; vertical-align: middle;"></span>
                 </a>
             </p>

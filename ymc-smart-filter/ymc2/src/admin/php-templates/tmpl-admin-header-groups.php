@@ -6,14 +6,14 @@
             <a class="information" href="<?php echo esc_url('https://github.com/YMC-22/Filter-Grids') ?>"
                target="_blank">
                 <i class="fa-solid fa-circle-info"></i>
-                <?php esc_html_e('Documentation', 'ymc-smart-filters'); ?></a>
+                <?php esc_html_e('Documentation', 'ymc-smart-filter'); ?></a>
         </div>
     </div>
 </div>
 <div class="ymc-header-bar">
     <div class="header-bar-inner">
         <div class="title-wrap">
-            <div class="page-title page-title--groups"><?php esc_html_e('All Filters & Grids', 'ymc-smart-filters'); ?></div>
+            <div class="page-title page-title--groups"><?php esc_html_e('All Filters & Grids', 'ymc-smart-filter'); ?></div>
         </div>
         <div class="header-bar-actions" id="submitpost">
 		    <?php

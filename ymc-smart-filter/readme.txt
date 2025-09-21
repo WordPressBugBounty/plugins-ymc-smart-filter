@@ -1,7 +1,7 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.0.2
+Version: 3.1.0
 Donate link: https://github.com/YMC-22/Filter-Grids
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
@@ -76,6 +76,14 @@ If you prefer using the old version of Filter & Grids, you can enable **Legacy M
 
 == Changelog ==
 
+= 3.1.0 =
+* Added new **Dependent Filter** (linked dropdowns) with support for:
+  - Configurable taxonomy sequence
+  - Modes: **Single** / **Multiple** selection per taxonomy
+  - Root Source option (Top-level terms or Manual selection)
+  - Display all levels with placeholders
+  - Update modes: Auto Update / Update on Apply Button
+  - Related Terms management for advanced connections between taxonomies
 = 3.0.2 =
 Added new option for the number of filtered posts to display.
 = 3.0.1 =

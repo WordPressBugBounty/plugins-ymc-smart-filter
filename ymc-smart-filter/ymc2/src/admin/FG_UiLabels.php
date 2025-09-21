@@ -21,6 +21,7 @@ class FG_UiLabels {
 			'dropdown'        => 'Dropdown',
 			'range_slider'    => 'Range Slider',
 			'date_picker'     => 'Date Picker',
+			'dependent'       => 'Dependent Filter',
 			'custom'          => 'Custom filter',
 			'composite'       => 'Combined filter'
 		],
@@ -362,7 +363,7 @@ class FG_UiLabels {
 	{
 		$value = self::$labels[$category][$key] ?? $default;
 		// phpcs:ignore WordPress
-		return __($value, 'ymc-smart-filters');
+		return __($value, 'ymc-smart-filter');
 	}
 
 	/**
@@ -372,7 +373,7 @@ class FG_UiLabels {
 	{
 		$items = self::$labels[$category] ?? [];
 		// phpcs:ignore WordPress
-		return array_map(fn($label) => __($label, 'ymc-smart-filters'), $items);
+		return array_map(fn($label) => __($label, 'ymc-smart-filter'), $items);
 	}
 
 }

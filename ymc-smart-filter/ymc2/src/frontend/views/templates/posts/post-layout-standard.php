@@ -106,7 +106,7 @@ while ($query->have_posts()) : $query->the_post();
                     <div class="post-meta post-read-time">
                         <span class="read-time-icon"></span>
                         <span class="read-time-text"><?php echo esc_html($post_read_time); ?>
-                            <?php esc_html_e('min read', 'ymc-smart-filters') ?></span>
+                            <?php esc_html_e('min read', 'ymc-smart-filter') ?></span>
                     </div>
                 <?php endif; ?>
 

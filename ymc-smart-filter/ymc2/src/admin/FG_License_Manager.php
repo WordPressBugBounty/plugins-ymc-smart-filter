@@ -59,7 +59,7 @@ class FG_License_Manager {
 				@unlink($tmp);
 				return new \WP_Error(
 					'fg_package_hash_mismatch',
-					__('Update failed: package integrity check failed (hash mismatch).', 'ymc-smart-filters')
+					__('Update failed: package integrity check failed (hash mismatch).', 'ymc-smart-filter')
 				);
 			}
 
@@ -101,7 +101,7 @@ class FG_License_Manager {
 
 	public static function manual_check_update(): void {
 		if (! current_user_can('update_plugins')) {
-			wp_die(esc_html__('Insufficient rights to update.', 'ymc-smart-filters'));
+			wp_die(esc_html__('Insufficient rights to update.', 'ymc-smart-filter'));
 		}
 
 		check_admin_referer('fg_check_update');
@@ -130,7 +130,7 @@ class FG_License_Manager {
 
 	public static function handle_license_form(): void {
 		if (!current_user_can('manage_options')) {
-			wp_die( esc_html__( 'You are not allowed to do this.', 'ymc-smart-filters' ));
+			wp_die( esc_html__( 'You are not allowed to do this.', 'ymc-smart-filter' ));
 		}
 
 		check_admin_referer('fg_license_save');
@@ -156,7 +156,7 @@ class FG_License_Manager {
 			check_admin_referer('fg_license_save');
 			update_option('fg_license_key', sanitize_text_field($_POST['fg_license_key']));
 			self::license_check(true);
-			echo '<div class="updated"><p>'. esc_html__('The key has been saved and verified.', 'ymc-smart-filters') .'</p></div>';
+			echo '<div class="updated"><p>'. esc_html__('The key has been saved and verified.', 'ymc-smart-filter') .'</p></div>';
 		}
 
 		$key     = get_option('fg_license_key', '');
@@ -173,16 +173,16 @@ class FG_License_Manager {
             <div class="license-updates-inner">
                 <h2 class="page-title-license-updates">
                     <span class="dashicons dashicons-admin-network"></span>
-                    <?php esc_html_e('License Information', 'ymc-smart-filters'); ?></h2>
+                    <?php esc_html_e('License Information', 'ymc-smart-filter'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
 		            <?php wp_nonce_field('fg_license_save'); ?>
                     <input type="hidden" name="action" value="fg_save_license">
                     <div class="form-group">
-                        <label class="form-label"><?php esc_html_e('License key:', 'ymc-smart-filters'); ?></label>
+                        <label class="form-label"><?php esc_html_e('License key:', 'ymc-smart-filter'); ?></label>
                         <input class="form-input" type="password" id="fg_license_key" name="fg_license_key" value="<?php echo esc_attr($key); ?>">
                         <p>
                             <input class="form-checkbox" id="fg_show_license_key" type="checkbox" onclick="toggleLicenseKey();">
-                            <label class="field-label" for="fg_show_license_key"><?php esc_html_e('Show license key', 'ymc-smart-filters'); ?></label>
+                            <label class="field-label" for="fg_show_license_key"><?php esc_html_e('Show license key', 'ymc-smart-filter'); ?></label>
                         </p>
                     </div>
 		            <?php submit_button('Check and save','button button--primary'); ?>
@@ -195,36 +195,36 @@ class FG_License_Manager {
                 </script>
                 <hr/>
                 <div class="row">
-                    <strong><?php esc_html_e('License status:', 'ymc-smart-filters'); ?></strong>
+                    <strong><?php esc_html_e('License status:', 'ymc-smart-filter'); ?></strong>
                     <span class="status-license--<?php echo esc_attr($status); ?>"><?php echo esc_html($status); ?></span>
                 </div>
 	            <?php if ($expires) : ?>
                     <div class="row">
-                        <strong><?php esc_html_e('Valid until:', 'ymc-smart-filters'); ?></strong>
+                        <strong><?php esc_html_e('Valid until:', 'ymc-smart-filter'); ?></strong>
                         <span><?php echo esc_html($expires); ?></span></div>
 	            <?php endif; ?>
 	            <?php if ($msg) : ?>
                     <div class="row">
-                        <strong><?php esc_html_e('Message:', 'ymc-smart-filters'); ?></strong>
+                        <strong><?php esc_html_e('Message:', 'ymc-smart-filter'); ?></strong>
                         <span><?php echo esc_html($msg); ?></span></div>
 	            <?php endif; ?>
             </div>
             <div class="license-updates-inner">
                 <h2 class="page-title-license-updates">
                     <span class="dashicons dashicons-info-outline"></span>
-                    <?php esc_html_e('Update Information', 'ymc-smart-filters'); ?></h2>
+                    <?php esc_html_e('Update Information', 'ymc-smart-filter'); ?></h2>
                 <div class="row">
-                    <strong><?php esc_html_e('Current Version:', 'ymc-smart-filters'); ?></strong>
+                    <strong><?php esc_html_e('Current Version:', 'ymc-smart-filter'); ?></strong>
                     <span><?php echo esc_html($current_version); ?></span>
                 </div>
                 <div class="row">
-                    <strong><?php esc_html_e('Latest Version:', 'ymc-smart-filters'); ?></strong>
+                    <strong><?php esc_html_e('Latest Version:', 'ymc-smart-filter'); ?></strong>
                     <span><?php echo esc_html($latest_version); ?></span>
                 </div>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
 	                <?php wp_nonce_field('fg_check_update'); ?>
                     <input type="hidden" name="action" value="fg_check_update">
-		            <?php submit_button(__('Check For Updates', 'ymc-smart-filters'), 'button button--secondary'); ?>
+		            <?php submit_button(__('Check For Updates', 'ymc-smart-filter'), 'button button--secondary'); ?>
                 </form>
             </div>
         </div>
@@ -292,15 +292,15 @@ class FG_License_Manager {
 		if (isset($_GET['fg_update'])) {
 			if ($_GET['fg_update'] === 'none') {
 				echo '<div class="notice notice-info is-dismissible"><p>' .
-				     esc_html__('No updates available. You are using the latest version.', 'ymc-smart-filters') .
+				     esc_html__('No updates available. You are using the latest version.', 'ymc-smart-filter') .
 				     '</p></div>';
 			} elseif ($_GET['fg_update'] === 'done') {
 				echo '<div class="notice notice-success is-dismissible"><p>' .
-				     esc_html__('Plugin updated successfully.', 'ymc-smart-filters') .
+				     esc_html__('Plugin updated successfully.', 'ymc-smart-filter') .
 				     '</p></div>';
 			} elseif ($_GET['fg_update'] === 'error') {
 				echo '<div class="notice notice-error is-dismissible"><p>' .
-				     esc_html__('Failed to update plugin.', 'ymc-smart-filters') .
+				     esc_html__('Failed to update plugin.', 'ymc-smart-filter') .
 				     '</p></div>';
 			}
 
@@ -311,19 +311,19 @@ class FG_License_Manager {
 		if (isset($_GET['fg_license'])) {
 			if ($_GET['fg_license'] === 'valid') {
 				echo '<div class="notice notice-success is-dismissible"><p>' .
-				     esc_html__('License successfully activated.', 'ymc-smart-filters') .
+				     esc_html__('License successfully activated.', 'ymc-smart-filter') .
 				     '</p></div>';
 			} elseif ($_GET['fg_license'] === 'expired') {
 				echo '<div class="notice notice-warning is-dismissible"><p>' .
-				     esc_html__('Subscription has expired. Updates are not available.', 'ymc-smart-filters') .
+				     esc_html__('Subscription has expired. Updates are not available.', 'ymc-smart-filter') .
 				     '</p></div>';
 			} elseif ($_GET['fg_license'] === 'invalid') {
 				echo '<div class="notice notice-error is-dismissible"><p>' .
-				     esc_html__('Invalid or blocked key.', 'ymc-smart-filters') .
+				     esc_html__('Invalid or blocked key.', 'ymc-smart-filter') .
 				     '</p></div>';
 			} elseif ($_GET['fg_license'] === 'error') {
 				echo '<div class="notice notice-error is-dismissible"><p>' .
-				     esc_html__('Failed to connect to license server.', 'ymc-smart-filters') .
+				     esc_html__('Failed to connect to license server.', 'ymc-smart-filter') .
 				     '</p></div>';
 			}
 

@@ -32,7 +32,7 @@ class FG_Pagination {
 
 		if (!$query) {
 			return '<div class="notification notification--error">'
-			       . esc_html__('Error creating pagination.', 'ymc-smart-filters') . '</div>';
+			       . esc_html__('Error creating pagination.', 'ymc-smart-filter') . '</div>';
 		}
 
 		if ($query->max_num_pages <= 1) {
@@ -42,8 +42,8 @@ class FG_Pagination {
 		$prev_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_prev_button_text');
 		$next_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_next_button_text');
 
-		$prev_button_text = $prev_button_text ?: esc_html__( 'Prev', 'ymc-smart-filters' );
-		$next_button_text = $next_button_text ?: esc_html__( 'Next', 'ymc-smart-filters' );
+		$prev_button_text = $prev_button_text ?: esc_html__( 'Prev', 'ymc-smart-filter' );
+		$next_button_text = $next_button_text ?: esc_html__( 'Next', 'ymc-smart-filter' );
 
 		$prev_button_text = apply_filters('ymc/pagination/prev_text',  $prev_button_text);
 		$prev_button_text = apply_filters('ymc/pagination/prev_text_'. $filter_id, $prev_button_text);
@@ -107,7 +107,7 @@ class FG_Pagination {
 		if ( ! $query ) {
 			return sprintf(
 				'<div class="notification notification--error">%s</div>',
-				esc_html__( 'Error creating pagination.', 'ymc-smart-filters' )
+				esc_html__( 'Error creating pagination.', 'ymc-smart-filter' )
 			);
 		}
 
@@ -116,7 +116,7 @@ class FG_Pagination {
 		}
 
 		$load_more_text = Data_Store::get_meta_value( $filter_id, 'ymc_fg_load_more_text' );
-		$load_more_text = $load_more_text ?: esc_html__( 'Load More', 'ymc-smart-filters' );
+		$load_more_text = $load_more_text ?: esc_html__( 'Load More', 'ymc-smart-filter' );
 
 		$load_more_text = apply_filters('ymc/pagination/load_more_text',  $load_more_text);
 		$load_more_text = apply_filters('ymc/pagination/load_more_text_'. $filter_id,  $load_more_text);

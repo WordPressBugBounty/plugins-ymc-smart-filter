@@ -21,7 +21,7 @@ class FG_General_Settings {
 
 	public static function plugin_settings(): void {
 		if (!current_user_can('manage_options')) {
-			wp_die(esc_html__('You are not allowed to do this.', 'ymc-smart-filters'));
+			wp_die(esc_html__('You are not allowed to do this.', 'ymc-smart-filter'));
 		}
 		check_admin_referer('plugin_settings_save');
 
@@ -54,7 +54,7 @@ class FG_General_Settings {
 		if (isset($_GET['fg_update'])) {
             if ($_GET['fg_update'] === 'done') {
                 echo '<div class="notice notice-success is-dismissible"><p>' .
-                      esc_html__('Settings updated successfully.', 'ymc-smart-filters') . '</p></div>';
+                      esc_html__('Settings updated successfully.', 'ymc-smart-filter') . '</p></div>';
             }
 		}
 		return;
@@ -79,34 +79,34 @@ class FG_General_Settings {
             <div class="settings-inner">
                 <h2 class="page-title-settings">
                 <span class="dashicons dashicons-admin-generic"></span>
-                <?php esc_html_e('Settings', 'ymc-smart-filters'); ?></h2>
+                <?php esc_html_e('Settings', 'ymc-smart-filter'); ?></h2>
                 <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
 		            <?php wp_nonce_field('plugin_settings_save'); ?>
                     <input type="hidden" name="action" value="plugin_settings_save">
                     <div class="form-group">
-                        <div class="sub-headline"><?php esc_html_e('Legacy Mode', 'ymc-smart-filters'); ?></div>
+                        <div class="sub-headline"><?php esc_html_e('Legacy Mode', 'ymc-smart-filter'); ?></div>
                         <div class="field-description">
-	                        <?php esc_html_e('Activates the legacy version of the plugin for compatibility with your theme or other plugins.', 'ymc-smart-filters'); ?>
+	                        <?php esc_html_e('Activates the legacy version of the plugin for compatibility with your theme or other plugins.', 'ymc-smart-filter'); ?>
                         </div>
                         <input class="form-checkbox" name="ymc_plugin_legacy_is" id="ymc_plugin_legacy_is" type="checkbox" value="yes">
                         <label class="form-label" for="ymc_plugin_legacy_is">
-                            <?php esc_html_e('Enable Legacy Version', 'ymc-smart-filters'); ?></label>
+                            <?php esc_html_e('Enable Legacy Version', 'ymc-smart-filter'); ?></label>
                     </div>
 
                     <div class="form-group">
-                        <div class="sub-headline"><?php esc_html_e('JavaScript Filter API', 'ymc-smart-filters'); ?></div>
+                        <div class="sub-headline"><?php esc_html_e('JavaScript Filter API', 'ymc-smart-filter'); ?></div>
                         <div class="field-description">
 		                    <?php echo wp_kses_post('Enable dynamic post filtering using JavaScript. 
 		                    Enable dynamic post filtering using JavaScript.<br> When enabled, the filter grid will update posts 
 		                    asynchronously without reloading the page. More info: 
-		                    <a href="https://github.com/YMC-22/Filter-Grids?tab=readme-ov-file#ymcfiltergrid-global-object-api" target="_blank">YMCFilterGrid: Global Object API</a>', 'ymc-smart-filters'); ?>
+		                    <a href="https://github.com/YMC-22/Filter-Grids?tab=readme-ov-file#ymcfiltergrid-global-object-api" target="_blank">YMCFilterGrid: Global Object API</a>', 'ymc-smart-filter'); ?>
                         </div>
                         <input class="form-checkbox" type="checkbox"
                                name="ymc_fg_enable_js_filter_api"
                                id="ymc_fg_enable_js_filter_api"
                                value="yes" <?php checked(get_option('ymc_fg_enable_js_filter_api'), 'yes'); ?>>
                         <label class="form-label" for="ymc_fg_enable_js_filter_api">
-		                    <?php esc_html_e('Enable JavaScript Filter API', 'ymc-smart-filters'); ?></label>
+		                    <?php esc_html_e('Enable JavaScript Filter API', 'ymc-smart-filter'); ?></label>
                     </div>
 
                     <div class="spacer-15"></div>

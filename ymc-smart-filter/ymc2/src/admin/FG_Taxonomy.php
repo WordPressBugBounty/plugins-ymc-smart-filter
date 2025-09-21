@@ -150,7 +150,7 @@ class FG_Taxonomy {
 
 		} else {
 			echo '<div class="taxonomies-list js-tax-insert js-tax-sortable">					 
-					 <div class="notification notification--warning">'. esc_html__('No taxonomies found.', 'ymc-smart-filters') .'</div>
+					 <div class="notification notification--warning">'. esc_html__('No taxonomies found.', 'ymc-smart-filter') .'</div>
 				  </div>';
 		}
 

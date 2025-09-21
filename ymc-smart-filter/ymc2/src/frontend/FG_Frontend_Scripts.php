@@ -162,6 +162,7 @@ class FG_Frontend_Scripts {
 					'getPosts_nonce' => wp_create_nonce('get_filtered_posts-ajax-nonce'),
 					'getPostToPopup_nonce' => wp_create_nonce('get_post_to_popup-ajax-nonce'),
 					'getAutocompletePosts_nonce' => wp_create_nonce('get_autocomplete_posts-ajax-nonce'),
+					'loadDependentTerms_nonce' => wp_create_nonce('load_dependent_terms-ajax-nonce'),
 					'current_page'   => 1,
 					'path'           => YMC_PLUGIN_URL
 			));

@@ -34,13 +34,13 @@ class FG_Filter_Custom extends FG_Abstract_Filter_Impl implements IFilter {
 		$guide_html  = '<div class="filter-custom-guide">';
 		$guide_html .= '<div class="filter-usage">';
 		$guide_html .= '<div class="filter-usage-inner">';
-		$guide_html .= '<span class="headline">'. esc_html__("Use a filter:", "ymc-smart-filters") .'</span>';
+		$guide_html .= '<span class="headline">'. esc_html__("Use a filter:", "ymc-smart-filter") .'</span>';
 		$guide_html .= '<span class="description">add_filter("ymc/filter/layout/'. $placement .'/custom", "callback_function", 10, 5);</span>';
 		$guide_html .= '<span class="description">add_filter("ymc/filter/layout/'. $placement .'/custom_'. $filter_id .'", "callback_function", 10, 5);</span>';
 		$guide_html .= '<span class="description">add_filter("ymc/filter/layout/'. $placement .'/custom_'. $filter_id .'_'. self::$filter_counter .'", "callback_function", 10, 5);</span>';
 		$guide_html .= '</div>';
 		$guide_html .= '<div class="filter-usage-inner">';
-		$guide_html .= '<a class="link" target="_blank" href="https://github.com/YMC-22/Filter-Grids/tree/main?tab=readme-ov-file#custom-filter-layout">'. esc_html__("See documentation", "ymc-smart-filters") .'</a>';
+		$guide_html .= '<a class="link" target="_blank" href="https://github.com/YMC-22/Filter-Grids/tree/main?tab=readme-ov-file#custom-filter-layout">'. esc_html__("See documentation", "ymc-smart-filter") .'</a>';
 		$guide_html .= '</div>';
 		$guide_html .= '</div>';
 		$guide_html .= '</div>';

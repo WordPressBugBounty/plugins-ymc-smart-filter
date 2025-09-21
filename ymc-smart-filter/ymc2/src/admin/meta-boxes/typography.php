@@ -12,7 +12,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="filter_typography">
             <span class="inner">
                 <i class="dashicons dashicons-editor-spellcheck"></i>
-                <span class="text"><?php esc_html_e('Filter Typography Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Filter Typography Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -22,7 +22,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg typography">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Typography','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Typography','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -49,7 +49,7 @@ if (!defined( 'ABSPATH')) exit;
 	                <?php ymc_render_field_header('Enter font name exactly as used in CSS',
                         'Type the font name as it appears in CSS. This must match the font name loaded via the URL. 
                         For example: "Roboto", "Open Sans", or "MyCustomFont".'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_filter_typography[custom_font_family]"
                            value="<?php echo esc_attr($ymc_fg_filter_typography['custom_font_family']); ?>">
                     <div class="spacer-25"></div>
@@ -57,7 +57,7 @@ if (!defined( 'ABSPATH')) exit;
 	                <?php ymc_render_field_header('Paste the font link URL from Google Fonts or another provider',
                         'Paste the full link to your custom font. For example, use a Google Fonts URL like:
                                https://fonts.googleapis.com/css2?family=YourFontName&display=swap'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_filter_typography[custom_font_url]"
                            value="<?php echo esc_attr($ymc_fg_filter_typography['custom_font_url']); ?>">
                     <div class="spacer-25"></div>
@@ -159,7 +159,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg box-settings">
                 <div class="group-elements">
                     <legend class="form-legend">
-			            <?php esc_html_e('Box Settings','ymc-smart-filters'); ?></legend>
+			            <?php esc_html_e('Box Settings','ymc-smart-filter'); ?></legend>
                 </div>
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Justify Content',
@@ -229,7 +229,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg color-settings">
                 <div class="group-elements">
                     <legend class="form-legend">
-		                <?php esc_html_e('Color Settings','ymc-smart-filters'); ?></legend>
+		                <?php esc_html_e('Color Settings','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -285,7 +285,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="post_typography">
             <span class="inner">
                 <i class="dashicons dashicons-editor-spellcheck"></i>
-                <span class="text"><?php esc_html_e('Post Typography Settings', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Post Typography Settings', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -295,7 +295,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg typography">
                 <div class="group-elements">
                     <legend class="form-legend">
-			            <?php esc_html_e('Post Title','ymc-smart-filters'); ?></legend>
+			            <?php esc_html_e('Post Title','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -322,7 +322,7 @@ if (!defined( 'ABSPATH')) exit;
 		            <?php ymc_render_field_header('Enter font name exactly as used in CSS',
 			            'Type the font name as it appears in CSS. This must match the font name loaded via the URL. 
                         For example: "Roboto", "Open Sans", or "MyCustomFont".'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_post_typography[title][custom_font_family]"
                            value="<?php echo esc_attr($ymc_fg_post_typography['title']['custom_font_family']); ?>">
                     <div class="spacer-25"></div>
@@ -330,7 +330,7 @@ if (!defined( 'ABSPATH')) exit;
 		            <?php ymc_render_field_header('Paste the font link URL from Google Fonts or another provider',
 			            'Paste the full link to your custom font. For example, use a Google Fonts URL like:
                                https://fonts.googleapis.com/css2?family=YourFontName&display=swap'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_post_typography[title][custom_font_url]"
                            value="<?php echo esc_attr($ymc_fg_post_typography['title']['custom_font_url']); ?>">
                     <div class="spacer-25"></div>
@@ -421,7 +421,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg typography">
                 <div class="group-elements">
                     <legend class="form-legend">
-				        <?php esc_html_e('Meta Info','ymc-smart-filters'); ?></legend>
+				        <?php esc_html_e('Meta Info','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -497,7 +497,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg typography">
                 <div class="group-elements">
                     <legend class="form-legend">
-				        <?php esc_html_e('Excerpt','ymc-smart-filters'); ?></legend>
+				        <?php esc_html_e('Excerpt','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -627,7 +627,7 @@ if (!defined( 'ABSPATH')) exit;
             <fieldset class="form-group form-group--with-bg typography">
                 <div class="group-elements">
                     <legend class="form-legend">
-				        <?php esc_html_e('Read More Link','ymc-smart-filters'); ?></legend>
+				        <?php esc_html_e('Read More Link','ymc-smart-filter'); ?></legend>
                 </div>
 
                 <div class="group-elements">
@@ -654,7 +654,7 @@ if (!defined( 'ABSPATH')) exit;
 		            <?php ymc_render_field_header('Enter font name exactly as used in CSS',
 			            'Type the font name as it appears in CSS. This must match the font name loaded via the URL. 
                         For example: "Roboto", "Open Sans", or "MyCustomFont".'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_post_typography[link][custom_font_family]"
                            value="<?php echo esc_attr($ymc_fg_post_typography['link']['custom_font_family']); ?>">
                     <div class="spacer-25"></div>
@@ -662,7 +662,7 @@ if (!defined( 'ABSPATH')) exit;
 		            <?php ymc_render_field_header('Paste the font link URL from Google Fonts or another provider',
 			            'Paste the full link to your custom font. For example, use a Google Fonts URL like:
                                https://fonts.googleapis.com/css2?family=YourFontName&display=swap'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom Font URL', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_post_typography[link][custom_font_url]"
                            value="<?php echo esc_attr($ymc_fg_post_typography['link']['custom_font_url']); ?>">
                     <div class="spacer-25"></div>

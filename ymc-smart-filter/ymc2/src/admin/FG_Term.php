@@ -40,6 +40,14 @@ class FG_Term {
 
 
 	/**
+	 * Related terms
+	 * Custom related terms for the term
+	 * @var string
+	 */
+	private static string $related_terms = '';
+
+
+	/**
 	 * Icon URL
 	 * The attachment_id value for the loaded term icon
 	 * @var string
@@ -151,6 +159,7 @@ class FG_Term {
 		self::$term_name = '';
 		self::$term_checked = 'false';
 		self::$term_status = '';
+		self::$related_terms = '';
 	}
 
 
@@ -167,18 +176,19 @@ class FG_Term {
 		if($term_attrs) {
 			foreach ($term_attrs as $items) {
 				if($term_id === (int) $items['term_id']) {
-					self::$icon_class      = $items['icon_class'];
-					self::$icon_alignment  = $items['icon_alignment'];
-					self::$icon_color      = $items['icon_color'];
-					self::$icon_url        = $items['icon_url'];
-					self::$term_background = $items['term_background'];
-					self::$term_color      = $items['term_color'];
-					self::$term_class      = $items['term_class'];
-					self::$term_default    = $items['term_default'];
-					self::$term_visible    = $items['term_visible'];
-					self::$term_name       = $items['term_name'];
-					self::$term_checked    = $items['term_checked'];
-					self::$term_status     = $items['term_status'];
+					self::$icon_class      = $items['icon_class'] ?? '';
+					self::$icon_alignment  = $items['icon_alignment'] ?? '';
+					self::$icon_color      = $items['icon_color'] ?? '';
+					self::$icon_url        = $items['icon_url'] ?? '';
+					self::$term_background = $items['term_background'] ?? '';
+					self::$term_color      = $items['term_color'] ?? '';
+					self::$term_class      = $items['term_class'] ?? '';
+					self::$term_default    = $items['term_default'] ?? '';
+					self::$term_visible    = $items['term_visible'] ?? '';
+					self::$term_name       = $items['term_name'] ?? '';
+					self::$term_checked    = $items['term_checked'] ?? '';
+					self::$term_status     = $items['term_status'] ?? '';
+					self::$related_terms   = $items['related_terms'] ?? '';
 					break;
 				}
 			}
@@ -339,7 +349,7 @@ class FG_Term {
 
 		if($all_tax) {
 			foreach( $all_tax as $tax_name => $label ) {
-				if( in_array($tax_name, $selected_tax) ) {
+				if( in_array($tax_name, $selected_tax, true) ) {
 					$terms = self::get_terms($tax_name);
 					$checked = (self::checked_selected_terms($terms, $selected_terms)) ? 'checked' : '';
 
@@ -368,6 +378,7 @@ class FG_Term {
 
 							echo '<div class="term-item'. esc_attr($class_status) .'" 
 							data-term-id="'. esc_attr($term_id) .'" 
+							data-term-taxonomy="'. esc_attr($tax_name) .'" 
 							data-term-slug="'. esc_attr($term_slug) .'" 
 							data-term-name-orig="'. esc_attr($name) .'"
 							data-term-name="'. esc_attr(self::$term_name) .'"
@@ -381,7 +392,8 @@ class FG_Term {
 							data-term-icon-class="'. esc_attr(self::$icon_class) .'" 
 							data-term-icon-alignment="'. esc_attr(self::$icon_alignment) .'" 
 							data-term-icon-color="'. esc_attr(self::$icon_color) .'"
-							data-term-icon-url="'. esc_attr(self::$icon_url) .'">					  
+							data-term-icon-url="'. esc_attr(self::$icon_url) .'"
+							data-term-related-terms="'. esc_attr(self::$related_terms) .'">					  
 							<i class="fa-solid fa-up-down-left-right icon-is-drag js-term-handle"></i>
 							<input class="checkbox-control" id="term-id-'. esc_attr($term_id) .'" name="ymc_fg_terms[]" type="checkbox" '. esc_attr($is_term_sel) .' value="'. esc_attr($term_id) .'">					  
 							<label class="field-label" for="term-id-'. esc_attr($term_id) .'">'. esc_html(self::$term_name) .' <span class="count">('. esc_html($post_count) .')</span></label>
@@ -392,7 +404,7 @@ class FG_Term {
 						}
 					} else {
 						echo '<div class="no-terms">
-					          <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filters') .'</div></div>';
+					          <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filter') .'</div></div>';
 					}
 					echo '</div></article>';
 
@@ -404,7 +416,7 @@ class FG_Term {
 
 		} else {
 			echo '<div class="no-terms">
-			      <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filters') .'</div></div>';
+			      <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filter') .'</div></div>';
 		}
 
 		return ob_get_clean();

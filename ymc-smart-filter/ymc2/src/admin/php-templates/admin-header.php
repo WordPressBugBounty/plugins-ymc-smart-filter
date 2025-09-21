@@ -6,13 +6,13 @@
     <div class="headerbar-inner">
 
         <div class="title-wrap">
-            <div class="page-title"><?php esc_html_e('Edit Filter & Grids', 'ymc-smart-filters'); ?></div>
+            <div class="page-title"><?php esc_html_e('Edit Filter & Grids', 'ymc-smart-filter'); ?></div>
             <input form="post" type="text" name="post_title" size="30" value="<?php echo esc_html($post->post_title); ?>"
                    id="title"
                    class="headerbar-title-field"
                    spellcheck="true"
                    autocomplete="off"
-                   placeholder="<?php esc_attr_e('Filter & Grids Title', 'ymc-smart-filters'); ?>" />
+                   placeholder="<?php esc_attr_e('Filter & Grids Title', 'ymc-smart-filter'); ?>" />
         </div>
 
 
@@ -26,7 +26,7 @@
 		    );
 		    ?>
             <button form="post" class="button button--primary" name="save" type="submit">
-			    <?php esc_html_e( 'Save Changes', 'ymc-smart-filters' ); ?>
+			    <?php esc_html_e( 'Save Changes', 'ymc-smart-filter' ); ?>
             </button>
         </div>
     </div>

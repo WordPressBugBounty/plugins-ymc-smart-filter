@@ -6,7 +6,7 @@
             <a class="information" href="<?php echo esc_url('https://github.com/YMC-22/Filter-Grids') ?>"
                target="_blank">
                 <i class="fa-solid fa-circle-info"></i>
-                <?php esc_html_e('Documentation', 'ymc-smart-filters'); ?></a>
+                <?php esc_html_e('Documentation', 'ymc-smart-filter'); ?></a>
         </div>
     </div>
 </div>

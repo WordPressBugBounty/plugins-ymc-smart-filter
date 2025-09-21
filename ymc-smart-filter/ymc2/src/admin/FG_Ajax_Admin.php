@@ -31,6 +31,8 @@ class FG_Ajax_Admin {
 		add_action('wp_ajax_action_upload_term_icon', array( __CLASS__, 'ajax_upload_term_icon'));
 		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings'));
 		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));
+		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms'));
+		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms'));
 	}
 
 	/**
@@ -48,7 +50,7 @@ class FG_Ajax_Admin {
 
 		if (empty($post_id) || empty($post_types) || !is_array($post_types)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -63,6 +65,8 @@ class FG_Ajax_Admin {
 		update_post_meta( $post_id, 'ymc_fg_term_sort', []);
 		update_post_meta( $post_id, 'ymc_fg_selected_posts', []);
 		update_post_meta( $post_id, 'ymc_fg_filter_options', []);
+		update_post_meta( $post_id, 'ymc_fg_filter_type', 'default');
+		update_post_meta( $post_id, 'ymc_fg_filter_dependent_settings', []);
 
 		// Get taxonomies
 		$data_object = get_object_taxonomies($post_types, 'objects');
@@ -116,7 +120,7 @@ class FG_Ajax_Admin {
 
 		if (empty($slug) || empty($label) || empty($post_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -167,7 +171,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -199,7 +203,7 @@ class FG_Ajax_Admin {
 
 		if (empty($post_types) || !is_array($post_types)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -229,7 +233,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id) || empty($tax_sort) || !is_array($tax_sort)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -254,7 +258,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id) || empty($terms_sort) || !is_array($terms_sort)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -332,7 +336,7 @@ class FG_Ajax_Admin {
 
 		if (empty($post_id) || empty($post_types) || !is_array($post_types)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -386,7 +390,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id) || empty($payload->tax_attrs) || !is_array($payload->tax_attrs)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 		$post_id = (int) $payload->post_id;
@@ -398,7 +402,7 @@ class FG_Ajax_Admin {
 
 		$data = array(
 			'response' => $updated,
-			'message' => __('Taxonomy saved', 'ymc-smart-filters')
+			'message' => __('Taxonomy saved', 'ymc-smart-filter')
 		);
 		wp_send_json($data);
 	}
@@ -416,7 +420,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id) || empty($payload->term_attrs) || !is_array($payload->term_attrs)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -429,7 +433,7 @@ class FG_Ajax_Admin {
 
 		$data = array(
 			'response' => $updated,
-			'message' => __('Term saved', 'ymc-smart-filters')
+			'message' => __('Term saved', 'ymc-smart-filter')
 		);
 		wp_send_json($data);
 	}
@@ -450,7 +454,7 @@ class FG_Ajax_Admin {
 
 		if (empty($payload->post_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -543,7 +547,7 @@ class FG_Ajax_Admin {
 			wp_send_json_success(
 				[
 					'url' => esc_url($relative_url),
-					'message' => __('Icon uploaded', 'ymc-smart-filters')
+					'message' => __('Icon uploaded', 'ymc-smart-filter')
 				]
 			);
 		}
@@ -564,7 +568,7 @@ class FG_Ajax_Admin {
 
 		if (empty($post_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -617,7 +621,7 @@ class FG_Ajax_Admin {
 
 		if (empty($post_id)) {
 			wp_send_json_error([
-				'message' => __('Invalid data received.', 'ymc-smart-filters')
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
 		}
 
@@ -627,12 +631,132 @@ class FG_Ajax_Admin {
 			foreach ( $clean_data as $meta_key => $meta_value ) {
 				update_post_meta($post_id, $meta_key, $meta_value);
 			}
-			$message = __('Imported settings successfully','ymc-smart-filters');
+			$message = __('Imported settings successfully','ymc-smart-filter');
 		} else {
-			$message = __('Import of settings unsuccessful. Try again.','ymc-smart-filters');
+			$message = __('Import of settings unsuccessful. Try again.','ymc-smart-filter');
 		}
 
 		wp_send_json_success(['message' => $message]);
 	}
+
+
+	/**
+	 * Get related terms
+	 * @return void
+	 */
+	public static function ajax_update_related_terms() {
+		check_ajax_referer('update-related-terms-ajax-nonce', 'nonce_code');
+
+		$payload_raw = wp_unslash($_POST['payload'] ?? '');
+		$payload     = json_decode($payload_raw, true);
+
+		if ( empty($payload) ||
+		     empty($payload['sequence']) ||
+		     empty($payload['current_term']) ||
+		     empty($payload['current_tax']) ||
+		     empty($payload['post_id']) ||
+		     empty($payload['term_id'])	) {
+
+			wp_send_json_error([
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
+			], 400);
+		}
+
+		$sequence = json_decode($payload['sequence'], true);
+		$post_id = (int) $payload['post_id'];
+		$term_id = (int) $payload['term_id'];
+
+		if ( ! is_array($sequence) ) {
+			wp_send_json_error([
+				'message' => __('Invalid sequence format.', 'ymc-smart-filter')
+			], 400);
+		}
+
+		$term_slug = sanitize_title($payload['current_term']);
+		$tax_slug  = '';
+
+		foreach ( get_taxonomies([], 'names') as $taxonomy ) {
+			$term = get_term_by('slug', $term_slug, $taxonomy);
+			if ( $term && ! is_wp_error($term) ) {
+				$tax_slug = $taxonomy;
+				break;
+			}
+		}
+
+		$html = ymc_get_terms_accordion($sequence, $tax_slug, $term_id, $post_id);
+
+        $tax_sequence_label = [];
+        $current_tax = sanitize_title($payload['current_tax']);
+        foreach ($sequence as $slug) {
+	        $taxonomy = get_taxonomy($slug);
+	        if ($taxonomy && !is_wp_error($taxonomy)) {
+
+                $is_active = $current_tax === $slug ? ' is-active' : '';
+		        $tax_sequence_label[] = '<span class="'. esc_attr($taxonomy->name) . esc_attr($is_active) .'">' .
+                                        esc_html($taxonomy->labels->singular_name) . '</span>';
+	        }
+        }
+		$tax_chain = implode('', $tax_sequence_label);
+
+		wp_send_json_success([
+			'html' => $html,
+			'tax_chain' => $tax_chain
+		]);
+	}
+
+
+	/**
+	 * Update root terms and sources
+	 * @return void
+	 */
+	public static function ajax_update_root_source_terms() {
+		check_ajax_referer('update-root-source_terms-ajax-nonce', 'nonce_code');
+
+		$payload_raw = wp_unslash($_POST['payload'] ?? '');
+		$payload     = json_decode($payload_raw, true);
+
+		if (empty($payload)) {
+			wp_send_json_error([
+				'message' => __('Invalid data received.', 'ymc-smart-filter')
+			], 400);
+		}
+
+		$post_id = (int) $payload['post_id'];
+		$root_terms = '';
+
+		if(!empty($payload['sequence'])) {
+			$tax_sequence = explode(',', $payload['sequence']);
+			$first_tax = $tax_sequence[0];
+
+			$terms = get_terms([
+				'taxonomy'   => $first_tax,
+				'hide_empty' => false,
+			]);
+
+			if (!is_wp_error($terms) && !empty($terms)) {
+				ob_start();
+				foreach ($terms as $term) { ?>
+					<li class="root-term-item">
+						<label class="field-label">
+							<input class="form-checkbox js-root-term"
+							type="checkbox" name="ymc_fg_filter_dependent_settings[root_terms][]"
+							value="<?php echo esc_attr($term->term_id); ?>"><?php echo esc_html($term->name); ?></label></li>
+				<?php }
+				$root_terms = ob_get_clean();
+				$root_terms = preg_replace('/[\r\n\t]+/', '', $root_terms);
+			} else {
+                $root_terms = '<li class="notification notification--warning">
+                    '. __('No terms for first taxonomy.', 'ymc-smart-filter') .'</li>';
+            }
+		}
+
+		wp_send_json_success([
+			'root_terms' => $root_terms
+		]);
+
+	}
+
+
+
 
 }

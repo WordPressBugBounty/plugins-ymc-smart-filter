@@ -6,21 +6,21 @@
             <a class="information" href="<?php echo esc_url('https://github.com/YMC-22/Filter-Grids') ?>"
                target="_blank">
                 <i class="fa-solid fa-circle-info"></i>
-                <?php esc_html_e('Documentation', 'ymc-smart-filters'); ?></a>
+                <?php esc_html_e('Documentation', 'ymc-smart-filter'); ?></a>
         </div>
     </div>
 </div>
 <div class="ymc-header-bar">
     <div class="header-bar-inner">
         <div class="title-wrap">
-            <div class="page-title"><?php esc_html_e('Edit Filter & Grids', 'ymc-smart-filters'); ?></div>
+            <div class="page-title"><?php esc_html_e('Edit Filter & Grids', 'ymc-smart-filter'); ?></div>
             <input form="post" type="text" name="post_title" size="30"
                    value="<?php echo esc_html($post->post_title); ?>"
                    id="title"
                    class="header-bar-title-field"
                    spellcheck="true"
                    autocomplete="off"
-                   placeholder="<?php esc_attr_e('Filter & Grids Title', 'ymc-smart-filters'); ?>" />
+                   placeholder="<?php esc_attr_e('Filter & Grids Title', 'ymc-smart-filter'); ?>" />
         </div>
         <div class="header-bar-actions" id="submitpost">
 		    <?php
@@ -34,12 +34,12 @@
 	        if ( $post->post_status === 'auto-draft' || $post->post_status === 'draft' ) {	?>
                 <input type="hidden" name="post_status" value="publish" form="post" />
                 <button form="post" type="submit" name="publish" id="publish" class="button button--primary">
-			        <?php esc_html_e('Save Changes', 'ymc-smart-filters'); ?>
+			        <?php esc_html_e('Save Changes', 'ymc-smart-filter'); ?>
                 </button>
 		        <?php
 	        } else {  ?>
                 <button form="post" type="submit" name="save" class="button button--primary">
-			        <?php esc_html_e('Save Changes', 'ymc-smart-filters'); ?>
+			        <?php esc_html_e('Save Changes', 'ymc-smart-filter'); ?>
                 </button>
 		        <?php
 	        }

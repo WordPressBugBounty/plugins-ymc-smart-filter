@@ -34,7 +34,7 @@ class FG_Save_Meta_Boxes {
 		if (defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE) return;
 
 		if (! current_user_can('edit_page', $post_id)) {
-			wp_die( esc_html__('You do not have permission to edit post.', 'ymc-smart-filters'));
+			wp_die( esc_html__('You do not have permission to edit post.', 'ymc-smart-filter'));
 		}
 
 
@@ -54,11 +54,6 @@ class FG_Save_Meta_Boxes {
 		$terms = isset($_POST['ymc_fg_terms'])
 			? array_map( 'sanitize_text_field', wp_unslash($_POST['ymc_fg_terms'])) : [];
 		update_post_meta($post_id, 'ymc_fg_terms', $terms);
-
-		// Hierarchical Tree of Terms
-		// $hierarchy_terms = isset($_POST['ymc_fg_hierarchy_terms'])
-		//	? sanitize_text_field(wp_unslash($_POST['ymc_fg_hierarchy_terms'])) : 'no';
-		// update_post_meta($post_id, 'ymc_fg_hierarchy_terms', $hierarchy_terms);
 
 		// Selected posts
 		$selected_posts = isset($_POST['ymc_fg_selected_posts'])
@@ -406,7 +401,10 @@ class FG_Save_Meta_Boxes {
 			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_carousel_settings'])) : [];
 		update_post_meta($post_id, 'ymc_fg_carousel_settings', $carousel_settings);
 
-
+		// Filter Dependency
+		$filter_dependency_settings = isset($_POST['ymc_fg_filter_dependent_settings'])
+			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_filter_dependent_settings'])) : [];
+		update_post_meta($post_id, 'ymc_fg_filter_dependent_settings', $filter_dependency_settings);
 
 
 

@@ -13,7 +13,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="advanced_query_settings">
             <span class="inner">
                 <i class="fas fa-database"></i>
-                <span class="text"><?php esc_html_e('Advanced Query', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Advanced Query', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -24,8 +24,8 @@ if (!defined( 'ABSPATH')) exit;
                     <input type="checkbox" name="ymc_fg_enable_advanced_query" value="yes"
 				        <?php checked( $ymc_fg_enable_advanced_query, 'yes' ); ?>>
                     <span class="slider round">
-                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filters'); ?></span>
-                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filters'); ?></span>
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
                     </span>
                 </label>
             </fieldset>
@@ -88,7 +88,7 @@ if (!defined( 'ABSPATH')) exit;
                         </select>
                         <?php else : ?>
                         <div class="notification notification--info">
-                            <?php esc_html_e('No callbacks found', 'ymc-smart-filters'); ?></div>
+                            <?php esc_html_e('No callbacks found', 'ymc-smart-filter'); ?></div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -101,7 +101,7 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_advanced_suppress_filters"
                            id="ymc_fg_advanced_suppress_filters" <?php checked($ymc_fg_advanced_suppress_filters, 'yes'); ?>>
                     <label class="field-label" for="ymc_fg_advanced_suppress_filters">
-		                <?php esc_html_e('Enable Suppress Filters', 'ymc-smart-filters'); ?></label>
+		                <?php esc_html_e('Enable Suppress Filters', 'ymc-smart-filter'); ?></label>
                 </div>
                 <div class="spacer-25"></div>
             </fieldset>
@@ -110,7 +110,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="sort_posts_settings">
             <span class="inner">
                 <i class="fa-solid fa-arrow-down-short-wide"></i>
-                <span class="text"><?php esc_html_e('Sort Posts (AJAX)', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Sort Posts (AJAX)', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -121,8 +121,8 @@ if (!defined( 'ABSPATH')) exit;
                     <input type="checkbox" name="ymc_fg_enable_sort_posts" value="yes"
 				        <?php checked( $ymc_fg_enable_sort_posts, 'yes' ); ?>>
                     <span class="slider round">
-                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filters'); ?></span>
-                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filters'); ?></span>
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
                     </span>
                 </label>
             </fieldset>
@@ -132,7 +132,7 @@ if (!defined( 'ABSPATH')) exit;
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Sort Dropdown Label',
 		                'Set the title shown above the sort dropdown on the frontend. Leave blank to use the default "Sort Posts By"'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Sort Posts By', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Sort Posts By', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_sort_dropdown_label"
                            value="<?php echo esc_attr($ymc_fg_sort_dropdown_label); ?>">
                     <div class="spacer-25"></div>
@@ -161,7 +161,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="extra_class_settings">
             <span class="inner">
                 <i class="fa-brands fa-css3"></i>
-                <span class="text"><?php esc_html_e('Container CSS Class', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Container CSS Class', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -170,7 +170,7 @@ if (!defined( 'ABSPATH')) exit;
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Custom Container Class',
 		                'Specify a custom CSS class to apply to the filter container. Useful for styling or targeting with JavaScript.'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom CSS Class', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('Custom CSS Class', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_custom_container_class"
                            value="<?php echo esc_attr($ymc_fg_custom_container_class); ?>">
                 </div>
@@ -180,7 +180,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="extra_filter_layout">
             <span class="inner">
                 <i class="dashicons dashicons-layout"></i>
-                <span class="text"><?php esc_html_e('Extra Filter Layout', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Extra Filter Layout', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -194,7 +194,7 @@ if (!defined( 'ABSPATH')) exit;
 		                <?php
 		                if($filter_types) :
 			                foreach ($filter_types as $key => $filter_type) :
-                                if ($key === 'composite') {
+                                if ($key === 'composite' || $key === 'dependent') {
                                     continue;
                                 }
 				                printf(
@@ -236,7 +236,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="custom_css">
             <span class="inner">
                 <i class="fa-regular fa-file-code"></i>
-                <span class="text"><?php esc_html_e('Custom CSS', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Custom CSS', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -254,7 +254,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="custom_js">
             <span class="inner">
                 <i class="fa-regular fa-file-code"></i>
-                <span class="text"><?php esc_html_e('Custom Actions', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Custom Actions', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -271,7 +271,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="preloader_settings">
             <span class="inner">
                 <i class="dashicons dashicons-image-filter"></i>
-                <span class="text"><?php esc_html_e('Preloader', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Preloader', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -323,7 +323,7 @@ if (!defined( 'ABSPATH')) exit;
 	            <?php $is_hidden = $ymc_fg_preloader_settings['filter_preloader'] === 'custom_filter' ? '' : ' is-hidden'; ?>
                 <div class="group-elements js-preloader-custom-filters<?Php echo esc_attr($is_hidden); ?>">
 		            <?php ymc_render_field_header('Custom Filters CSS', 'Add a list of filters.'); ?>
-                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('grayscale(0.5) brightness(0.7) invert(75%)', 'ymc-smart-filters'); ?>"
+                    <input class="form-input" type="text" placeholder="<?php esc_attr_e('grayscale(0.5) brightness(0.7) invert(75%)', 'ymc-smart-filter'); ?>"
                            name="ymc_fg_preloader_settings[custom_filters_css]"
                            value="<?php echo esc_attr($ymc_fg_preloader_settings['custom_filters_css']); ?>">
                 </div>
@@ -333,7 +333,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="scroll_pagination">
             <span class="inner">
                 <i class="fa-solid fa-scroll"></i>
-                <span class="text"><?php esc_html_e('Scroll Pagination', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Scroll Pagination', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -345,7 +345,7 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_scroll_to_filters_on_load"
                            id="ymc_fg_scroll_to_filters_on_load" <?php checked($ymc_fg_scroll_to_filters_on_load, 'yes'); ?>>
                     <label class="field-label" for="ymc_fg_scroll_to_filters_on_load">
-		                <?php esc_html_e('Enable Scroll Up To Filters', 'ymc-smart-filters'); ?></label>
+		                <?php esc_html_e('Enable Scroll Up To Filters', 'ymc-smart-filter'); ?></label>
                 </div>
             </fieldset>
         </div>
@@ -353,7 +353,7 @@ if (!defined( 'ABSPATH')) exit;
         <div class="headline js-headline-accordion" data-hash="debug_mode">
             <span class="inner">
                 <span class="dashicons dashicons-code-standards"></span>
-                <span class="text"><?php esc_html_e('Debug Mode', 'ymc-smart-filters'); ?></span>
+                <span class="text"><?php esc_html_e('Debug Mode', 'ymc-smart-filter'); ?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -370,7 +370,7 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_debug_mode"
                            id="ymc_fg_debug_mode" <?php checked($ymc_fg_debug_mode, 'yes'); ?>>
                     <label class="field-label" for="ymc_fg_debug_mode">
-		                <?php esc_html_e('Enable Debug Mode', 'ymc-smart-filters'); ?></label>
+		                <?php esc_html_e('Enable Debug Mode', 'ymc-smart-filter'); ?></label>
                 </div>
             </fieldset>
         </div>
@@ -378,7 +378,7 @@ if (!defined( 'ABSPATH')) exit;
 <!--        <div class="headline js-headline-accordion" data-hash="api_js_settings">
             <span class="inner">
                 <i class="dashicons dashicons-rest-api"></i>
-                <span class="text"><?php /*echo esc_html__('JavaScript API', 'ymc-smart-filters'); */?></span>
+                <span class="text"><?php /*echo esc_html__('JavaScript API', 'ymc-smart-filter'); */?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -391,8 +391,8 @@ if (!defined( 'ABSPATH')) exit;
                     <input type="checkbox" name="ymc_fg_enable_js_filter_api" value="yes"
 						<?php /*echo esc_attr($checked_filter_api); */?>>
                     <span class="slider round">
-                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filters'); */?></span>
-                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filters'); */?></span>
+                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filter'); */?></span>
+                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filter'); */?></span>
                     </span>
                 </label>
             </fieldset>
@@ -401,7 +401,7 @@ if (!defined( 'ABSPATH')) exit;
 <!--        <div class="headline js-headline-accordion" data-hash="legacy_plugin">
             <span class="inner">
                 <i class="fa-solid fa-hourglass-start"></i>
-                <span class="text"><?php /*esc_html_e('Legacy Mode', 'ymc-smart-filters'); */?></span>
+                <span class="text"><?php /*esc_html_e('Legacy Mode', 'ymc-smart-filter'); */?></span>
             </span>
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
@@ -414,8 +414,8 @@ if (!defined( 'ABSPATH')) exit;
                         <label class="toggle-switch toggle-switch-legacy">
                             <input type="checkbox" name="ymc_plugin_legacy_is" value="yes" <?php /*echo esc_attr($status_legacy); */?>>
                             <span class="slider round">
-                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filters'); */?></span>
-                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filters'); */?></span>
+                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filter'); */?></span>
+                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filter'); */?></span>
                     </span>
                         </label>
                     </div>

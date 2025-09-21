@@ -26,13 +26,13 @@ final class YMC_Filter_Grids {
 	 *
 	 * @var string
 	 */
-	public string $version = '3.0.2';
+	public string $version = '3.1.0';
 
 
 	/**
 	 * @var string The plugin domain
 	 */
-	public string $domain = 'ymc-smart-filters';
+	public string $domain = 'ymc-smart-filter';
 
 	/**
 	 * The single instance of the class.

@@ -100,7 +100,7 @@ class FG_Shortcodes {
 			return self::shortcode_wrapper($filter_id);
 		}
 		return '<div class="ymc ymc-container">
-                <div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filters') .'</div>
+                <div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filter') .'</div>
                 </div>';
 	}
 
@@ -121,7 +121,7 @@ class FG_Shortcodes {
             <div class="filter-section">
 		    <?php if ($filter_id > 0) {
 			if (!get_post_status($filter_id)) {
-				echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filters' ).'</div>';
+				echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filter' ).'</div>';
 				return ob_get_clean();
 			}
             $filter_type    = Data_Store::get_meta_value($filter_id, 'ymc_fg_extra_filter_type');
@@ -137,7 +137,7 @@ class FG_Shortcodes {
 
 			Components::get_filter($filter_id, 'top', $filter_options);
             } else {
-                echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filters') .'</div>';
+                echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filter') .'</div>';
             }
             ?>
             </div>
@@ -165,14 +165,14 @@ class FG_Shortcodes {
              data-extra-filter-id="<?php echo esc_attr($filter_id); ?>">
 	         <?php if ($filter_id > 0) {
 		        if (!get_post_status($filter_id)) {
-			        echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filters' ).'</div>';
+			        echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filter' ).'</div>';
 			        return ob_get_clean();
 		        }
 
 		        Components::render_search_bar($filter_id, true);
 
 	         } else {
-		        echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filters') .'</div>';
+		        echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filter') .'</div>';
 	         }
 	        ?>
         </div>
@@ -198,14 +198,14 @@ class FG_Shortcodes {
              data-extra-filter-id="<?php echo esc_attr($filter_id); ?>">
 	         <?php if ($filter_id > 0) {
 		        if (!get_post_status($filter_id)) {
-			        echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filters' ).'</div>';
+			        echo '<div class="notification notification--warning">'.esc_html__( 'Filter not found. Please, check the filter ID', 'ymc-smart-filter' ).'</div>';
 			        return ob_get_clean();
 		        }
 
 		        Components::render_sort_bar($filter_id, true);
 
 	         } else {
-		        echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filters') .'</div>';
+		        echo '<div class="notification notification--error">' . esc_html__('ID parameter is missing or invalid.', 'ymc-smart-filter') .'</div>';
 	         }
 	        ?>
         </div>
@@ -225,7 +225,7 @@ class FG_Shortcodes {
 	public static function add_admin_bar_menu($wp_admin_bar) : void {
 		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
 		$icon = '<span class="ab-icon" style="background-image: url('. $icon_url . ') !important; background-repeat: no-repeat; background-position: center; width: 18px; height: 18px; margin-top: 3px;"></span>';
-		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filters') . '</span>';
+		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filter') . '</span>';
 
 		$wp_admin_bar->add_menu(array(
 			'id'    => 'ymc-filter-grids',
