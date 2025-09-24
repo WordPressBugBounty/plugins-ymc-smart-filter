@@ -113,8 +113,8 @@ if (!defined( 'ABSPATH')) exit;
                                             if(in_array($slug, $tax_sequence_array)) {
                                                 continue;
                                             }
-			                                echo '<li class="taxonomy-by-related-terms" data-tax="'.$slug.'">                                            
-                                            <span class="drag-icon js-tax-handle"></span>'.$label.'</li>';
+			                                echo '<li class="taxonomy-by-related-terms" data-tax="'.esc_attr($slug).'">                                            
+                                            <span class="drag-icon js-tax-handle"></span>'.esc_html($label).'</li>';
 		                                }
 	                                }
 	                                ?>
@@ -139,7 +139,7 @@ if (!defined( 'ABSPATH')) exit;
 			                                $mode = $tax_settings_array[$tax] ?? 'single';
 			                                ?>
                                             <li class="taxonomy-by-related-terms" data-tax="<?php echo esc_attr($tax); ?>">
-                                                <span class="taxonomy-order"><?php echo $index; ?></span>
+                                                <span class="taxonomy-order"><?php echo esc_html($index); ?></span>
                                                 <span class="drag-icon js-tax-handle"></span>
 				                                <?php echo esc_html($taxonomy->label); ?>
                                                 <span class="icon-config js-icon-config"></span>

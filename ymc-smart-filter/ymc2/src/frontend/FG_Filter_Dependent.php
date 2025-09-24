@@ -91,12 +91,14 @@ class FG_Filter_Dependent extends FG_Abstract_Filter_Impl implements IFilter {
 				            : ucfirst($taxonomy);
 
 			             $tax_mode = $this->get_tax_mode($taxonomy, $settings);
+			             // phpcs:ignore WordPress
 			             echo $this->render_dropdown($taxonomy, $terms, $tax_mode, $tax_label, $index === 0, $filter_id);
 			            ?>
 		            <?php endforeach; ?>
 	             <?php else : ?>
 		         <?php
 		             $root_terms = $this->get_root_terms($sequence[0], $settings);
+		             // phpcs:ignore WordPress
 		             echo $this->render_dropdown($sequence[0], $root_terms, $this->get_tax_mode($sequence[0], $settings), $sequence[0], true, $filter_id);
 		         ?>
 	             <?php endif; ?>
@@ -167,7 +169,7 @@ class FG_Filter_Dependent extends FG_Abstract_Filter_Impl implements IFilter {
 
 		ob_start(); ?>
 
-        <div class="ymc-dependent js-dependent<?php echo $disabled_class; ?>"
+        <div class="ymc-dependent js-dependent<?php echo esc_attr($disabled_class); ?>"
              data-taxonomy="<?php echo esc_attr($taxonomy); ?>"
              data-mode="<?php echo esc_attr($mode_tax); ?>"
              data-taxonomy-label="<?php echo esc_attr($label); ?>"
