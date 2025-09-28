@@ -212,9 +212,9 @@ if (!defined( 'ABSPATH')) exit;
                                 <div class="post-element">
 	                                <?php ymc_render_field_header($item['label'], $item['tooltip']); ?>
                                     <select class="form-select" name="ymc_fg_post_display_settings[<?php echo esc_attr($key); ?>]">
-                                        <option value="show" <?php selected($ymc_fg_post_display_settings[$key], 'show'); ?>>
+                                        <option value="show" <?php selected($ymc_fg_post_display_settings[$key] ?? 'show', 'show'); ?>>
                                             <?php esc_html_e('Show', 'ymc-smart-filter'); ?></option>
-                                        <option value="hide" <?php selected($ymc_fg_post_display_settings[$key], 'hide'); ?>>
+                                        <option value="hide" <?php selected($ymc_fg_post_display_settings[$key] ?? 'hide', 'hide'); ?>>
                                             <?php esc_html_e('Hide', 'ymc-smart-filter'); ?></option>
                                     </select>
                                 </div>

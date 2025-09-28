@@ -657,3 +657,42 @@ if (! function_exists( 'ymc_get_terms_accordion')) {
 }
 
 
+/**
+ * Get list of taxonomies for post
+ *
+ * @param int $post_id ID поста
+ * @return array Array of taxonomies (slug => label)
+ */
+
+if (! function_exists( 'ymc_get_attached_post_taxonomies')) {
+	function ymc_get_attached_post_taxonomies( $post_id ) {
+		if ( ! $post_id ) {
+			return array();
+		}
+
+		$taxonomies = get_post_taxonomies( $post_id );
+		$attached   = array();
+
+		if ( empty( $taxonomies ) ) {
+			return array();
+		}
+
+		foreach ( $taxonomies as $taxonomy ) {
+			$terms = wp_get_post_terms( $post_id, $taxonomy );
+
+			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
+				$tax_obj = get_taxonomy( $taxonomy );
+				if ( $tax_obj && isset( $tax_obj->labels->singular_name ) ) {
+					$attached[$taxonomy] = $tax_obj->labels->singular_name;
+				} else {
+					$attached[$taxonomy] = $taxonomy; // fallback
+				}
+			}
+		}
+
+		return $attached;
+	}
+}
+
+
+

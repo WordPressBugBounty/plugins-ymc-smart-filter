@@ -37,7 +37,15 @@ defined( 'ABSPATH' ) || exit; ?>
 	        $post_excerpt          = get_the_excerpt($post_id);
 	        $all_terms             = ymc_get_all_post_terms($post_id);
 	        $tag_list              = '';
+	        $cat_list              = '';
 	        $post_image            = ymc_post_image_size($post_id, $post_image_size);
+	        $taxonomies            = ymc_get_attached_post_taxonomies($post_id);
+
+	        if ( ! empty( $taxonomies ) ) {
+		        foreach ($taxonomies as $slug => $label) {
+			        $cat_list .= '<span class="post-taxonomy">' . esc_html( $label ) . '</span>';
+		        }
+	        }
 
 	        foreach ($all_terms as $term) {
 		        $tag_list .= '<a class="tag tag-' . esc_attr($term['slug']) . '" href="'. esc_url($term['link']) .'" 
@@ -81,6 +89,12 @@ defined( 'ABSPATH' ) || exit; ?>
                   </div>
 
                    <div class="cel cel-content">
+
+	                  <?php if( $post_display_settings['category'] === 'show') : ?>
+                           <div class="post-card__categories">
+			                   <?php echo wp_kses_post($cat_list); ?>
+                           </div>
+	                   <?php endif; ?>
 
 	                  <?php if( $post_display_settings['title'] === 'show') : ?>
                           <h2 class="post-card__title">

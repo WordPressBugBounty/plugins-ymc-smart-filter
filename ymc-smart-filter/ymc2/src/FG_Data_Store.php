@@ -115,7 +115,8 @@ class FG_Data_Store {
 			'image'   => 'show',
 			'excerpt' => 'show',
 			'button'  => 'show',
-			'read_time' => 'show'
+			'read_time' => 'show',
+			'category' => 'show'
 		],
 
 		'ymc_fg_order_meta_key'        => '',

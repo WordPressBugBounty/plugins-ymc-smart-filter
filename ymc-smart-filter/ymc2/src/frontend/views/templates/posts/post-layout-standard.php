@@ -35,7 +35,15 @@ while ($query->have_posts()) : $query->the_post();
     $post_excerpt          = get_the_excerpt($post_id);
 	$all_terms             = ymc_get_all_post_terms($post_id);
 	$tag_list              = '';
+    $cat_list              = '';
 	$post_image            = ymc_post_image_size($post_id, $post_image_size);
+	$taxonomies            = ymc_get_attached_post_taxonomies($post_id);
+
+	if ( ! empty( $taxonomies ) ) {
+		foreach ($taxonomies as $slug => $label) {
+			$cat_list .= '<span class="post-taxonomy">' . esc_html( $label ) . '</span>';
+		}
+	}
 
 	foreach ($all_terms as $term) {
 		$tag_list .= '<a class="tag tag-' . esc_attr($term['slug']) . '" href="'. esc_url($term['link']) .'" 
@@ -75,11 +83,11 @@ while ($query->have_posts()) : $query->the_post();
                 </div>
 	        <?php endif; ?>
 
-	        <?php if( $post_display_settings['tags'] === 'show') : ?>
-                <div class="post-card__tags">
-			        <?php echo wp_kses_post($tag_list); ?>
+            <?php if( $post_display_settings['category'] === 'show') : ?>
+                <div class="post-card__categories">
+		            <?php echo wp_kses_post($cat_list); ?>
                 </div>
-	        <?php endif; ?>
+            <?php endif; ?>
 
 	        <?php if( $post_display_settings['title'] === 'show') : ?>
                 <h2 class="post-card__title">
@@ -92,6 +100,12 @@ while ($query->have_posts()) : $query->the_post();
 				        <?php echo esc_html($post_title); ?>
                     </a>
                 </h2>
+	        <?php endif; ?>
+
+	        <?php if( $post_display_settings['tags'] === 'show') : ?>
+                <div class="post-card__tags">
+			        <?php echo wp_kses_post($tag_list); ?>
+                </div>
 	        <?php endif; ?>
 
             <div class="post-card__meta">
