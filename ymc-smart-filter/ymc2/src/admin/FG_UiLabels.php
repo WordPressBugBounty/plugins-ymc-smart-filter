@@ -131,7 +131,8 @@ class FG_UiLabels {
 			'title'   => ['label' => 'Title',  'value' => 'show', 'tooltip' => 'Show or hide the post title'],
 			'image'   => ['label' => 'Image',  'value' => 'show', 'tooltip' => 'Show or hide the post image'],
 			'excerpt' => ['label' => 'Excerpt','value' => 'show', 'tooltip' => 'Show or hide the post excerpt'],
-			'button'  => ['label' => 'Button', 'value' => 'show', 'tooltip' => 'Show or hide the post button']
+			'button'  => ['label' => 'Button', 'value' => 'show', 'tooltip' => 'Show or hide the post button'],
+			'views'   => ['label' => 'Views', 'value' => 'show', 'tooltip' => 'Show or hide the post views']
 		],
 		'post_columns_layout' => [
 			'xl'  => '≥ 1200px',

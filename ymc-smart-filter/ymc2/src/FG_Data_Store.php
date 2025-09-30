@@ -116,7 +116,8 @@ class FG_Data_Store {
 			'excerpt' => 'show',
 			'button'  => 'show',
 			'read_time' => 'show',
-			'category' => 'show'
+			'category' => 'show',
+			'views' => 'show'
 		],
 
 		'ymc_fg_order_meta_key'        => '',
@@ -323,7 +324,9 @@ class FG_Data_Store {
 			'tax_settings' => [],
 			'display_all_levels' => 'true',
 			'update_mode' => 'auto'
-		]
+		],
+
+		'ymc_fg_post_views_count' => 0
 
 
 	];

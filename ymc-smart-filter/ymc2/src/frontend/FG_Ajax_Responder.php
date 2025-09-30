@@ -28,6 +28,8 @@ class FG_Ajax_Responder {
 		add_action('wp_ajax_load_dependent_terms',  array( __CLASS__, 'load_dependent_terms'));
 		add_action('wp_ajax_nopriv_load_dependent_terms', array( __CLASS__, 'load_dependent_terms'));
 
+		add_action('wp_ajax_update_track_view',  array( __CLASS__, 'update_track_view'));
+		add_action('wp_ajax_nopriv_update_track_view', array( __CLASS__, 'update_track_view'));
 	}
 
 	/**
@@ -831,6 +833,31 @@ class FG_Ajax_Responder {
 			'taxonomy' => $next_taxonomy,
 			'html'     => $html
 		]);
+	}
+
+
+	/**
+	 * Update post views
+	 *
+	 * @return void
+	 */
+	public static function update_track_view() : void {
+		if ( empty($_POST['post_id']) ) {
+			wp_send_json_error(['message' => 'No post_id']);
+		}
+
+		$post_id = (int) $_POST['post_id'];
+
+		if ( ! $post_id || get_post_status($post_id) === false ) {
+			wp_send_json_error(['message' => 'Invalid post']);
+		}
+
+		$views = (int) get_post_meta($post_id, 'ymc_fg_post_views_count', true);
+		$views++;
+		update_post_meta($post_id, 'ymc_fg_post_views_count', $views);
+
+		wp_send_json_success(['views' => $views]);
+		exit;
 	}
 
 }

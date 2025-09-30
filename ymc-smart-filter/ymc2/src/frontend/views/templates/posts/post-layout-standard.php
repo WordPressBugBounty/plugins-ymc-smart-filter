@@ -38,6 +38,7 @@ while ($query->have_posts()) : $query->the_post();
     $cat_list              = '';
 	$post_image            = ymc_post_image_size($post_id, $post_image_size);
 	$taxonomies            = ymc_get_attached_post_taxonomies($post_id);
+	$views                 =  Data_Store::get_meta_value($post_id, 'ymc_fg_post_views_count');
 
 	if ( ! empty( $taxonomies ) ) {
 		foreach ($taxonomies as $slug => $label) {
@@ -67,7 +68,7 @@ while ($query->have_posts()) : $query->the_post();
 	        <?php if( $post_display_settings['image'] === 'show') : ?>
                 <div class="post-card__image">
 			        <?php echo ( $is_image_clickable === 'yes' )
-				        ? '<a class="post-card__title-link'. esc_attr($popup_class_trigger) .'" 
+				        ? '<a class="post-card__title-link js-post-link'. esc_attr($popup_class_trigger) .'" 
                         href="'. esc_url($post_link) .'" 
                         target="'. esc_attr($target_option) .'"
                         data-grid-id="'. esc_attr($filter_id).'"
@@ -91,7 +92,7 @@ while ($query->have_posts()) : $query->the_post();
 
 	        <?php if( $post_display_settings['title'] === 'show') : ?>
                 <h2 class="post-card__title">
-                    <a class="post-card__title-link<?php echo esc_attr($popup_class_trigger); ?>"
+                    <a class="post-card__title-link js-post-link<?php echo esc_attr($popup_class_trigger); ?>"
                        href="<?php echo esc_url($post_link); ?>"
                        target="<?php echo esc_attr($target_option); ?>"
                        data-grid-id="<?php echo esc_attr($filter_id); ?>"
@@ -139,7 +140,7 @@ while ($query->have_posts()) : $query->the_post();
 	        <?php endif; ?>
 
 	        <?php if( $post_display_settings['button'] === 'show') : ?>
-                <a class="post-card__read-more<?php echo esc_attr($popup_class_trigger); ?>"
+                <a class="post-card__read-more js-post-link<?php echo esc_attr($popup_class_trigger); ?>"
                    href="<?php echo esc_url($post_link); ?>"
                    target="<?php echo esc_attr($target_option); ?>"
                    data-grid-id="<?php echo esc_attr($filter_id); ?>"
@@ -147,6 +148,10 @@ while ($query->have_posts()) : $query->the_post();
                    data-counter="<?php echo esc_attr($counter); ?>">
 			        <?php echo esc_html( $button_text); ?></a>
 	        <?php endif; ?>
+
+            <?php if( $post_display_settings['views'] === 'show') : ?>
+                <span class="post-card__views"><?php echo esc_html($views); ?></span>
+            <?php endif; ?>
 
         </div>
     </article>
