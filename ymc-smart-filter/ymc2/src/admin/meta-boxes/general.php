@@ -43,8 +43,12 @@ if (!defined( 'ABSPATH')) exit;
                 <div class="group-elements">
 	                <?php $is_hidden = empty(ymc_get_taxonomies($ymc_fg_post_types)) ? 'is-hidden' : ''; ?>
                     <div class="control-bar js-control-bar <?php echo esc_attr($is_hidden); ?>">
-                        <button class="btn btn-reload js-tax-updated js-btn-tooltip" title="<?php esc_attr_e('Update taxonomies.','ymc-smart-filter'); ?>"></button>
-                        <button class="btn btn-remove js-tax-clear js-btn-tooltip" title="<?php esc_attr_e('Remove terms of taxonomies.','ymc-smart-filter'); ?>"></button>
+                        <button class="button button--secondary btn-reload js-tax-updated js-btn-tooltip"
+                                data-tooltip-html="Update taxonomies."
+                                title="<?php esc_attr_e('Update taxonomies.','ymc-smart-filter'); ?>">
+                            <i class="reload"></i>
+                            <?php esc_html_e('Update Taxonomies','ymc-smart-filter'); ?>
+                        </button>
                     </div>
 	                <?php ymc_render_field_header('Taxonomy(s)', 'Select taxonomy(s). Sortable with Drag & Drop feature. 
 	                Taxonomy sorting does not apply to Combined filter type'); ?>
@@ -60,6 +64,24 @@ if (!defined( 'ABSPATH')) exit;
                         'Select terms. Sortable with Drag and Drop feature.<hr> To manually sort terms, enable the 
                         "Manual (Custom Order)" option in the <b>Appearance -> Filter Settings -> Term Sort Direction</b> section.'); ?>
                 </div>
+
+                <div class="group-elements">
+                    <div class="control-bar">
+                        <button class="button button--secondary btn-reload js-terms-updated js-btn-tooltip"
+                                data-tooltip-html="<?php esc_attr_e('Update all terms and their attributes..','ymc-smart-filter'); ?>"
+                                title="<?php esc_attr_e('Update all terms and their attributes..','ymc-smart-filter'); ?>">
+                            <i class="reload"></i>
+		                    <?php esc_html_e('Update Terms','ymc-smart-filter'); ?>
+                        </button>
+                        <button class="button button--secondary btn-remove js-tax-clear js-btn-tooltip"
+                                data-tooltip-html="<?php esc_attr_e('Delete all taxonomy terms and their attributes.','ymc-smart-filter'); ?>"
+                                title="<?php esc_attr_e('Delete all taxonomy terms and their attributes.','ymc-smart-filter'); ?>">
+                            <i class="fa-solid fa-trash"></i>
+		                    <?php esc_html_e('Delete Terms','ymc-smart-filter'); ?>
+                        </button>
+                    </div>
+                </div>
+
                 <div class="group-elements">
                     <div class="terms-wrapper ">
                         <div class="terms-grid js-term-insert">

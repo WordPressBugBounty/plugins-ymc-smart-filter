@@ -429,10 +429,20 @@ class FG_Ajax_Admin {
 			return (array) $item;
 		}, $payload->term_attrs);
 
-		$updated = update_post_meta( $post_id, 'ymc_fg_term_attrs', $term_attrs );
+		$result = update_post_meta( $post_id, 'ymc_fg_term_attrs', $term_attrs );
+
+		if ( $result === false ) {
+			$status = 'not_updated';
+		} elseif ( $result === true ) {
+			$status = 'updated';
+		} elseif ( is_numeric( $result ) ) {
+			$status = 'added';
+		} else {
+			$status = 'unknown';
+		}
 
 		$data = array(
-			'response' => $updated,
+			'response' => $status,
 			'message' => __('Term saved', 'ymc-smart-filter')
 		);
 		wp_send_json($data);
