@@ -4,7 +4,7 @@
  *
  * Plugin Name:       Filter & Grids
  * Description:       A powerful and flexible plugin to filter and display posts, custom post types, and other content in responsive grid layouts.
- * Version:           3.1.5
+ * Version:           3.1.6
  * Author:            YMC
  * Author URI:        https://github.com/YMC-22/Filter-Grids/
  * License:           GPL-2.0-or-later

@@ -136,7 +136,12 @@ defined( 'ABSPATH' ) || exit; ?>
                           </div>
 	                  <?php endif; ?>
 
-	                  <?php if( $post_display_settings['button'] === 'show') : ?>
+	                  <?php if( $post_display_settings['button'] === 'show') :
+		                  if ( ! empty( $button_text ) ) {
+			                  do_action( 'wpml_register_single_string', 'ymc-smart-filter', 'Post Button Text', $button_text );
+			                  $button_text = apply_filters( 'wpml_translate_single_string', $button_text, 'ymc-smart-filter', 'Post Button Text' );
+		                  }
+                          ?>
                           <a class="post-card__read-more<?php echo esc_attr($popup_class_trigger); ?>"
                              href="<?php echo esc_url($post_link); ?>"
                              target="<?php echo esc_attr($target_option); ?>"

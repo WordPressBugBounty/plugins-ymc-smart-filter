@@ -27,16 +27,23 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 
         // Get all button settings
 		$filter_all_button = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_all_button');
-		$all_button_label = 'All';
 		$is_visible_all_button = 'yes';
+
 		foreach ($tax_name as $tax) {
 			if (!empty($filter_all_button[$tax])) {
 				$settings = $filter_all_button[$tax];
-				$all_button_label = !empty($settings['all_label']) ? $settings['all_label'] : 'All';
+				if (!empty($settings['all_label'])) {
+					do_action( 'wpml_register_single_string', 'ymc-smart-filter', 'All Button Label', $settings['all_label'] );
+					$all_button_label = $settings['all_label'];
+				} else {
+					$all_button_label = __( 'All', 'ymc-smart-filter' );
+				}
 				$is_visible_all_button = $settings['is_visible'] ?? 'yes';
 				break;
 			}
 		}
+
+		$translated_label = apply_filters( 'wpml_translate_single_string', $all_button_label, 'ymc-smart-filter', 'All Button Label' );
 
 		// Get selection mode
 		$is_multiple_mode  = Data_Store::get_meta_value($filter_id, 'ymc_fg_selection_mode');
@@ -78,7 +85,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
                         <span class="text">
                         <?php
                         // phpcs:ignore WordPress
-                        echo esc_html(sprintf(__( '%s', 'ymc-smart-filter' ), $all_button_label)); ?></span>
+                        echo esc_html( $translated_label ); ?></span>
                     </button>
 
                     <?php

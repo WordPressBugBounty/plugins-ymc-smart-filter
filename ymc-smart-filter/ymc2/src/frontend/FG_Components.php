@@ -170,8 +170,8 @@ class FG_Components {
 	 */
 	public static function render_search_bar(int $filter_id, bool $show_search = false) : void {
 		$search_enable         = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_enable');
-		$submit_button_text    = Data_Store::get_meta_value($filter_id, 'ymc_fg_submit_button_text');
-		$search_placeholder    = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_placeholder');
+		$submit_button_text = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_submit_button_text'), 'ymc-smart-filter' );
+		$search_placeholder = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_search_placeholder'), 'ymc-smart-filter' );
 		$autocomplete_enabled  = Data_Store::get_meta_value($filter_id, 'ymc_fg_autocomplete_enabled');
 		$search_mode           = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_mode');
 
@@ -199,7 +199,7 @@ class FG_Components {
 	public static function render_sort_bar(int $filter_id, bool $show_sort = false) : void {
 		$sort_enable  = Data_Store::get_meta_value($filter_id, 'ymc_fg_enable_sort_posts');
 		$allowed_sort_fields  = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_sortable_fields');
-		$sort_dropdown_label  = Data_Store::get_meta_value($filter_id, 'ymc_fg_sort_dropdown_label');
+		$sort_dropdown_label  = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_sort_dropdown_label'), 'ymc-smart-filter' );
 
 		if (isset($sort_enable) && $sort_enable === 'yes' || $show_sort) :
 			Template::render(__DIR__ . '/views/templates/sort/tmpl-sort.php',
