@@ -4,6 +4,7 @@ namespace YMCFilterGrids\admin;
 use YMCFilterGrids\FG_Data_Store as Data_Store;
 use YMCFilterGrids\admin\FG_Term as Term;
 use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
+use YMCFilterGrids\FG_Template as Template;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,6 +34,8 @@ class FG_Ajax_Admin {
 		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));
 		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms'));
 		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms'));
+		add_action('wp_ajax_action_load_usage_page', array( __CLASS__, 'ajax_load_usage_pages'));
+		add_action('wp_ajax_action_scan_existing_posts', array( __CLASS__, 'ajax_scan_existing_posts'));
 	}
 
 	/**
@@ -766,6 +769,184 @@ class FG_Ajax_Admin {
 
 	}
 
+	/**
+	 * Load usage page for filter
+	 * @return void
+	 */
+	public static function ajax_load_usage_pages() : void {
+		check_ajax_referer('usege-filters-pagin-ajax-ajax-nonce', 'nonce_code');
+
+		$filter_id  = absint( $_POST['filter_id'] ?? 0 );
+		$paged      = max( 1, absint( $_POST['page'] ?? 1 ) );
+		$post_types = get_post_types( [ 'public' => true ], 'names' );           
+      $post_types = array_diff( $post_types, [ 'attachment', 'nav_menu_item' ] );         
+      $post_types = apply_filters( 'ymc_fg_usage_post_types', $post_types ); 
+
+		if ( ! $filter_id ) {
+			wp_send_json_error();
+		}
+
+		ob_start();
+
+		$args = [
+			'post_type'      => $post_types,
+			'post_status'    => [ 'publish', 'draft', 'private', 'pending', 'future' ],
+			'posts_per_page' => 20,
+			'paged'          => $paged,
+			'meta_query'     => [
+				[
+					'key'     => 'ymc_fg_filter_usage',
+					'value'   => 'i:' . $filter_id . ';',
+					'compare' => 'LIKE',
+				],
+			],
+			'orderby' => 'title',
+			'order'   => 'ASC',
+		];
+
+		$query = new \WP_Query( $args );
+
+		if ( $query->have_posts() ) {
+
+			while ( $query->have_posts() ) {
+				$query->the_post();
+				$post_id  = get_the_ID();				
+
+				Template::render(YMC_ABSPATH . '/src/admin/php-templates/tmpl-usage-filter.php',
+					[
+						'post_id' => $post_id
+					] );
+			}
+		}		
+
+		wp_reset_postdata();
+
+		wp_send_json_success( [
+			'html'  => ob_get_clean(),
+			'page'  => $paged,
+			'pages' => $query->max_num_pages,
+		] );
+		
+	}
+
+
+	/**
+	 * Scan existing posts for usage of filters
+	 * @return void
+	 */
+	public static function ajax_scan_existing_posts() : void {
+
+		check_ajax_referer( 'scan_existing_posts-ajax-ajax-nonce', 'nonce_code' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( 'Permission denied' );
+		}
+
+		$paged = max( 1, absint( $_POST['page'] ?? 1 ) );
+		$per_page = 20;
+		$post_types = get_post_types( [ 'public' => true ], 'names' );           
+      $post_types = array_diff( $post_types, [ 'attachment', 'nav_menu_item' ] );         
+      $post_types = apply_filters( 'ymc_fg_usage_post_types', $post_types ); 
+
+		$args = [
+			'post_type'      => $post_types,
+			'post_status'    => [ 'publish', 'draft', 'private', 'pending', 'future' ],
+			'posts_per_page' => $per_page,
+			'paged'          => $paged,
+			'fields'         => 'ids',
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+			'no_found_rows'  => false,
+		];
+
+		$query = new \WP_Query( $args );
+
+		$processed = 0;
+		$updated   = 0;
+		$updated_by_type = [];
+		$filters_touched = [];
+
+		foreach ( $query->posts as $post_id ) {
+
+			$processed++;
+
+			$content = get_post_field( 'post_content', $post_id );
+			if ( ! $content ) {
+				continue;
+			}
+
+			$new_filters = array_values(
+				array_unique(
+					array_map( 'absint', ymc_extract_filter_ids_from_content( $content ) )
+				)
+			);
+
+			$old_filters = get_post_meta( $post_id, 'ymc_fg_filter_usage', true );
+			$old_filters = is_array( $old_filters ) ? array_map( 'absint', $old_filters ) : [];
+			
+			if ( empty( $new_filters ) && empty( $old_filters ) ) {
+				continue;
+			}
+			
+			if ( empty( $new_filters ) && ! empty( $old_filters ) ) {
+
+				delete_post_meta( $post_id, 'ymc_fg_filter_usage' );
+				$updated++;
+
+				foreach ( $old_filters as $fid ) {
+					$filters_touched[ $fid ] = true;
+				}
+
+				continue;
+			}
+
+		
+			sort( $new_filters );
+			sort( $old_filters );
+
+			if ( $new_filters === $old_filters ) {
+				continue;
+			}
+			
+			update_post_meta( $post_id, 'ymc_fg_filter_usage', $new_filters );
+			$updated++;
+
+			$post_type = get_post_type( $post_id );
+			$pt_object = $post_type ? get_post_type_object( $post_type ) : null;
+
+			if ( $pt_object && ! empty( $pt_object->labels->singular_name ) ) {
+				$label = $pt_object->labels->singular_name;
+				$updated_by_type[ $label ] = ( $updated_by_type[ $label ] ?? 0 ) + 1;
+			}
+
+			$filters_to_touch = array_unique(
+				array_merge( $old_filters, $new_filters )
+			);
+
+			foreach ( $filters_to_touch as $fid ) {
+				$filters_touched[ $fid ] = true;
+			}
+
+		}
+	
+		if ( $updated === 0 ) {
+			$updated_by_type = [];
+		}
+		
+		foreach ( array_keys( $filters_touched ) as $filter_id ) {
+			delete_transient( 'ymc_fg_usage_summary_' . $filter_id );
+		}
+
+		wp_send_json_success( [
+			'page'      => $paged,
+			'processed' => $processed,
+			'updated'   => $updated,
+			'updated_by_type' => $updated_by_type,
+			'total'     => (int) $query->found_posts,
+			'has_more'  => ( $paged < $query->max_num_pages ),
+			'next_page' => $paged + 1,
+		] );
+	}
 
 
 

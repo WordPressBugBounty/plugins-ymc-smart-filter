@@ -33,7 +33,7 @@ defined( 'ABSPATH' ) || exit; ?>
 	        $post_date_format      = apply_filters('ymc/post/layout/date_format_'. $filter_id .'_'. $counter, $post_date_format);
 
 	        $post_date             = get_the_date($post_date_format, $post_id);
-	        $post_author           = get_the_author($post_id);
+	        $post_author           = get_the_author();
 	        $post_excerpt          = get_the_excerpt($post_id);
 	        $all_terms             = ymc_get_all_post_terms($post_id);
 	        $tag_list              = '';

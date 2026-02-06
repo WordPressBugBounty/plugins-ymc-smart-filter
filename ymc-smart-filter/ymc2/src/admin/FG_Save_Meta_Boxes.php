@@ -16,7 +16,10 @@ class FG_Save_Meta_Boxes {
 	 * Hook in methods.
 	 */
 	public static function init() : void {
+		
 		add_action( 'save_post_ymc_filters', array(__CLASS__, 'save_meta_boxes'), 10, 2);
+		
+		add_action( 'save_post', [ __CLASS__, 'handle_save_post' ], 10, 2 );
 	}
 
 
@@ -406,8 +409,65 @@ class FG_Save_Meta_Boxes {
 			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_filter_dependent_settings'])) : [];
 		update_post_meta($post_id, 'ymc_fg_filter_dependent_settings', $filter_dependency_settings);
 
+		// Performance & Behavior Settings
+		$filter_dropdown_setting = isset($_POST['ymc_fg_filter_dropdown_setting'])
+			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_filter_dropdown_setting'])) : [];
+		if (empty($filter_dropdown_setting['threshold'])) {
+			$filter_dropdown_setting['threshold'] = 40;
+		}
+		update_post_meta($post_id, 'ymc_fg_filter_dropdown_setting', $filter_dropdown_setting);
 
+		// Show post types visible only in admin
+		$show_hidden_cpt = isset($_POST['ymc_fg_show_hidden_cpt'])
+			? sanitize_text_field(wp_unslash($_POST['ymc_fg_show_hidden_cpt'])) : 'no';
+		update_post_meta($post_id, 'ymc_fg_show_hidden_cpt', $show_hidden_cpt);
 
+	}
+
+	public static function handle_save_post( int $post_id, object $post ) : void {
+		
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		if ( 'ymc_filters' === $post->post_type ) {
+			return;
+		}
+
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return;
+		}
+		
+		$post_types = get_post_types( [ 'public' => true ], 'names' );
+		$post_types = apply_filters( 'ymc_fg_usage_post_types', $post_types );
+
+		if ( ! in_array( $post->post_type, $post_types, true ) ) {
+			return;
+		}
+	
+		$old_filters = get_post_meta( $post_id, 'ymc_fg_filter_usage', true );
+		$old_filters = is_array( $old_filters )
+			? array_map( 'absint', $old_filters )
+			: [];
+		
+		$new_filters = ymc_extract_filter_ids_from_content( $post->post_content );
+		$new_filters = is_array( $new_filters )
+			? array_values( array_unique( array_map( 'absint', $new_filters ) ) )
+			: [];
+		
+		if ( empty( $new_filters ) ) {
+			delete_post_meta( $post_id, 'ymc_fg_filter_usage' );
+		} else {
+			update_post_meta( $post_id, 'ymc_fg_filter_usage', $new_filters );
+		}
+	
+		$filters_to_clear = array_unique(
+			array_merge( $old_filters, $new_filters )
+		);
+
+		foreach ( $filters_to_clear as $filter_id ) {
+			delete_transient( 'ymc_fg_usage_summary_' . absint( $filter_id ) );
+		}
 	}
 
 }

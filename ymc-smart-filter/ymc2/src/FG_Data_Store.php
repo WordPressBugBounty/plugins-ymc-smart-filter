@@ -326,8 +326,16 @@ class FG_Data_Store {
 			'update_mode' => 'auto'
 		],
 
-		'ymc_fg_post_views_count' => 0
+		'ymc_fg_post_views_count' => 0,
 
+		'ymc_fg_filter_dropdown_setting' => [
+			'threshold' => 40,
+			//'batch_size'     => 30,
+			//'search_enabled' => true,
+			//'lazy_load'      => true
+		],
+
+		'ymc_fg_show_hidden_cpt' => 'no'
 
 	];
 
@@ -355,7 +363,7 @@ class FG_Data_Store {
 	public static function get_all_meta_values(int $post_id) : array {
 		$values = [];
 		foreach(self::$stores as $key => $value) {
-			$values[$key] = self::get_meta_value($post_id, $key);
+			$values[$key] = self::get_meta_value($post_id, (string) $key);
 		}
 		$values['ymc_fg_post_id'] = $post_id;
 		return $values;

@@ -22,8 +22,9 @@ class FG_UiLabels {
 			'range_slider'    => 'Range Slider',
 			'date_picker'     => 'Date Picker',
 			'dependent'       => 'Dependent Filter',
+			'alphabetical'    => 'Alphabetical Navigation',
 			'custom'          => 'Custom filter',
-			'composite'       => 'Combined filter'
+			'composite'       => 'Combined filter'			
 		],
 		'placements' => [
 			'top'    => 'Top',
@@ -327,7 +328,7 @@ class FG_UiLabels {
 			'grid'    => 'Standard Grid',
 			'masonry' => 'Masonry'
 		],
-		'ymc_fg_carousel_settings'     => [
+		'ymc_fg_carousel_settings' => [
 			'general' => [
 				'auto_height'      => [ 'true', 'false'],
 				'autoplay'         => [ 'true', 'false'],
@@ -352,9 +353,6 @@ class FG_UiLabels {
 				'visible'          => [ 'true', 'false'],
 			]
 		]
-
-
-
 
 	];
 

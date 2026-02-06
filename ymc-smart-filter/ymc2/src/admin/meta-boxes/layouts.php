@@ -61,7 +61,7 @@ if (!defined( 'ABSPATH')) exit;
                             </div>
                             <div class="filter-builder-header-cell filter-builder-header-cell--filter-type">
 				                <?php ymc_render_field_header('Filter Type', 'Select filter type(s).<br> 
-                                For the filters type "Date Picker", "Dependent Filter" categories are ignored.'); ?>
+                                For the filters type "Date Picker", "Dependent Filter", "Alphabetical Navigation" categories are ignored.'); ?>
                             </div>
                             <div class="filter-builder-header-cell filter-builder-header-cell--placement">
 				                <?php ymc_render_field_header('Filter Position', 'Select the filter placement zone.'); ?>
@@ -205,13 +205,13 @@ if (!defined( 'ABSPATH')) exit;
 		                    <?php ymc_render_field_header('Column Gap',
 			                    'Controls the horizontal spacing between columns in the post grid.'); ?>
                             <input class="form-input input-grid_gap" type="number" name="ymc_fg_post_grid_gap[column_gap]"
-                                   value="<?php echo esc_attr( $ymc_fg_post_grid_gap['column_gap'] ?? 30 ); ?>"  min="0" max="50" step="10" />
+                                   value="<?php echo esc_attr( $ymc_fg_post_grid_gap['column_gap'] ?? 30 ); ?>"  min="0" max="60" step="5" />
                         </div>
                         <div class="input-group">
 		                    <?php ymc_render_field_header('Row Gap',
 			                    'Controls the vertical spacing between rows in the post grid.'); ?>
                             <input class="form-input input-grid_gap" type="number" name="ymc_fg_post_grid_gap[row_gap]"
-                                   value="<?php echo esc_attr( $ymc_fg_post_grid_gap['row_gap'] ?? 30 ); ?>"  min="0" max="50" step="10" />
+                                   value="<?php echo esc_attr( $ymc_fg_post_grid_gap['row_gap'] ?? 30 ); ?>"  min="0" max="60" step="5" />
                         </div>
                     </div>
                 </div>
@@ -578,7 +578,7 @@ if (!defined( 'ABSPATH')) exit;
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Custom Swiper Settings',
                         "Enable to ignore the plugin's default Swiper configuration and define your own settings in your theme's JavaScript files. 
-                        Keep disabled to use the plugin's built-in defaults."); ?>
+                        Use the following JS hooks for this: 'ymc/grid/after_update' or 'ymc/grid/after_complete'. Keep disabled to use the plugin's built-in defaults."); ?>
                     <div class="field-description">The carousel is implemented using the <a href='https://swiperjs.com/swiper-api#parameters' target='_blank'>Swiper API</a>.
                         <a class="tooltip-trigger js-tooltip-trigger" href="#" >Usage example:</a>
                         <div class="field-example js-field-example">

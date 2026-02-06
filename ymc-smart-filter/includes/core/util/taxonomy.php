@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 
 <div id="config-taxonomy" class="config-taxonomy" style="display:none;">
 

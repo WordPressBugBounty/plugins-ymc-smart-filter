@@ -1,3 +1,6 @@
+<?php 
+
+defined( 'ABSPATH' ) || exit; ?>
 
 <div class="thickbox-term-modal" id="thickbox-term-modal" style="display:none;">
     <div class="thickbox-inner">

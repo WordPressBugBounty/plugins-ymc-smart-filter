@@ -19,12 +19,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @return array
  */
 if (! function_exists( 'ymc_get_post_types' )) {
-	function ymc_get_post_types($exclude_posts = []) {
-		$post_types = get_post_types( [ 'public' => true ], 'names' );
-		if( count($exclude_posts) > 0 ) {
+	function ymc_get_post_types( $exclude_posts = [], $show_admin_only = false ) {
+
+		$args = $show_admin_only
+			? [ 'show_ui' => true ]
+			: [ 'public' => true ];
+
+		$post_types = get_post_types( $args, 'names' );
+
+		if ( ! empty( $exclude_posts ) ) {
 			foreach ( $exclude_posts as $value ) {
-				$pos = array_search( $value, $post_types );
-				unset($post_types[$pos]);
+				if ( isset( $post_types[$value] ) ) {
+					unset( $post_types[$value] );
+				}
 			}
 		}
 		ksort( $post_types, SORT_ASC );
@@ -156,11 +163,24 @@ if (! function_exists( 'ymc_build_filter_options_from_post')) {
 			}
 			else {
 				if($filter_options) {
-					foreach ($filter_options as $option) {
-						$tax_name = !empty( $option['tax_name'] ) && is_array($option['tax_name'])
-                            ? array_map( 'sanitize_text_field', $option['tax_name'] )
-                            : ( $option['filter_type'] === 'date_picker' ? [ 'date_picker' ] :
-                              ( $option['filter_type'] === 'dependent' ? [ 'dependent' ] : [] ));
+
+					// If the filter is not taxonomic, tax_name must be an empty array.
+					$filters_without_tax = [
+						'date_picker',
+						'alphabetical'	
+					];
+
+					foreach ($filter_options as $option) {					
+
+						if ( ! empty( $option['tax_name'] ) && is_array( $option['tax_name'] ) ) {
+							$tax_name = array_map( 'sanitize_text_field', $option['tax_name'] );
+						}							
+						elseif ( in_array( $filter_type, $filters_without_tax, true ) ) {
+							$tax_name = [];
+						}							
+						else {
+							$tax_name = [];
+						}
 
 						$filter_type = !empty($option['filter_type'])
 							? sanitize_text_field($option['filter_type'])
@@ -192,15 +212,21 @@ if (! function_exists( 'ymc_build_filter_options_from_post')) {
  * @return mixed
  */
 if (! function_exists( 'ymc_sanitize_array_recursive')) {
-	function ymc_sanitize_array_recursive($array) {
-		foreach ($array as $key => &$value) {
-			if (is_array($value)) {
-				$value = ymc_sanitize_array_recursive($value);
+	function ymc_sanitize_array_recursive($value) {
+
+		if (! is_array($value)) {
+			return sanitize_text_field($value);
+		}
+
+		foreach ($value as $key => &$item) {
+			if (is_array($item)) {
+				$item = ymc_sanitize_array_recursive($item);
 			} else {
-				$value = sanitize_text_field($value);
+				$item = sanitize_text_field($item);
 			}
 		}
-		return $array;
+
+		return $value;
 	}
 }
 
@@ -694,5 +720,35 @@ if (! function_exists( 'ymc_get_attached_post_taxonomies')) {
 	}
 }
 
+/**
+ * Extracts filter IDs from content
+ * 
+ * @param string $content
+ * @return array
+ */
+if (! function_exists( 'ymc_extract_filter_ids_from_content')) {
+	function ymc_extract_filter_ids_from_content( string $content ) : array {
 
+		$ids = [];
+
+		if ( empty( $content ) ) {
+			return $ids;
+		}
+
+		preg_match_all(
+			'/\[ymc_filter\s+[^]]*id=["\']?(\d+)["\']?[^]]*\]/i',
+			$content,
+			$matches
+		);
+
+		if ( ! empty( $matches[1] ) ) {
+			foreach ( $matches[1] as $id ) {
+				$ids[] = (int) $id;
+			}
+		}
+
+		return $ids;
+	}
+
+}
 

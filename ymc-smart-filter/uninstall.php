@@ -178,7 +178,10 @@ $meta_keys = [
 	"ymc_fg_carousel_settings",
 	"ymc_fg_filtered_posts_label",
 	"ymc_fg_filter_dependent_settings",
-	"ymc_fg_post_views_count"
+	"ymc_fg_post_views_count",
+	"ymc_fg_filter_dropdown_setting",
+	"ymc_fg_show_hidden_cpt",
+	"ymc_fg_filter_usage"
 
 ];
 

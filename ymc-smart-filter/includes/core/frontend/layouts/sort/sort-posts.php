@@ -1,3 +1,5 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
+
 <?php
 
 $sort_text = __('Sort','ymc-smart-filter');

@@ -153,6 +153,15 @@ class FG_Meta_Boxes {
                             </button>
                             <span class="dashicons dashicons-tag"></span>
                         </li>
+								<li class="nav__item" data-hash="usage">
+									<button class="button" type="button" aria-label="button">
+										<span class="button__text"><?php echo esc_html__('Usage','ymc-smart-filter'); ?></span>
+										<span class="button__description">
+											<?php echo esc_html__('Where this filter is used','ymc-smart-filter'); ?>												
+										</span>
+									</button>
+									<span class="dashicons dashicons-admin-links"></span>
+								</li>
                         <li class="nav__item" data-hash="shortcode">
                             <button class="button" type="button" aria-label="button">
                                 <span class="button__text"><?php echo esc_html__('Shortcode','ymc-smart-filter'); ?></span>
@@ -188,6 +197,7 @@ class FG_Meta_Boxes {
                         'search'     => 'Search',
                         'typography' => 'Typography',
                         'advanced'   => 'Advanced',
+                        'usage'   	 => 'Usage',
                         'shortcode'  => 'Shortcode',
                         'tools'      => 'Tools'
                     ];

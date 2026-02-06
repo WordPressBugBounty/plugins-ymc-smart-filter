@@ -22,11 +22,11 @@ use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes, FG_Ajax_Respond
 final class YMC_Filter_Grids {
 
 	/**
-	 * YMC_Filter_Grids version.
+	 * Filter & Grids version.
 	 *
 	 * @var string
 	 */
-	public string $version = '3.1.6';
+	public string $version = '3.5.1';
 
 
 	/**
@@ -113,7 +113,7 @@ final class YMC_Filter_Grids {
 	public static function is_legacy() : string {
 		$option = 'ymc_plugin_legacy_is';
 		if( false === get_option($option)) {
-			update_option($option, 'yes', false);
+			update_option($option, 'no', false);
 		}
 		return get_option($option);
 	}
@@ -157,8 +157,17 @@ final class YMC_Filter_Grids {
 			case 'frontend' :
 				return ! is_admin();
 			default :
-				 wp_die('Unknown request type.');
+				wp_die(
+					sprintf(
+						/* translators: %s: request type string (admin or frontend). */
+						esc_html__( 'Unknown request type: %s', 'ymc-smart-filter' ),
+						esc_html( $type )
+					)
+				);
+
 		}
+
+		return false;
 	}
 
 
@@ -198,17 +207,17 @@ final class YMC_Filter_Grids {
 		/**
 		 * Core classes.
 		 */
-		if($this->is_request( 'frontend')) {
+		if($this->is_request('frontend')) {
 			FG_Frontend_Scripts::init();
 			FG_Shortcodes::init();
 		}
-		if($this->is_request( 'admin')) {
+		if($this->is_request('admin')) {
 			FG_Backend_Scripts::init();
 			FG_Post_Type::init();
 			FG_Meta_Boxes::init();
 			FG_Save_Meta_Boxes::init();
 			FG_General_Settings::init();
-			// TODO: Enable license manager when licensing system is ready.
+			// TODO: Enable license manager
 			// FG_License_Manager::init();
 		}
 

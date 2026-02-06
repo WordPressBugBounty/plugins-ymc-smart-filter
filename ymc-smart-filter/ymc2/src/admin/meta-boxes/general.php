@@ -23,11 +23,29 @@ if (!defined( 'ABSPATH')) exit;
 	                <?php ymc_render_field_header('Post Type(s)', 'Select one ore more posts. To select multiple posts,
 	             hold down the key Ctrl. For a more complete display of posts in the grid, set the "Taxonomy Relation" 
 	             option to OR.'); ?>
+                    <?php
+                        $include_hidden_cpt = ($ymc_fg_show_hidden_cpt === 'yes');
+                        $post_types = ymc_get_post_types([
+                            'attachment',
+                            'popup',
+                            'revision',
+                            'ymc_filters',
+                            'wp_navigation',
+                            'wp_block',
+                            'acf-field-group',
+                            'acf-field',
+                            'acf-post-type',
+                            'acf-taxonomy',
+                            'acf-ui-options-page',
+                            'nav_menu_item',
+                            'user_request'
+                        ], $include_hidden_cpt);
+                    ?>
+
                     <select class="form-select form-select--multiple js-post-types" id="ymc-post-types"
                             data-previous-value="<?php echo esc_attr(implode(',',$ymc_fg_post_types)); ?>"
                             name="ymc_fg_post_types[]" multiple>
 		                <?php
-		                $post_types = ymc_get_post_types(['attachment', 'popup']);
 		                foreach( $post_types as $cpt ) {
 			                $cpt_sel = ( false !== array_search($cpt, $ymc_fg_post_types) ) ? 'selected' : '';
 			                echo "<option value='" . esc_attr($cpt) ."' ". esc_attr($cpt_sel) .">" .
@@ -36,6 +54,15 @@ if (!defined( 'ABSPATH')) exit;
 		                ?>
                     </select>
 	                <?php wp_nonce_field( 'ymc_admin_data_save','ymc_admin_data_nonce' ); ?>
+                </div>
+                <div class="spacer-25"></div>
+                <div class="group-elements">
+	                <?php ymc_render_field_header('Show post types visible only in admin', 'Enable this to include post types that are not public but still appear in the WordPress admin interface.'); ?>
+                    <div class="group-elements">
+                        <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_show_hidden_cpt"
+                               id="ymc_fg_show_hidden_cpt" <?php checked( $ymc_fg_show_hidden_cpt, 'yes' );  ?>>
+                        <label class="field-label" for="ymc_fg_show_hidden_cpt"><?php esc_html_e('Include admin-only post types', 'ymc-smart-filter'); ?></label>
+                    </div>
                 </div>
             </fieldset>
 
@@ -305,7 +332,7 @@ if (!defined( 'ABSPATH')) exit;
                                name="ymc_fg_filter_dependent_settings[update_mode]"
                                value="apply"
 	                    <?php checked( $ymc_fg_filter_dependent_settings['update_mode'] ?? '', 'apply'); ?>>
-	                    <?php esc_html_e('Update on Apply Button)', 'ymc-smart-filter'); ?></label>
+	                    <?php esc_html_e('Update on Apply Button', 'ymc-smart-filter'); ?></label>
                 </div>
                 <div class="spacer-15"></div>
             </fieldset>

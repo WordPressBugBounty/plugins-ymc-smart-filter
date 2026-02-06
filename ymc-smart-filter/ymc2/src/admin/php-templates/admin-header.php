@@ -1,4 +1,9 @@
-<?php global $post_new_file, $post_type_object, $post; ?>
+<?php 
+
+defined( 'ABSPATH' ) || exit;
+
+global $post_new_file, $post_type_object, $post; ?>
+
 <div class='ymc-admin-toolbar'>
 	<div class='logo'><img src='<?php echo esc_url(YMC_PLUGIN_URL) ?>assets/images/YMC-logos.svg' alt='Logo'></div>
 </div>

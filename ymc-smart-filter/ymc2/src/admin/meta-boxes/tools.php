@@ -45,10 +45,9 @@ if (!defined( 'ABSPATH')) exit;
 		                'Import plugin settings from a previously exported JSON file. <br>
                         <b>IMPORTANT!</b> Before importing data, make sure that you already have Post Types and Taxonomies that 
                         were exported from other filters.'); ?>
-                    <div class="spacer-25"></div>
+                    <div class="spacer-15"></div>
 
-                    <div class="notify-wrapper"></div>
-                    <div class="spacer-25"></div>
+                    <div class="notify-wrapper"></div>                    
 
                     <div class="import-settings-wrap">
                         <input class="input-file js-file-import-settings" type="file" id="file-import-settings" accept=".json">

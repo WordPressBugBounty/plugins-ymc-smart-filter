@@ -1,11 +1,11 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.1.6
+Version: 3.5.1
 Donate link: https://github.com/YMC-22/Filter-Grids
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
-Tested up to: 6.8
+Tested up to: 6.9
 Stable tag: trunk
 Requires PHP: 7.2
 License: GPLv2 or later
@@ -76,6 +76,29 @@ If you prefer using the old version of Filter & Grids, you can enable **Legacy M
 
 == Changelog ==
 
+= 3.5.0 =
+Added Usage tab for filters, allowing administrators to see a list of pages and posts where each filter is used.
+= 3.4.1 =
+Improved recursive sanitization function to safely handle both arrays and strings.
+= 3.4.0 =
+Added Filter Alphabetical
+= 3.3.4 =
+Refactored Data Store.
+= 3.3.3 =
+* New installations now use the latest plugin version (v3.x) by default.
+* No changes for existing users — legacy installations remain fully supported.
+= 3.3.0 =
+Added: New option "Show post types visible only in admin" to allow selecting custom post types that are not public but still visible in the WordPress admin area.
+= 3.2.3 =
+Fixed Custom Swiper bug.
+= 3.2.2 =
+Guaranteed initialization with retries, MutationObserver support, WeakSet deduplication, and cache handling.
+= 3.2.1 =
+Fixed Security.
+= 3.2.0 =
+Improved Dropdown filter:
+- Added search field with live term lookup.
+- Implemented lazy loading for large term lists.
 = 3.1.6 =
 Fixed translations of components for WPML.
 = 3.1.5 =
@@ -89,13 +112,7 @@ Fixed a bug with the Truncate Post Excerpt.
 = 3.1.1 =
 Fixed a bug JS popup.
 = 3.1.0 =
-* Added new **Dependent Filter** (linked dropdowns) with support for:
-  - Configurable taxonomy sequence
-  - Modes: **Single** / **Multiple** selection per taxonomy
-  - Root Source option (Top-level terms or Manual selection)
-  - Display all levels with placeholders
-  - Update modes: Auto Update / Update on Apply Button
-  - Related Terms management for advanced connections between taxonomies
+Added new **Dependent Filter** (linked dropdowns).
 = 3.0.2 =
 Added new option for the number of filtered posts to display.
 = 3.0.1 =
@@ -106,4 +123,7 @@ Added new features, updated grid layouts, and enhanced page builder integration.
 
 == Video ==
 https://www.youtube.com/watch?v=nzyeC6jeMHo&ab_channel=YMC
+
+
+
 

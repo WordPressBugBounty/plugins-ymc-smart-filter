@@ -1,3 +1,8 @@
+<?php
+
+defined( 'ABSPATH' ) || exit; ?>
+
+
 <div class="thickbox-tax-modal" id="thickbox-tax-modal" style="display:none;">
     <div class="thickbox-inner">
         <div class="toolbar">

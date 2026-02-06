@@ -8,6 +8,7 @@ use YMCFilterGrids\abstracts\FG_Creator_Filter_Dropdown as Filter_Dropdown;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Dependent as Filter_Dependent;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Range_Slider as Filter_Range_Slider;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Date_Picker as Filter_Date_Picker;
+use YMCFilterGrids\abstracts\FG_Creator_Filter_Alphabetical as Filter_Alphabetical;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Custom as Filter_Custom;
 use YMCFilterGrids\FG_Data_Store as Data_Store;
 use YMCFilterGrids\FG_Template as Template;
@@ -83,16 +84,24 @@ class FG_Components {
 			'range_slider' => Filter_Range_Slider::class,
 			'date_picker'  => Filter_Date_Picker::class,
 			'dependent'    => Filter_Dependent::class,
+			'alphabetical' => Filter_Alphabetical::class,
 			'custom'       => Filter_Custom::class
+		]; 
+
+		$filters_without_tax = [
+			'alphabetical',
+			'date_picker'			
 		];
 
 		foreach ($filter_options as $value) {
-			if ($placement !== ($value['placement'] ?? '') || empty($value['tax_name'])) {
-				continue;
-			}
 
 			$filter_type = $value['filter_type'] ?? '';
-			$tax_name    = $value['tax_name'] ?? '';
+			$tax_name    = $value['tax_name'] ?? [];
+
+			if ( $placement !== ($value['placement'] ?? '') ||
+				( empty($tax_name) && ! in_array($filter_type, $filters_without_tax, true) ) ) {
+				continue;
+			}			
 
 			if (isset($filter_classes[$filter_type])) {
 				// phpcs:ignore WordPress
@@ -170,8 +179,8 @@ class FG_Components {
 	 */
 	public static function render_search_bar(int $filter_id, bool $show_search = false) : void {
 		$search_enable         = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_enable');
-		$submit_button_text = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_submit_button_text'), 'ymc-smart-filter' );
-		$search_placeholder = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_search_placeholder'), 'ymc-smart-filter' );
+		$submit_button_text    = Data_Store::get_meta_value($filter_id, 'ymc_fg_submit_button_text');
+		$search_placeholder    = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_placeholder');
 		$autocomplete_enabled  = Data_Store::get_meta_value($filter_id, 'ymc_fg_autocomplete_enabled');
 		$search_mode           = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_mode');
 
@@ -197,9 +206,9 @@ class FG_Components {
 	 * @return void
 	 */
 	public static function render_sort_bar(int $filter_id, bool $show_sort = false) : void {
-		$sort_enable  = Data_Store::get_meta_value($filter_id, 'ymc_fg_enable_sort_posts');
+		$sort_enable          = Data_Store::get_meta_value($filter_id, 'ymc_fg_enable_sort_posts');
 		$allowed_sort_fields  = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_sortable_fields');
-		$sort_dropdown_label  = __( Data_Store::get_meta_value($filter_id, 'ymc_fg_sort_dropdown_label'), 'ymc-smart-filter' );
+		$sort_dropdown_label  = Data_Store::get_meta_value($filter_id, 'ymc_fg_sort_dropdown_label');
 
 		if (isset($sort_enable) && $sort_enable === 'yes' || $show_sort) :
 			Template::render(__DIR__ . '/views/templates/sort/tmpl-sort.php',

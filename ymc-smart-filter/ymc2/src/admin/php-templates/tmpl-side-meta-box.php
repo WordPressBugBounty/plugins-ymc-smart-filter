@@ -1,3 +1,7 @@
+<?php
+
+defined( 'ABSPATH' ) || exit; ?>
+
 <ol class="list-items">
     <li><?php echo esc_html__('Selecting one or more post types to display different posts in a grid.','ymc-smart-filter'); ?></li>
     <li><?php echo esc_html__('Sorting taxonomies and terms.','ymc-smart-filter'); ?></li>

@@ -28,6 +28,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
         // Get all button settings
 		$filter_all_button = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_all_button');
 		$is_visible_all_button = 'yes';
+		$all_button_label = __( 'All', 'ymc-smart-filter' );
 
 		foreach ($tax_name as $tax) {
 			if (!empty($filter_all_button[$tax])) {
@@ -77,10 +78,11 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
         <div class="filter filter-default filter-<?php echo esc_attr( $class_by_name_taxonomy ); ?> filter-<?php echo esc_attr( $filter_id ); ?>"
              data-filter-type="default"
              data-selection-mode="<?php echo esc_attr( $is_multiple_mode ); ?>">
+	        <?php do_action("ymc/filter/layout/inner/before_". $class_by_name_taxonomy . '_' . $filter_id); ?>
             <div class="filter-default-inner">
                 <div class="filter-buttons">
                     <?php $is_hidden = 'yes' === $is_visible_all_button ? '' : ' is-hidden'; ?>
-                    <button class="filter-button filter-button--all js-filter-button-all<?php echo esc_attr($is_hidden); ?>"
+                    <button class="filter-button filter-button--all is-active js-filter-button-all<?php echo esc_attr($is_hidden); ?>"
                             data-all-terms='<?php echo json_encode(array_keys( $all_terms )); ?>'>
                         <span class="text">
                         <?php
@@ -106,6 +108,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 					?>
                 </div>
             </div>
+	        <?php do_action("ymc/filter/layout/inner/after_". $class_by_name_taxonomy . '_' . $filter_id); ?>
         </div>
 
 		<?php
@@ -122,6 +125,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = $this->get_term_name( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
         $term_is_disabled      = ! $this->hasAttachedPosts( $term_id ) ? 'is-disabled' : '';
+        $disabled              = ! $this->hasAttachedPosts( $term_id ) ? 'disabled' : '';
 
 		$classes = array_filter([
 			$icon_alignment,
@@ -136,7 +140,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
         <button class="filter-button <?php echo esc_attr(implode(' ', $classes)); ?>"
 			<?php echo wp_kses_post( $term_style ); ?>
                 data-termid="<?php echo esc_attr( $term_id ); ?>"
-                aria-pressed="false">
+                aria-pressed="false" <?php echo esc_attr($disabled); ?>>
 			<?php
 			// phpcs:ignore WordPress
             echo $term_icon; ?>
@@ -147,3 +151,5 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 	}
 
 }
+
+

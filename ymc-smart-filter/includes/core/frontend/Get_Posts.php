@@ -161,9 +161,9 @@ class Get_Posts {
 		// Search Posts
 		if( !empty($keyword) ) {
 
-			add_filter( 'posts_join', array($this,'search_join') );
-			add_filter( 'posts_where',  array($this,'search_where') );
-			add_filter( 'posts_distinct', array($this,'search_distinct') );
+			//add_filter( 'posts_join', array($this,'search_join') );
+			//add_filter( 'posts_where',  array($this,'search_where') );
+			//add_filter( 'posts_distinct', array($this,'search_distinct') );
 
 			$args['sentence'] = true;
 
@@ -520,15 +520,24 @@ class Get_Posts {
 	 * @return string The modified WHERE clause including the postmeta table search condition.
 	 */
 	public function search_where( $where ) {
-
 		global $wpdb;
 
-		$where = preg_replace(
-			"/\(\s*$wpdb->posts.post_title\s+LIKE\s*(\'[^\']+\')\s*\)/",
-			"($wpdb->posts.post_title LIKE $1) OR (pm.meta_value LIKE $1)", $where );
+		$pattern = "/\(\s*{$wpdb->posts}.post_title\s+LIKE\s*'([^']*)'\s*\)/";
+
+		$where = preg_replace_callback( $pattern, function( $matches ) use ( $wpdb ) {
+			$raw = $matches[1];
+
+			$raw = wp_unslash( $raw );
+			$like = $wpdb->esc_like( $raw );
+
+			$quoted_like = $wpdb->prepare( "'%s'", '%' . $like . '%' );
+
+			return "({$wpdb->posts}.post_title LIKE {$quoted_like}) OR (pm.meta_value LIKE {$quoted_like})";
+		}, $where );
 
 		return $where;
 	}
+
 
 	/**
 	 * Returns the DISTINCT keyword used in SQL queries.
@@ -551,8 +560,9 @@ class Get_Posts {
 	 * @return void Outputs JSON response with search results
 	 */
 	public function autocomplete_search() {
+		//if ( ! isset($_POST['nonce_code']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce_code'])), Plugin::$instance->token_f) ) exit;
 
-		if ( ! isset($_POST['nonce_code']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['nonce_code'])), Plugin::$instance->token_f) ) exit;
+		check_ajax_referer( Plugin::$instance->token_f, 'nonce_code' );
 
 		$output  = '';
 		$phrase = '';
@@ -560,20 +570,23 @@ class Get_Posts {
 		$exclude_posts = '';
 		$id = '';
 
-		if(!empty($_POST['phrase'])) {
-			$phrase = trim(mb_strtolower(sanitize_text_field(wp_unslash($_POST['phrase']))));
-		}
-		if(!empty($_POST['choices_posts'])) {
-			$choices_posts = sanitize_text_field(wp_unslash($_POST['choices_posts']));
-		}
-		if(!empty($_POST['exclude_posts'])) {
-			$exclude_posts = sanitize_text_field(wp_unslash($_POST['exclude_posts']));
-		}
-		if(!empty($_POST['post_id'])) {
-			$id = (int) sanitize_text_field(wp_unslash($_POST['post_id']));
+		if ( ! empty( $_POST['phrase'] ) ) {
+			$phrase = trim( mb_strtolower( sanitize_text_field( wp_unslash( $_POST['phrase'] ) ) ) );
+			$phrase = mb_substr( $phrase, 0, 50 );
 		}
 
-		$term_ids = !empty($_POST['terms_ids']) ? explode(',', sanitize_text_field(wp_unslash($_POST['terms_ids']))) : "";
+		if ( ! empty( $_POST['choices_posts'] ) ) {
+			$choices_posts = sanitize_text_field( wp_unslash( $_POST['choices_posts'] ) );
+		}
+		if ( ! empty( $_POST['exclude_posts'] ) ) {
+			$exclude_posts = sanitize_text_field( wp_unslash( $_POST['exclude_posts'] ) );
+		}
+		if ( ! empty( $_POST['post_id'] ) ) {
+			$id = (int) sanitize_text_field( wp_unslash( $_POST['post_id'] ) );
+		}
+
+
+		$term_ids = ! empty( $_POST['terms_ids'] ) ? explode( ',', sanitize_text_field( wp_unslash( $_POST['terms_ids'] ) ) ) : "";
 
 		$per_page  = 20;
 		$total = 0;
@@ -581,9 +594,9 @@ class Get_Posts {
 		// Set variables
 		require YMC_SMART_FILTER_DIR . '/includes/core/util/variables.php';
 
-		add_filter( 'posts_join', array($this,'search_join') );
-		add_filter( 'posts_where',  array($this,'search_where') );
-		add_filter( 'posts_distinct', array($this,'search_distinct') );
+		// add_filter( 'posts_join', array( $this, 'search_join' ) );
+		// add_filter( 'posts_where', array( $this, 'search_where' ) );
+		// add_filter( 'posts_distinct', array( $this, 'search_distinct' ) );
 
 		$args = [
 			'post_type' => $ymc_cpt_value,

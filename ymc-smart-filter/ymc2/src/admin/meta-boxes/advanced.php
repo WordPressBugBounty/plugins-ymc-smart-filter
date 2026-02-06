@@ -107,6 +107,26 @@ if (!defined( 'ABSPATH')) exit;
             </fieldset>
         </div>
 
+        <div class="headline js-headline-accordion" data-hash="performance_behavior_settings">
+            <span class="inner">
+                <i class="dashicons dashicons-performance"></i>
+                <span class="text"><?php esc_html_e('Performance & Behavior Settings', 'ymc-smart-filter'); ?></span>
+            </span>
+            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
+        </div>
+        <div class="form-wrap">
+            <fieldset class="form-group">
+                <div class="group-elements">
+		            <?php ymc_render_field_header('Term Threshold','Sets the minimum number of terms required to 
+		            enable the search bar inside the dropdown. This option applies only to dropdown-type filters 
+		            and is ignored for other filter types.'); ?>
+                    <input class="form-input" type="text" placeholder="40" name="ymc_fg_filter_dropdown_setting[threshold]"
+                           value="<?php echo esc_attr($ymc_fg_filter_dropdown_setting['threshold']); ?>">
+                    <div class="spacer-25"></div>
+                </div>
+            </fieldset>
+        </div>
+
         <div class="headline js-headline-accordion" data-hash="sort_posts_settings">
             <span class="inner">
                 <i class="fa-solid fa-arrow-down-short-wide"></i>
@@ -374,53 +394,6 @@ if (!defined( 'ABSPATH')) exit;
                 </div>
             </fieldset>
         </div>
-
-<!--        <div class="headline js-headline-accordion" data-hash="api_js_settings">
-            <span class="inner">
-                <i class="dashicons dashicons-rest-api"></i>
-                <span class="text"><?php /*echo esc_html__('JavaScript API', 'ymc-smart-filter'); */?></span>
-            </span>
-            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
-        </div>
-        <div class="form-wrap">
-            <fieldset class="form-group">
-				<?php /*ymc_render_field_header('Enable JavaScript Filter API', 'Enable dynamic post filtering
-	            using JavaScript. When enabled, the filter grid will update posts asynchronously without reloading the page.'); */?>
-				<?php /*$checked_filter_api = ('yes' === get_option('ymc_fg_enable_js_filter_api')) ? 'checked' : ''; */?>
-                <label class="toggle-switch js-toggle-switch">
-                    <input type="checkbox" name="ymc_fg_enable_js_filter_api" value="yes"
-						<?php /*echo esc_attr($checked_filter_api); */?>>
-                    <span class="slider round">
-                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filter'); */?></span>
-                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filter'); */?></span>
-                    </span>
-                </label>
-            </fieldset>
-        </div>-->
-
-<!--        <div class="headline js-headline-accordion" data-hash="legacy_plugin">
-            <span class="inner">
-                <i class="fa-solid fa-hourglass-start"></i>
-                <span class="text"><?php /*esc_html_e('Legacy Mode', 'ymc-smart-filter'); */?></span>
-            </span>
-            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
-        </div>
-        <div class="form-wrap">
-                <fieldset class="form-group">
-                    <div class="group-elements">
-		                <?php /*ymc_render_field_header('Enable Legacy Version', 'Activates the legacy version of the plugin for compatibility with
-                         your theme or other plugins.<br> Not recommended for new sites.'); */?>
-		                <?php /*$status_legacy = ('yes' === $data['ymc_plugin_legacy_is']) ? 'checked' : ''; */?>
-                        <label class="toggle-switch toggle-switch-legacy">
-                            <input type="checkbox" name="ymc_plugin_legacy_is" value="yes" <?php /*echo esc_attr($status_legacy); */?>>
-                            <span class="slider round">
-                        <span class="on"><?php /*esc_html_e('ON', 'ymc-smart-filter'); */?></span>
-                        <span class="off"><?php /*esc_html_e('OFF', 'ymc-smart-filter'); */?></span>
-                    </span>
-                        </label>
-                    </div>
-                </fieldset>
-            </div>-->
 
     </div>
 

@@ -1,3 +1,5 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
+
 <?php
 
 $custom_width       = $ymc_popup_settings['custom_width'];

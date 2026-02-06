@@ -13,7 +13,7 @@ if (!defined( 'ABSPATH' )) exit;
             <input type="text" class="search-field js-search-field"
                    name="search_field"
                    placeholder="<?php echo esc_html($search_placeholder); ?>"
-                   autofocus autocomplete="off"
+                   autocomplete="off"
                    data-grid-id="<?php echo esc_attr($filter_id); ?>"
                    data-state-autocomplete="<?php echo esc_attr($autocomplete_enabled); ?>"
                    data-search-mode="<?php echo esc_attr($search_mode); ?>"

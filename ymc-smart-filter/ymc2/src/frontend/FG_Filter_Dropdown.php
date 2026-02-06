@@ -27,6 +27,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		$class_by_name_taxonomy = implode('-', $tax_name);
 		$is_multiple_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_selection_mode');
 		$tax_attrs = Data_Store::get_meta_value($filter_id, 'ymc_fg_tax_attrs');
+        $filter_dropdown_setting = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_dropdown_setting');
 
 		// Get all terms
 		$all_terms = [];
@@ -68,14 +69,39 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
                  <div class="filter-dropdown-inner">
                     <div class="ymc-dropdown js-dropdown"
                          data-label="<?php echo esc_attr($tax_label); ?>"
+                         data-term-count="<?php echo count( $terms ); ?>"
+                         data-term-threshold="<?php echo esc_attr( $filter_dropdown_setting['threshold'] ); ?>"
                          data-all-terms="<?php echo json_encode(array_keys( $all_terms )); ?>">
-                        <div class="ymc-dropdown__selected js-dropdown-selected"
-                            <?php
-                                // phpcs:ignore WordPress
-                                echo $style ?>>
-                            <span class="ymc-dropdown__label js-dropdown-label"><?php echo esc_attr($tax_label); ?></span>
-                            <span class="ymc-dropdown__arrow"></span>
-                        </div>
+	                    <?php
+                            $term_count = count( $terms );
+                            $dropdown_mode = $term_count > $filter_dropdown_setting['threshold'] ? 'extended' : 'compact'; ?>
+	                    <?php if( 'compact' === $dropdown_mode ) : ?>
+                            <div class="ymc-dropdown__selected is-compact js-dropdown-selected" <?php
+                               // phpcs:ignore WordPress
+                                echo $style; ?>>
+                            <span class="ymc-dropdown__label js-dropdown-label">
+                                <?php echo esc_html( $tax_label ); ?>
+                            </span>
+                                <span class="ymc-dropdown__arrow" aria-hidden="true"></span>
+                            </div>
+	                    <?php else : ?>
+                            <div class="ymc-dropdown__selected is-extended js-dropdown-selected">
+                                <span class="ymc-dropdown__label js-dropdown-label"></span>
+                                <div class="ymc-dropdown__search-wrapper">
+                                    <input
+                                        type="text"
+                                        class="ymc-dropdown__search js-dropdown-search"
+                                        placeholder="<?php echo esc_html( $tax_label ); ?>"
+                                        data-taxonomy="<?php echo esc_attr($tax); ?>"
+                                        data-filter-id="<?php echo esc_attr($filter_id); ?>"
+                                        autocomplete="off"
+                                        readonly>
+                                    <span class="ymc-dropdown__arrow js-dropdown-arrow" aria-hidden="true"></span>
+                                    <span class="ymc-dropdown__clear js-dropdown-clear" aria-hidden="true"></span>
+                                    <span class="ymc-dropdown__loader js-dropdown-loader" style="display:none;"></span>
+                                </div>
+                            </div>
+	                    <?php endif; ?>
                         <ul class="ymc-dropdown__list">
                             <li class="ymc-dropdown__close">
                                 <button type="button" class="dropdown-close-btn" aria-label="Close dropdown">×</button>
@@ -107,7 +133,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
         return ob_get_clean();
 	}
 
-	private function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id ): string {
+	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id ): string {
 		$post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
 
 		$term_class_is_default = $this->get_term_default( $term_id );
