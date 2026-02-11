@@ -1,7 +1,7 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.5.1
+Version: 3.5.2
 Donate link: https://github.com/YMC-22/Filter-Grids
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
@@ -76,6 +76,8 @@ If you prefer using the old version of Filter & Grids, you can enable **Legacy M
 
 == Changelog ==
 
+= 3.5.2 =
+Fixed query security bugs.
 = 3.5.0 =
 Added Usage tab for filters, allowing administrators to see a list of pages and posts where each filter is used.
 = 3.4.1 =

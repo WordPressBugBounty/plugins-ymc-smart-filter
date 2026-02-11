@@ -487,24 +487,33 @@ class FG_Ajax_Responder {
 
 		$post = get_post($post_id);
 
-		if(!empty($post)) {
+		if ( ! empty( $post ) && $post->post_status === 'publish' && ! post_password_required( $post ) ) {
+			
 			if( has_post_thumbnail($post_id) ) :
 				echo '<figure class="post-image">' .get_the_post_thumbnail( $post_id, 'full' ). '</figure>';
 			endif;
+
 			echo '<h2 class="post-title">' . esc_html(get_the_title($post_id)) . '</h2>';
+			
 			// phpcs:ignore WordPress
-			echo apply_filters('the_content', $post->post_content);
+			echo apply_filters('the_content', $post->post_content);			
+
+			$content = ob_get_clean();
+
+			$content = apply_filters('ymc/popup/custom_layout', $content, $post_id);
+			$content = apply_filters('ymc/popup/custom_layout_'.$grid_id, $content, $post_id);
+			$content = apply_filters('ymc/popup/custom_layout_'.$grid_id.'_'.$counter, $content, $post_id);
+
+			wp_send_json_success([
+				'body' => $content
+			]);
+			
+		} 
+		else {
+			wp_send_json_error([
+				'message' => __('You do not have permission to view this content.', 'ymc-smart-filter')
+			], 403);
 		}
-
-		$content = ob_get_clean();
-
-		$content = apply_filters('ymc/popup/custom_layout', $content, $post_id);
-		$content = apply_filters('ymc/popup/custom_layout_'.$grid_id, $content, $post_id);
-		$content = apply_filters('ymc/popup/custom_layout_'.$grid_id.'_'.$counter, $content, $post_id);
-
-		wp_send_json_success([
-			'body' => $content
-		]);
 
 	}
 
