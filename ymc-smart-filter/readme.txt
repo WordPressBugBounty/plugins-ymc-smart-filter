@@ -2,7 +2,7 @@
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
 Version: 3.5.2
-Donate link: https://github.com/YMC-22/Filter-Grids
+Donate link: https://www.paypal.com/webapps/shoppingcart?flowlogging_id=f650927e62f93&mfid=1771341447878_f650927e62f93#/checkout/openButton
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
 Tested up to: 6.9
