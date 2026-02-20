@@ -66,6 +66,8 @@ class FG_Data_Store {
 
 		'ymc_fg_pagination_type'       => 'numeric',
 
+		'ymc_fg_pagination_number_format'  => 'decimal',
+
 		'ymc_fg_per_page'              => '4',
 
 		'ymc_fg_filter_all_button'     => [

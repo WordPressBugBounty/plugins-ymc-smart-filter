@@ -714,40 +714,60 @@ if (!defined( 'ABSPATH')) exit;
                 </div>
             </fieldset>
 
-	        <?php $is_hidden_pagination = $ymc_fg_pagination_hidden === 'yes' ? 'is-hidden' : ''; ?>
-            <fieldset class="form-group js-is-disabled-pagination <?php echo esc_attr($is_hidden_pagination); ?>">
-
+	        <?php $is_pagination_hidden = $ymc_fg_pagination_hidden === 'yes' ? 'is-hidden' : ''; ?>
+            <fieldset class="form-group js-is-disabled-pagination <?php echo esc_attr($is_pagination_hidden); ?>">
                 <div class="group-elements">
-                    <?php ymc_render_field_header('Pagination Type', 'Select pagination type.'); ?>
-	                <?php $pagination_type = UiLabels::all('pagination_type'); ?>
-                    <select class="form-select js-pagination_type" name="ymc_fg_pagination_type" id="ymc_fg_pagination_type">
-	                    <?php
-	                    if($pagination_type) :
-		                    foreach ($pagination_type as $key => $value) :
-			                    printf(
-				                    '<option value="%s"%s>%s</option>',
-				                    esc_attr($key),
-				                    selected($ymc_fg_pagination_type, $key, false),
-				                    esc_html($value)
-			                    );
-		                    endforeach;
-	                    endif;
-	                    ?>
-                    </select>
-                    <div class="spacer-25"></div>
+                  <?php ymc_render_field_header('Pagination Type', 'Select pagination type.'); ?>
+                  <?php $pagination_type = UiLabels::all('pagination_type'); ?>
+                  <select class="form-select js-pagination_type" name="ymc_fg_pagination_type" id="ymc_fg_pagination_type">
+                     <?php
+                     if($pagination_type) :
+                        foreach ($pagination_type as $key => $value) :
+                           printf(
+                              '<option value="%s"%s>%s</option>',
+                              esc_attr($key),
+                              selected($ymc_fg_pagination_type, $key, false),
+                              esc_html($value)
+                           );
+                        endforeach;
+                     endif;
+                     ?>
+                  </select>
+                  <div class="spacer-25"></div>
+                </div>
+
+               <?php $is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
+               <div class="group-elements js-pagination-number-format<?php echo esc_attr($is_numeric_hidden); ?>">
+                  <?php ymc_render_field_header('Number Format', 'Select the format for the pagination numbers.'); ?>
+                  <?php $pagination_number_format = UiLabels::all('number_format'); ?>
+                  <select class="form-select js-pagination_number_format" name="ymc_fg_pagination_number_format" id="ymc_fg_pagination_number_format">
+                     <?php
+                     if($pagination_number_format) :
+                        foreach ($pagination_number_format as $key => $value) :
+                           printf(
+                              '<option value="%s"%s>%s</option>',
+                              esc_attr($key),
+                              selected($ymc_fg_pagination_number_format, $key, false),
+                              esc_html($value)
+                           );
+                        endforeach;
+                     endif;
+                     ?>
+                  </select>
+                  <div class="spacer-25"></div>
                 </div>
 
                 <div class="group-elements">
-	                <?php ymc_render_field_header('Posts Per Page',
-                        'Number of posts to display per page before pagination or loading more. Use -1 to display all posts.'); ?>
-                    <input class="form-input" type="text" placeholder="5" name="ymc_fg_per_page"
-                           value="<?php echo esc_attr($ymc_fg_per_page); ?>">
-                    <div class="spacer-25"></div>
+                  <?php ymc_render_field_header('Posts Per Page',
+                     'Number of posts to display per page before pagination or loading more. Use -1 to display all posts.'); ?>
+                  <input class="form-input" type="text" placeholder="5" name="ymc_fg_per_page"
+                        value="<?php echo esc_attr($ymc_fg_per_page); ?>">
+                  <div class="spacer-25"></div>
                 </div>
 
-	            <?php $is_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
-                <div class="group-elements js-navigation-buttons<?php echo esc_attr($is_hidden); ?>">
-	                <?php ymc_render_field_header('Prevision Button Text',
+	             <?php $is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
+                <div class="group-elements js-navigation-buttons<?php echo esc_attr($is_numeric_hidden); ?>">
+	                <?php ymc_render_field_header('Previous Button Text',
                         'Text displayed on the button to navigate to the previous item or page.'); ?>
                     <input class="form-input" type="text" placeholder="Prev" name="ymc_fg_prev_button_text"
                            value="<?php echo esc_attr($ymc_fg_prev_button_text); ?>">
@@ -760,13 +780,13 @@ if (!defined( 'ABSPATH')) exit;
                     <div class="spacer-25"></div>
                 </div>
 
-	            <?php $is_hidden = (in_array($ymc_fg_pagination_type, ['numeric'], true )) ? ' is-hidden' : ''; ?>
-                <div class="group-elements js-load-more-button<?php echo esc_attr($is_hidden); ?>">
+	             <?php $is_load_more_hidden = (in_array($ymc_fg_pagination_type, ['numeric'], true )) ? ' is-hidden' : ''; ?>
+                <div class="group-elements js-load-more-button<?php echo esc_attr($is_load_more_hidden); ?>">
 		            <?php ymc_render_field_header('Load More Button Text',
 			            'Text shown on the button that loads additional items or content.'); ?>
-                    <input class="form-input" type="text" placeholder="Load More" name="ymc_fg_load_more_text"
+                     <input class="form-input" type="text" placeholder="Load More" name="ymc_fg_load_more_text"
                            value="<?php echo esc_attr($ymc_fg_load_more_text); ?>">
-                    <div class="spacer-25"></div>
+                     <div class="spacer-25"></div>
                 </div>
 
             </fieldset>

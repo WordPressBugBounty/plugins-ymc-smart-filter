@@ -66,6 +66,13 @@ class FG_UiLabels {
 			'loadmore'    => 'Load more',
 			'infinite'    => 'Infinite scroll',
 		],
+      'number_format' => [
+         'decimal'    => 'Standard (1, 2, 3)',
+         'decimal_leading_zero' => 'Leading Zero (01, 02, 03)',
+         'upper_roman' => 'Roman Numerals (I, II, III)',
+         'lower_alpha' => 'Alphabet (a, b, c)'
+      ],
+
 		'post_image_size' => [
 			'thumbnail' => 'Thumbnail',
 			'medium'    => 'Medium',

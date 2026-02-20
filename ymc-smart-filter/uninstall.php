@@ -122,6 +122,7 @@ $meta_keys = [
 	"ymc_fg_term_sort_field",
 	"ymc_fg_pagination_hidden",
 	"ymc_fg_pagination_type",
+	"ymc_fg_pagination_number_format",
 	"ymc_fg_per_page",
 	"ymc_fg_filter_all_button",
 	"ymc_fg_prev_button_text",

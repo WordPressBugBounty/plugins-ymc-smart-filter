@@ -148,6 +148,11 @@ class FG_Save_Meta_Boxes {
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_pagination_type'])) : 'numeric';
 		update_post_meta($post_id, 'ymc_fg_pagination_type', $pagination_type);
 
+      // Pagination Number Format
+      $number_format = isset($_POST['ymc_fg_pagination_number_format'])
+         ? sanitize_text_field(wp_unslash($_POST['ymc_fg_pagination_number_format'])) : '';
+      update_post_meta($post_id, 'ymc_fg_pagination_number_format', $number_format);
+
 		// Posts Per Page
 		$posts_per_page = isset($_POST['ymc_fg_per_page'])
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_per_page'])) : '5';

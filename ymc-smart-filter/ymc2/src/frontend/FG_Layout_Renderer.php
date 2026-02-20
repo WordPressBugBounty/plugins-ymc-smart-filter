@@ -54,6 +54,8 @@ class FG_Layout_Renderer {
             case 'acf_field':  self::renderAcfField($context, $settings); break;
             case 'html':       self::renderHtml($context, $settings); break;
             case 'shortcode':  self::renderShortcode($context, $settings); break;
+            case 'badge':      self::renderBadge($context, $settings); break;
+
         }
     }
 
@@ -545,6 +547,66 @@ class FG_Layout_Renderer {
 
     }
 
+
+    /**
+     * Render Badge
+     */
+   protected static function renderBadge(array $field, array $settings) : void {
+      $source = $settings['source'] ?? 'manual';
+      $badge_text = '';
+      $post_id = $field['post']->ID;
+     
+      if ($source === 'manual') {
+         $badge_text = $settings['content'] ?? '';
+      } 
+      elseif ($source === 'acf') {
+         $acf_key = $settings['acf_key'] ?? '';
+         if (!empty($acf_key)) {
+            $badge_text = get_field($acf_key, $post_id);
+         }
+      } 
+      elseif ($source === 'taxonomy') {
+         $categories = get_the_category($post_id);
+         if (!empty($categories)) {
+            $badge_text = $categories[0]->name;
+         }
+      }
+      
+      if (empty($badge_text)) {
+         return;
+      }
+      
+      $bg_color    = $settings['bg_color'] ?? '#3b82f6';
+      $text_color  = $settings['text_color'] ?? '#ffffff';
+      $radius      = $settings['border_radius'] ?? '4px';
+      $style_type  = $settings['badge_style'] ?? 'solid';
+      $pos_type    = $settings['position'] ?? 'inline';
+      $custom_class = self::getCustomClass($settings);
+      
+      $inline_css = "background-color: {$bg_color}; color: {$text_color}; border-radius: {$radius};";
+      
+      if ($style_type === 'outline') {
+         $inline_css = "border: 2px solid {$bg_color}; color: {$bg_color}; border-radius: {$radius}; background: transparent;";
+      } elseif ($style_type === 'light') {
+         $inline_css = "background-color: {$bg_color}22; color: {$bg_color}; border-radius: {$radius};";
+      }
+      
+      $classes = [
+         'post-card__badge',
+         'sb-badge',
+         "is-style-{$style_type}",
+         "is-pos-{$pos_type}",
+         $custom_class
+      ];
+     
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      echo sprintf(
+         '<div class="%s" style="%s">%s</div>',
+         esc_attr(implode(' ', array_filter($classes))),
+         esc_attr($inline_css),
+         esc_html($badge_text)
+      );
+   }
    
    /**
     * Render ACF Custom Field

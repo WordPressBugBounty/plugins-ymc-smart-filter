@@ -41,6 +41,7 @@ class FG_Pagination {
 
 		$prev_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_prev_button_text');
 		$next_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_next_button_text');
+		$number_format    = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_number_format');
 
 		$prev_button_text = $prev_button_text ?: esc_html__( 'Prev', 'ymc-smart-filter' );
 		$next_button_text = $next_button_text ?: esc_html__( 'Next', 'ymc-smart-filter' );
@@ -69,7 +70,7 @@ class FG_Pagination {
 		}
 
 		ob_start();
-		echo '<ul class="pagination pagination--numeric js-pagination-numeric">';
+		echo '<ul class="pagination pagination--numeric format-'. esc_attr($number_format) .' js-pagination-numeric">';
 
 		foreach ($pagination as $page) {
 			$class = 'pagination__item';
