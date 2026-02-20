@@ -36,6 +36,8 @@ class FG_Ajax_Admin {
 		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms'));
 		add_action('wp_ajax_action_load_usage_page', array( __CLASS__, 'ajax_load_usage_pages'));
 		add_action('wp_ajax_action_scan_existing_posts', array( __CLASS__, 'ajax_scan_existing_posts'));
+		add_action('wp_ajax_action_lb_save_layout', array( __CLASS__, 'ajax_lb_save_layout'));
+		add_action('wp_ajax_action_get_classic_snapshot', array( __CLASS__, 'ajax_get_classic_snapshot'));
 	}
 
 	/**
@@ -46,7 +48,7 @@ class FG_Ajax_Admin {
 		 check_ajax_referer('get-taxonomy-ajax-nonce', 'nonce_code');
 
 		$payload = json_decode(sanitize_text_field(wp_unslash($_POST['payload'])));
-		$post_id = $payload->post_id;
+		$post_id = (int) $payload->post_id;
 		$post_types = $payload->post_types;
 		$list_taxonomies = [];
 		$list_posts = [];
@@ -69,7 +71,16 @@ class FG_Ajax_Admin {
 		update_post_meta( $post_id, 'ymc_fg_selected_posts', []);
 		update_post_meta( $post_id, 'ymc_fg_filter_options', []);
 		update_post_meta( $post_id, 'ymc_fg_filter_type', 'default');
-		update_post_meta( $post_id, 'ymc_fg_filter_dependent_settings', []);
+		update_post_meta( $post_id, 'ymc_fg_filter_dependent_settings', []);		
+		
+		// Reset builder layout
+		delete_post_meta( $post_id, 'ymc_fg_lb_layout_schema' );
+		// Reset custom layout builder only if it's preset
+		$data = Data_Store::get_meta_value( $post_id, 'ymc_fg_custom_layout_builder');
+		if (is_array($data) && isset($data['start']['type'])) {
+			$data['start']['type'] = 'preset';
+			update_post_meta( $post_id, 'ymc_fg_custom_layout_builder', $data);
+		}		
 
 		// Get taxonomies
 		$data_object = get_object_taxonomies($post_types, 'objects');
@@ -774,7 +785,7 @@ class FG_Ajax_Admin {
 	 * @return void
 	 */
 	public static function ajax_load_usage_pages() : void {
-		check_ajax_referer('usege-filters-pagin-ajax-ajax-nonce', 'nonce_code');
+		check_ajax_referer('usege-filters-pagin-ajax-nonce', 'nonce_code');
 
 		$filter_id  = absint( $_POST['filter_id'] ?? 0 );
 		$paged      = max( 1, absint( $_POST['page'] ?? 1 ) );
@@ -836,7 +847,7 @@ class FG_Ajax_Admin {
 	 */
 	public static function ajax_scan_existing_posts() : void {
 
-		check_ajax_referer( 'scan_existing_posts-ajax-ajax-nonce', 'nonce_code' );
+		check_ajax_referer( 'scan-existing-posts-ajax-nonce', 'nonce_code' );
 
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( 'Permission denied' );
@@ -946,6 +957,136 @@ class FG_Ajax_Admin {
 			'has_more'  => ( $paged < $query->max_num_pages ),
 			'next_page' => $paged + 1,
 		] );
+	}
+
+
+	/**
+	 * Save layout
+	 * @return void
+	 */
+	public static function ajax_lb_save_layout() : void {
+		check_ajax_referer( 'lb-save-layout-ajax-nonce', 'nonce_code' );
+
+		if (!current_user_can('edit_posts')) {
+			wp_send_json_error('Permission denied');
+		}
+
+		$post_id = absint($_POST['post_id'] ?? 0);
+		if (!$post_id) {
+			wp_send_json_error('Invalid post ID');
+		}
+
+		$body_raw = $_POST['body'] ?? '';
+    
+		if (empty($body_raw)) {
+			wp_send_json_error('No data received');
+		}
+		
+		$payload = json_decode(stripslashes($body_raw), true);
+
+		if (!$payload || empty($payload['data'])) {
+			wp_send_json_error('Invalid JSON format');
+		}
+
+		$data = $payload['data'];
+		
+		if (empty($data['schema'])) {
+			wp_send_json_error('Schema is missing');
+		}
+	
+		update_post_meta(
+			$post_id,
+			'ymc_fg_lb_layout_schema',
+			wp_slash(json_encode($data, JSON_UNESCAPED_UNICODE))
+		);
+		
+		wp_send_json_success([
+			'message' => 'Layout saved',
+			'post_id' => $post_id
+		]);
+		 
+	}
+
+
+	/**
+	 * Get classic snapshot
+	 * @return void
+	 */
+	public static function ajax_get_classic_snapshot() : void {
+		check_ajax_referer( 'classic-snapshot-ajax_nonce', 'nonce_code' );
+		
+		$filter_id = isset($_POST['filter_id']) ? intval($_POST['filter_id']) : 0;
+		if (!$filter_id) {
+			wp_send_json_error(['message' => 'Filter ID is missing']);
+		}
+
+		// Preparing data (as in post-layout-custom.php)		
+		$post_type    = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
+		$terms_attr   = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_attrs');
+		$popup_enable = Data_Store::get_meta_value($filter_id, 'ymc_fg_popup_enable');
+		$popup_class  = ($popup_enable === 'no') ? '' : ' js-ymc-popup-trigger';
+
+		// Receive one test post to generate a preview.
+		$args = [
+			'post_type'      => $post_type,
+			'posts_per_page' => 1,
+			'post_status'    => 'publish'
+		];
+		$test_query = new \WP_Query($args);
+
+		if (!$test_query->have_posts()) {
+			wp_send_json_error(['message' => 'No posts found to create a snapshot.']);
+		}
+
+		// Generating a Snapshot
+		$test_query->the_post();
+		$post_id = get_the_ID();		
+		
+		$post_term_settings = function_exists('ymc_get_post_terms_settings') 
+			? ymc_get_post_terms_settings($post_id, $terms_attr) 
+			: [];
+
+		// Generate HTML block guide
+		$guide_html  = '<div class="filter-custom-guide"><div class="filter-usage"><div class="filter-usage-inner">';
+		$guide_html .= '<span class="headline">' . esc_html__("Classic Layout Placeholder", "ymc-smart-filter") . '</span>';
+		$guide_html .= '</div></div></div>';
+
+		$final_html = apply_filters("ymc/post/layout/custom", $guide_html, $post_id, $filter_id, $popup_class, $post_term_settings);
+		$final_html = apply_filters("ymc/post/layout/custom_{$filter_id}", $final_html, $post_id, $filter_id, $popup_class, $post_term_settings);
+		
+		wp_reset_postdata();
+
+		// Forming the final Schema for the Builder		
+		$schema = [
+			'type' => 'card',
+			'id'   => 'card_' . wp_generate_password(8, false),
+			'settings' => (object)[],
+			'children' => [
+				[
+					'type' => 'row',
+					'id'   => 'row_' . wp_generate_password(8, false),
+					'settings' => (object)[],
+					'children' => [
+						[
+							'type' => 'column',
+							'id'   => 'col_' . wp_generate_password(8, false),
+							'settings' => ['width' => 100],
+							'children' => [
+								[
+									'type'     => 'raw_html',
+									'id'       => 'snapshot_' . wp_generate_password(8, false),
+									'settings' => [
+											'content' => $final_html
+									]
+								]
+							]
+						]
+					]
+				]
+			]
+		];
+		
+		wp_send_json_success(['schema' => $schema]);
 	}
 
 

@@ -1,6 +1,7 @@
 <?php
 
 use YMCFilterGrids\FG_Data_Store as Data_Store;
+use YMCFilterGrids\frontend\FG_Layout_Renderer as Layout_Renderer;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -16,61 +17,78 @@ while ($query->have_posts()) : $query->the_post();
 
 	$post_id = get_the_ID();
 	$post_term_settings = ymc_get_post_terms_settings($post_id, $terms_attr);
+	
+   $schema_data = Data_Store::get_meta_value($filter_id, 'ymc_fg_layout_schema');
+   $layout_type = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_layout_type'); // 'classic' or 'builder'
 
-	// Generate HTML block guide
-	$guide_html  = '<div class="filter-custom-guide">';
-	$guide_html .= '<div class="filter-usage">';
-	$guide_html .= '<div class="filter-usage-inner">';
-	$guide_html .= '<span class="headline">'. esc_html__("Use a filter:", "ymc-smart-filter") .'</span>';
-	$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom", "callback_function", 10, 5);</span>';
-	$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom_'. esc_html($filter_id) .'", "callback_function", 10, 5);</span>';
-	$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom_'. esc_html($filter_id) .'_'. esc_html($counter) .'", "callback_function", 10, 5);</span>';
-	$guide_html .= '</div>';
-	$guide_html .= '<div class="filter-usage-inner">';
-	$guide_html .= '<a class="link" target="_blank" href="https://github.com/YMC-22/Filter-Grids/tree/main?tab=readme-ov-file#custom-post-layout">'. esc_html__("See documentation", "ymc-smart-filter") .'</a>';
-	$guide_html .= '</div>';
-	$guide_html .= '</div>';
-	$guide_html .= '</div>';
+	if ($layout_type === 'builder' && !empty($schema_data)) {      
+		Layout_Renderer::render($schema_data, [
+			'post_id'     => $post_id,
+			'filter_id'   => $filter_id,
+			'is_builder'  => false,
+			'popup_class' => $popup_class,
+			'terms_attr'  => $terms_attr
+		]);
+    }
+	 else {
 
-	// Apply filters to this part
-	$filter_keys = [
-		"ymc/post/layout/custom",
-		"ymc/post/layout/custom_{$filter_id}",
-		"ymc/post/layout/custom_{$filter_id}_" . $counter
-	];
+		// Generate HTML block guide
+		$guide_html  = '<div class="filter-custom-guide">';
+		$guide_html .= '<div class="filter-usage">';
+		$guide_html .= '<div class="filter-usage-inner">';
+		$guide_html .= '<span class="headline">'. esc_html__("Use a filter:", "ymc-smart-filter") .'</span>';
+		$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom", "callback_function", 10, 5);</span>';
+		$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom_'. esc_html($filter_id) .'", "callback_function", 10, 5);</span>';
+		$guide_html .= '<span class="description">add_filter("ymc/post/layout/custom_'. esc_html($filter_id) .'_'. esc_html($counter) .'", "callback_function", 10, 5);</span>';
+		$guide_html .= '</div>';
+		$guide_html .= '<div class="filter-usage-inner">';
+		$guide_html .= '<a class="link" target="_blank" href="https://github.com/YMC-22/Filter-Grids/tree/main?tab=readme-ov-file#custom-post-layout">'. esc_html__("See documentation", "ymc-smart-filter") .'</a>';
+		$guide_html .= '</div>';
+		$guide_html .= '</div>';
+		$guide_html .= '</div>';
 
-	/**
-	 * Custom filter block HTML filter.
-	 *
-	 * @param string $guide_html
-     * @param int $post_id
-	 * @param int $filter_id
-	 * @param array $settings
-	 *
-	 * @return string Modified HTML of the filter block.
-	 */
-	foreach ($filter_keys as $hook_name) {
-		$guide_html = apply_filters($hook_name, $guide_html, $post_id, $filter_id, $popup_class, $post_term_settings);
-	}
+		// Apply filters to this part
+		$filter_keys = [
+			"ymc/post/layout/custom",
+			"ymc/post/layout/custom_{$filter_id}",
+			"ymc/post/layout/custom_{$filter_id}_" . $counter
+		];
 
-	do_action("ymc/post/layout/before/post_item", $post_number, $post_id, $paged, $per_page );
-	do_action("ymc/post/layout/before/post_item_". esc_attr($filter_id), $post_number, $post_id, $paged, $per_page );
-	do_action("ymc/post/layout/before/post_item_". esc_attr($filter_id).'_'. esc_attr($counter), $post_number, $post_id, $paged, $per_page );
+		/**
+		 * Custom filter block HTML filter.
+		 *
+		 * @param string $guide_html
+		 * @param int $post_id
+		 * @param int $filter_id
+		 * @param array $settings
+		 *
+		 * @return string Modified HTML of the filter block.
+		*/
+		foreach ($filter_keys as $hook_name) {
+			$guide_html = apply_filters($hook_name, $guide_html, $post_id, $filter_id, $popup_class, $post_term_settings);
+		}
 
-?>
-    <article class="post-card post-<?php echo esc_attr($post_layout); ?> post-<?php echo esc_attr($post_id); ?><?php echo esc_attr($animation_class); ?>">
-        <?php
-        // phpcs:ignore WordPress
-        echo $guide_html; ?>
-	</article>
+		do_action("ymc/post/layout/before/post_item", $post_number, $post_id, $paged, $per_page );
+		do_action("ymc/post/layout/before/post_item_". esc_attr($filter_id), $post_number, $post_id, $paged, $per_page );
+		do_action("ymc/post/layout/before/post_item_". esc_attr($filter_id).'_'. esc_attr($counter), $post_number, $post_id, $paged, $per_page );
 
-<?php
+		?>
+		<article class="post-card post-<?php echo esc_attr($post_layout); ?> post-<?php echo esc_attr($post_id); ?><?php echo esc_attr($animation_class); ?>">
+			<?php
+			// phpcs:ignore WordPress
+			echo $guide_html; ?>
+		</article>
 
-	do_action("ymc/post/layout/after/post_item", $post_number, $post_id, $paged, $per_page);
-	do_action("ymc/post/layout/after/post_item_". esc_attr($filter_id), $post_number, $post_id, $paged, $per_page);
-	do_action("ymc/post/layout/after/post_item_". esc_attr($filter_id).'_'. esc_attr($counter), $post_number, $post_id, $paged, $per_page);
+		<?php
 
-$post_number++;
+			do_action("ymc/post/layout/after/post_item", $post_number, $post_id, $paged, $per_page);
+			do_action("ymc/post/layout/after/post_item_". esc_attr($filter_id), $post_number, $post_id, $paged, $per_page);
+			do_action("ymc/post/layout/after/post_item_". esc_attr($filter_id).'_'. esc_attr($counter), $post_number, $post_id, $paged, $per_page);
+
+		$post_number++;
+
+	 }
+
 
 endwhile;
 

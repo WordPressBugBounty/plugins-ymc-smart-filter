@@ -181,6 +181,22 @@ class FG_Backend_Scripts {
 	public static function localize_script() : void {
 
 		if ( wp_script_is( 'ymc_script' ) ) {
+
+			$post_id = isset($_GET['post']) ? intval($_GET['post']) : get_the_ID();
+
+			$saved_schema = '';
+         if ( $post_id ) {
+				$saved_schema = get_post_meta($post_id, 'ymc_fg_lb_layout_schema', true);
+				
+				if ( is_string( $saved_schema ) && ! empty( $saved_schema ) ) {
+					$decoded = json_decode( $saved_schema, true );
+					if ( json_last_error() === JSON_ERROR_NONE ) {						
+						$saved_schema = isset($decoded['schema']) ? $decoded['schema'] : $decoded;
+					}
+				}
+         }
+
+
 			 wp_localize_script( 'ymc_script', '_ymc_fg_object',
 				array(
 					'ajax_url'                    => admin_url('admin-ajax.php'),
@@ -200,8 +216,12 @@ class FG_Backend_Scripts {
 					'importSettingsAjax_nonce'    => wp_create_nonce('import-settings-ajax-nonce'),
 					'updateRelatedTerms_nonce'    => wp_create_nonce('update-related-terms-ajax-nonce'),
 					'updateRootSourceTerms_nonce' => wp_create_nonce('update-root-source_terms-ajax-nonce'),
-					'usegeFiltersPaginAjax_nonce' => wp_create_nonce('usege-filters-pagin-ajax-ajax-nonce'),
-					'scanExistingPostsAjax_nonce' => wp_create_nonce('scan_existing_posts-ajax-ajax-nonce'),
+					'usegeFiltersPaginAjax_nonce' => wp_create_nonce('usege-filters-pagin-ajax-nonce'),
+					'scanExistingPostsAjax_nonce' => wp_create_nonce('scan-existing-posts-ajax-nonce'),
+					'lbSaveLayoutAjax_nonce' 	   => wp_create_nonce('lb-save-layout-ajax-nonce'),
+					'classicSnapshotAjax_nonce'   => wp_create_nonce('classic-snapshot-ajax_nonce'),
+					'savedSchema' 					   => $saved_schema ?: null,
+					'acf_fields' 						=> ymc_get_all_acf_fields_for_builder(),				
 					'loadedFeedPosts_page'        => 2,
 					'path' => YMC_PLUGIN_URL
 			));

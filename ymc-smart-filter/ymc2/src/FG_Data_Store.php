@@ -335,7 +335,14 @@ class FG_Data_Store {
 			//'lazy_load'      => true
 		],
 
-		'ymc_fg_show_hidden_cpt' => 'no'
+		'ymc_fg_show_hidden_cpt' => 'no',
+
+		'ymc_fg_lb_layout_schema' => null,
+
+		'ymc_fg_custom_layout_builder' => [
+			'mode'   => [ 'type' => 'classic' ],	
+			'start'  => [ 'type' => 'preset', 'preset' => 'standard' ]			
+		]		
 
 	];
 

@@ -1,8 +1,8 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.5.2
-Donate link: https://www.paypal.com/webapps/shoppingcart?flowlogging_id=f650927e62f93&mfid=1771341447878_f650927e62f93#/checkout/openButton
+Version: 3.6.0
+Donate link: https://www.paypal.com/webapps/shoppingcart?flowlogging_id=c9ce7a67edea0&mfid=1771188342028_c9ce7a67edea0#/checkout/openButton
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
 Tested up to: 6.9
@@ -42,6 +42,9 @@ Whether you’re building a blog, portfolio, news site, or product showcase – 
 - Constructor for combined filters (mix multiple filter types in one grid).
 - Integration with Elementor, WPBakery, and Gutenberg.
 - Mobile-friendly UI/UX optimization.
+- **Visual Card Builder:** Create unique post layouts using a drag-and-drop interface.
+- **Dynamic Content:** Add post titles, meta, images, and custom fields to cards with full style control.
+- **Interactive Design:** Custom hover effects, action buttons, and conditional element visibility.
 
 == Installation ==
 
@@ -76,6 +79,8 @@ If you prefer using the old version of Filter & Grids, you can enable **Legacy M
 
 == Changelog ==
 
+= 3.6.0 =
+Added Structural Layout Builder.
 = 3.5.2 =
 Fixed query security bugs.
 = 3.5.0 =

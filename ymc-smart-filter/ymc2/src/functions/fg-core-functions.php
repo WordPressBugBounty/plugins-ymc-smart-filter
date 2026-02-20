@@ -118,27 +118,6 @@ if(! function_exists( 'ymc_render_field_header')) {
 
 
 /**
- * Debug in Console
- */
-
-if (! function_exists( 'ymc_js_console_log')) {
-	/*function ymc_js_console_log( $x, $as_text = true ) {
-		$str = '<div class="php-to-js-console-log" style="display: none !important;" data-as-text="' . esc_attr( (bool) $as_text ) .
-		       '" data-variable="' . htmlspecialchars( wp_json_encode( $x ) ) . '">' . htmlspecialchars( var_export( $x, true ) ) . '</div>';
-		echo wp_kses($str, ['div' => ['class' => true, 'style' => true, 'data-as-text' => true, 'data-variable' => true]]);
-	}
-
-	if ( function_exists( 'ymc_js_console_log' ) ) {
-		add_action( 'wp_footer', function () {
-			echo '<script type="text/javascript">jQuery(document).ready(function ($) { 
-    		$(".php-to-js-console-log").each(function (i, el) { let $e = $(el); console.log("PHP debug is below:"); 
-            (!$e.attr("data-as-text")) ? console.log(JSON.parse($e.attr("data-variable"))) : console.log($e.text()); }); });</script>';
-		}, 99999 );
-	}*/
-}
-
-
-/**
  * Assembles the filter options structure from POST data.
  *
  * @param int $post_id
@@ -234,7 +213,7 @@ if (! function_exists( 'ymc_sanitize_array_recursive')) {
 /**
  * Gets all terms (tags, categories, etc.) of all taxonomies to which the specified post is attached.
  *
- * @param int $post_id ID поста.
+ * @param int $post_id
  *
  * @return array An array of terms. Each element contains:
  *               - name (string)  Name of the term
@@ -375,24 +354,32 @@ if ( ! function_exists( 'ymc_truncate_post_content' ) ) {
 /**
  * Gets post image.
  *
- * @param int $post_id ID поста.
+ * @param int $post_id
  * @param string $post_image_size Post image size.
  */
 
 if (! function_exists( 'ymc_post_image_size')) {
 	function ymc_post_image_size($post_id, $post_image_size) {
+
 		if ( !has_post_thumbnail($post_id) ) {
 			return '';
 		}
+		
 		$sizes = [
 			'thumbnail' => ['thumbnail', 'is-thumbnail'],
-			'medium'    => ['medium', 'is-medium'],
-			'full'      => ['large', 'is-full'],
+			'medium'    => ['medium', 'is-medium'],			
+			'large'     => ['large', 'is-large'],
+         'full'      => ['full', 'is-full'],
 		];
+		
+		[$size, $class] = $sizes[$post_image_size] ?? ['large', 'is-large'];
 
-		[$size, $class] = $sizes[$post_image_size] ?? ['full', 'is-large'];
-
-		return get_the_post_thumbnail($post_id, $size, ['class' => $class, 'alt' => get_the_title($post_id)]);
+		return get_the_post_thumbnail($post_id, $size, [
+          'class' => $class, 
+          'alt'   => get_the_title($post_id),          
+          'sizes' => '(max-width: 100vw) 100vw'
+      ]);
+		
 	}
 
 }
@@ -532,8 +519,6 @@ if (! function_exists( 'ymc_calculate_read_time')) {
 		return $minutes;
 	}
 }
-
-
 
 
 /**
@@ -686,7 +671,8 @@ if (! function_exists( 'ymc_get_terms_accordion')) {
 /**
  * Get list of taxonomies for post
  *
- * @param int $post_id ID поста
+ * @param int $post_id
+ * 
  * @return array Array of taxonomies (slug => label)
  */
 
@@ -724,6 +710,7 @@ if (! function_exists( 'ymc_get_attached_post_taxonomies')) {
  * Extracts filter IDs from content
  * 
  * @param string $content
+ * 
  * @return array
  */
 if (! function_exists( 'ymc_extract_filter_ids_from_content')) {
@@ -751,4 +738,68 @@ if (! function_exists( 'ymc_extract_filter_ids_from_content')) {
 	}
 
 }
+
+/**
+ * Get all acf fields for builder
+ * 
+ * @return array
+ */
+if (! function_exists( 'ymc_get_all_acf_fields_for_builder')) {
+	function ymc_get_all_acf_fields_for_builder() : array {
+
+		if ( ! function_exists('acf_get_field_groups') ) return [];
+
+		$fields_list = [
+			[
+				'value' => 'none', 
+				'label' => '- Select Field -'
+			]
+		];
+
+		$groups = acf_get_field_groups();
+
+		// List of types we officially support in the current architecture
+		$supported_types = [
+			'text',
+			'textarea', 
+			'wysiwyg', 
+			'number', 
+			'email', 
+			'url', 
+			'image',
+			'file', 
+			'oembed', 
+			'link', 
+			'date_picker', 
+			'color_picker', 
+			'date_time_picker', 
+			'time_picker'
+		];
+
+		foreach ( $groups as $group ) {
+
+			if ( ! isset($group['active']) || ! $group['active'] ) {
+            continue;
+         }
+
+			$fields = acf_get_fields( $group['key'] );
+
+			if ( ! $fields ) continue;
+
+			foreach ( $fields as $field ) {
+				if ( ! in_array($field['type'], $supported_types) ) continue;				
+
+				$fields_list[] = [
+					'value' => $field['key'],
+					'label' => $group['title'] . ': ' . $field['label'],
+					'type'  => $field['type']
+				];
+			}
+		}
+
+		return $fields_list;
+	}
+
+}
+
 

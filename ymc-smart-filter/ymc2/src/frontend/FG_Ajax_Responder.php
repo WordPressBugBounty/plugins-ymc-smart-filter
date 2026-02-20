@@ -4,6 +4,7 @@ namespace YMCFilterGrids\frontend;
 
 use YMCFilterGrids\FG_Data_Store as Data_Store;
 use YMCFilterGrids\frontend\FG_Pagination as Pagination;
+use YMCFilterGrids\frontend\FG_Layout_Renderer as Layout_Renderer;
 use YMCFilterGrids\FG_Template as Template;
 
 defined( 'ABSPATH' ) || exit;
@@ -389,6 +390,8 @@ class FG_Ajax_Responder {
 		ob_start();
 
 		if ($query->have_posts()) {
+
+			// Post layout
 			$template_file = 'post-layout-' . str_replace( 'layout_', '', $post_layout );
 			$template_path = __DIR__ . '/views/templates/posts/' . $template_file . '.php';
 
@@ -396,19 +399,62 @@ class FG_Ajax_Responder {
 			if ($template_file === 'post-layout-carousel') {
 				$data_response['requires_swiper'] = true;
 			}
+			
+			$template_args = [
+				'query'       => $query,
+				'post_layout' => $post_layout,
+				'filter_id'   => $filter_id,
+				'counter'     => $counter,
+				'per_page'    => $per_page,
+				'paged'       => $paged
+			];
 
-			if (file_exists($template_path)) {
-				Template::render($template_path, [
-					'query'       => $query,
-					'post_layout' => $post_layout,
-					'filter_id'   => $filter_id,
-					'counter'     => $counter,
-					'per_page'    => $per_page,
-					'paged'       => $paged
-				]);
-			} else {
-				echo '<div class="text">'. esc_html("Template not found: ") . esc_url($template_path) .'</div>';
+			$use_template = false;
+
+			if ($post_layout !== 'layout_custom') {
+				// Standard / Carousel
+        		$use_template = true;
 			}
+			else {
+				// Custom post layout
+				$post_layout_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_layout_builder');
+
+				if (isset($post_layout_mode['mode']['type']) && $post_layout_mode['mode']['type'] === 'classic') {
+					// Custom + Classic
+					$use_template = true;
+				}
+			}
+
+
+			if ($use_template) {
+
+				if (file_exists($template_path)) {
+					Template::render($template_path, $template_args);
+				} 
+				else {
+					echo '<div class="text">'. esc_html("Template not found: ") . esc_url($template_path) .'</div>';
+				}
+			}
+			else {
+				// Custom + Builder				
+				$full_data = self::get_layout_schema($filter_id);
+				$schema    = $full_data['schema'] ?? [];
+
+				if (!empty($schema)) {
+					foreach ($query->posts as $index => $post) {
+						// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo Layout_Renderer::render($schema, [
+							'post'      => $post,
+							'query'     => $query,
+							'filter_id' => $filter_id,
+							'index'     => $index,
+							'post_id'   => $post->ID
+						]);
+						// phpcs:enable
+					}
+				}
+			}
+
 
 			if ($pagination_hidden === 'no' && $template_file !== 'post-layout-carousel') {
 				switch ($pagination_type) {
@@ -465,6 +511,26 @@ class FG_Ajax_Responder {
 
 
 	/**
+	 * Get layout schema
+	 * 
+	 * @since 3.6.0
+	 * @return array
+	 */
+	public static function get_layout_schema(int $filter_id) : array {
+		$raw = Data_Store::get_meta_value($filter_id, 'ymc_fg_lb_layout_schema');
+
+		if (!is_string($raw) || $raw === '') {
+			return [];
+		}
+
+		$decoded = json_decode($raw, true);
+		return (json_last_error() === JSON_ERROR_NONE && is_array($decoded))
+			? $decoded
+			: [];
+	}
+
+
+	/**
 	 * Get post to popup
 	 *
 	 * @since 3.0.0
@@ -486,15 +552,15 @@ class FG_Ajax_Responder {
 		ob_start();
 
 		$post = get_post($post_id);
-
+		
 		if ( ! empty( $post ) && $post->post_status === 'publish' && ! post_password_required( $post ) ) {
 			
 			if( has_post_thumbnail($post_id) ) :
 				echo '<figure class="post-image">' .get_the_post_thumbnail( $post_id, 'full' ). '</figure>';
 			endif;
-
-			echo '<h2 class="post-title">' . esc_html(get_the_title($post_id)) . '</h2>';
 			
+			echo '<h2 class="post-title">' . esc_html(get_the_title($post_id)) . '</h2>';
+
 			// phpcs:ignore WordPress
 			echo apply_filters('the_content', $post->post_content);			
 
@@ -1010,7 +1076,7 @@ class FG_Ajax_Responder {
 	/**
 	 * Registers alphabetical filtering for WP_Query by post title first letter.
 	 *
-	 * @since 3.3.5
+	 * @since 3.4.0
 	 * @return void
 	 */
 	public static function add_alphabetical_filter() : void {
@@ -1021,7 +1087,7 @@ class FG_Ajax_Responder {
 	/**
 	 * Removes alphabetical filtering from WP_Query.
 	 *
-	 * @since 3.3.5
+	 * @since 3.4.0
 	 * @return void
 	 */
 	public static function remove_alphabetical_filter() : void {
@@ -1035,7 +1101,7 @@ class FG_Ajax_Responder {
 	/**
 	 * Modifies SQL WHERE clause to filter posts by starting letter of post title.
 	 *
-	 * @since 3.3.5
+	 * @since 3.4.0
 	 *
 	 * @param string   $where Current SQL WHERE clause.
 	 * @param WP_Query $query Current WP_Query instance.

@@ -32,6 +32,7 @@ defined( 'ABSPATH' ) || exit; ?>
     <li><?php echo esc_html__('AJAX-based fast filtering without page reload.','ymc-smart-filter'); ?></li>
     <li><?php echo esc_html__('Integration with popular page builders (Elementor, WPBakery, Gutenberg).','ymc-smart-filter'); ?></li>
     <li><?php echo esc_html__('Mobile-friendly UI/UX optimization for filters and grids.','ymc-smart-filter'); ?></li>
+    <li><?php echo esc_html__('Structural Layout Builder.','ymc-smart-filter'); ?></li>
 </ol>
 
 

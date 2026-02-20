@@ -198,6 +198,22 @@ if (!defined( 'ABSPATH')) exit;
             <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
         </div>
         <div class="form-wrap">
+				<?php 
+					$current_mode = $ymc_fg_custom_layout_builder['mode']['type'] ?? 'classic';
+					$is_hidden_start_mode = ($current_mode !== 'structural') ? ' is-hidden' : '';					
+				?>
+				<div class="notification notification--warning<?php echo esc_attr($is_hidden_start_mode); ?>">
+               <?php
+						printf(
+							wp_kses(											
+								__( '<strong>Attention:</strong> Post display settings are not applied because the <strong>Structural Builder</strong> is active. 
+								Manage card elements directly within the builder interface.', 
+								'ymc-smart-filter' ),
+								array('strong' => array())
+							));
+					?> 
+				</div>
+				<div class="spacer-20"></div>
 
             <fieldset class="form-group form-group--with-bg post-display-settings">
                 <div class="group-elements">

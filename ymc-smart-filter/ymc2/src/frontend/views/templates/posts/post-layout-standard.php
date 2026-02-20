@@ -37,6 +37,7 @@ while ($query->have_posts()) : $query->the_post();
 	$tag_list              = '';
     $cat_list              = '';
 	$post_image            = ymc_post_image_size($post_id, $post_image_size);
+    $post_image            = preg_replace('/\s(width|height|sizes)="[^"]*"/i', '', $post_image);
 	$taxonomies            = ymc_get_attached_post_taxonomies($post_id);
 	$views                 =  Data_Store::get_meta_value($post_id, 'ymc_fg_post_views_count');
 

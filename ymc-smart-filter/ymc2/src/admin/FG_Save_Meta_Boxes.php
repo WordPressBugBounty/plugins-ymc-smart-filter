@@ -422,6 +422,11 @@ class FG_Save_Meta_Boxes {
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_show_hidden_cpt'])) : 'no';
 		update_post_meta($post_id, 'ymc_fg_show_hidden_cpt', $show_hidden_cpt);
 
+		// Layout Builder
+		$layout_builder_settings = isset($_POST['ymc_fg_custom_layout_builder'])
+			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_custom_layout_builder'])) : [];
+		update_post_meta($post_id, 'ymc_fg_custom_layout_builder', $layout_builder_settings);
+
 	}
 
 	public static function handle_save_post( int $post_id, object $post ) : void {

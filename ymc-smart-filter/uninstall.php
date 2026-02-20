@@ -181,7 +181,9 @@ $meta_keys = [
 	"ymc_fg_post_views_count",
 	"ymc_fg_filter_dropdown_setting",
 	"ymc_fg_show_hidden_cpt",
-	"ymc_fg_filter_usage"
+	"ymc_fg_filter_usage",
+	"ymc_fg_lb_layout_schema",
+	"ymc_fg_custom_layout_builder"
 
 ];
 

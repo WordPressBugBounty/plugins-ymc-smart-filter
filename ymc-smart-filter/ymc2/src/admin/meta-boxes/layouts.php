@@ -162,9 +162,285 @@ if (!defined( 'ABSPATH')) exit;
 		                ?>
                     </select>
                 </div>
-            </fieldset>
+            </fieldset>								
 
-	        <?php $is_hidden_grid_settings = $ymc_fg_post_layout === 'layout_carousel' ? ' is-hidden' : ''; ?>
+				<?php 					
+				$is_hidden_layout_builder = $ymc_fg_post_layout === 'layout_custom' ? '' : ' is-hidden'; ?>
+
+				<fieldset class="form-group form-group--with-bg layout-builder layout-builder--mode js-layout-builder<?php echo esc_attr($is_hidden_layout_builder); ?>">
+					
+					<div class="group-elements">
+
+						<legend class="form-legend">
+							<?php esc_html_e('Custom Layout Mode','ymc-smart-filter'); ?>
+						</legend>
+					
+						<div class="layout-builder__radio-group js-layout-mode-wrap">
+
+							<label class="layout-builder__radio-card">
+								<input class="js-layout-mode-radio" type="radio"
+									name="ymc_fg_custom_layout_builder[mode][type]"
+									value="classic"
+									<?php checked( $ymc_fg_custom_layout_builder['mode']['type'] ?? '', 'classic' ); ?>>
+								<span class="layout-builder__radio-ui">
+									<span class="layout-builder__radio-title"><?php esc_html_e('Classic', 'ymc-smart-filter'); ?></span>
+									<span class="layout-builder__radio-desc">
+										<?php esc_html_e('Use classic layout with filters and hooks', 'ymc-smart-filter'); ?>
+									</span>
+								</span>
+							</label>
+
+							<label class="layout-builder__radio-card">
+								<input class="js-layout-mode-radio" type="radio"
+									name="ymc_fg_custom_layout_builder[mode][type]"
+									value="structural"
+									<?php checked( $ymc_fg_custom_layout_builder['mode']['type'] ?? '', 'structural' ); ?>>
+								<span class="layout-builder__radio-ui">
+									<span class="layout-builder__radio-title"><?php esc_html_e('Structural Builder', 'ymc-smart-filter'); ?></span>
+									<span class="layout-builder__radio-desc">
+										<?php esc_html_e('Use structural builder UI / UX', 'ymc-smart-filter'); ?>
+									</span>
+								</span>
+							</label>
+
+						</div>						
+											 
+						<?php
+							$has_saved_schema = !empty($ymc_fg_lb_layout_schema);
+							$current_mode = $ymc_fg_custom_layout_builder['mode']['type'] ?? 'classic';							
+							$is_hidden_start_mode = ($current_mode !== 'structural' || $has_saved_schema) ? ' is-hidden' : '';							
+							$is_editor_hidden = ($current_mode === 'structural' && $has_saved_schema) ? '' : ' is-hidden';							
+						?>
+						
+						<div class="layout-builder__start-mode-wrap js-start-mode-wrap<?php echo esc_attr($is_hidden_start_mode); ?>">
+							
+							<div class="notification notification--info">
+							<?php								
+								printf(
+									/* translators: 1: Builder name, 2: Opening link tag for documentation, 3: Closing link tag. */
+									wp_kses(__( '<strong>%1$s</strong> is a visual grid constructor for creating custom layouts. 
+										Build your card structure using flexible rows and columns. %2$s <br>
+										View full documentation on GitHub <span class="dashicons dashicons-external"></span> %3$s', 
+										'ymc-smart-filter' ),
+										array(
+											'strong' => array(),
+											'br'     => array(),
+											'span'     => array(
+												'class' => array(),
+											),
+											'a' => array(
+												'href'   => array(),
+												'target' => array(),
+												'class'  => array(),
+											),
+										)
+									),
+									esc_html__( 'Structural Builder', 'ymc-smart-filter' ),
+									'<a href="' . esc_url( 'https://github.com/YMC-22/Filter-Grids/blob/main/BUILDER-NOTICE.md' ) . '" target="_blank" class="builder-help-link">', '</a>');
+							?>
+							</div>													
+							
+							<div class="layout-builder__radio-group layout-builder__radio-group--vertical">
+
+								<label class="layout-builder__radio-card">
+									<input class="js-layout-start-type-radio"
+									       type="radio"
+											 name="ymc_fg_custom_layout_builder[start][type]"
+											 value="preset"
+											 <?php checked( $ymc_fg_custom_layout_builder['start']['type'] ?? '', 'preset' ); ?>>
+									<span class="layout-builder__radio-ui">
+										<span class="layout-builder__radio-title">
+											<?php esc_html_e('Start from preset', 'ymc-smart-filter'); ?></span>
+									</span>
+								</label>
+
+								<label class="layout-builder__radio-card">
+									<input class="js-layout-start-type-radio" 
+											 type="radio"
+											 name="ymc_fg_custom_layout_builder[start][type]"
+											 value="current"
+											 <?php checked( $ymc_fg_custom_layout_builder['start']['type'] ?? '', 'current' ); ?>>
+									<span class="layout-builder__radio-ui">
+										<span class="layout-builder__radio-title">
+											<?php esc_html_e('Start from current classic layout', 'ymc-smart-filter'); ?></span>
+									</span>
+								</label>
+
+								<label class="layout-builder__radio-card js-start-scratch">
+									<input class="js-layout-start-type-radio"
+											 type="radio"
+											 name="ymc_fg_custom_layout_builder[start][type]"
+											 value="scratch"
+											 <?php checked( $ymc_fg_custom_layout_builder['start']['type'] ?? '', 'scratch' ); ?>>
+									<span class="layout-builder__radio-ui">
+										<span class="layout-builder__radio-title">
+											<?php esc_html_e('Start from scratch','ymc-smart-filter') ?></span>
+									</span>
+								</label>
+
+							</div>
+							
+							<div class="layout-builder__start-mode-content start-panel js-start-panel">
+
+								<?php $is_hidden_start_panel = $ymc_fg_custom_layout_builder['start']['type'] === 'preset' ? '' : ' is-hidden'; ?>
+
+								<div class="start-panel__preset js-start-panel-item<?php echo esc_attr($is_hidden_start_panel); ?>" data-mode="preset">
+									
+							 		<div class="preset-header">
+										<?php ymc_render_field_header('Choose a preset layout',
+                        		'Start with a predefined card structure and customize it later.'); ?>
+									</div>
+
+									<div class="preset-grid">
+
+										<label class="preset-card js-preset-card" data-preset="standard">
+
+											<input type="radio" name="ymc_fg_custom_layout_builder[start][preset]" value="standard">
+
+											<div class="preset-preview">
+												 <div class="preset-preview preview--standard">
+													<div class="block block-media"></div>													
+													<div class="block block-title"></div>
+													<div class="block block-meta"></div>
+													<div class="block block-excerpt"></div>
+													<div class="block block-button"></div>
+												</div>
+											</div>
+											
+											<div class="preset-info">
+												<strong><?php esc_html_e('Standard Card', 'ymc-smart-filter') ?></strong>
+												<span><?php esc_html_e('Image on top, content below', 'ymc-smart-filter') ?></span>											
+											</div>
+
+										</label>
+
+										<label class="preset-card js-preset-card" data-preset="media-left">
+
+											<input type="radio" name="ymc_fg_custom_layout_builder[start][preset]" value="media-left">
+
+											<div class="preset-preview">
+												<div class="preset-preview preview--media-left">
+													<div class="block block-media"></div>
+													<div class="block block-content">
+														<div class="block block-title"></div>
+														<div class="block block-meta"></div>
+														<div class="block block-excerpt"></div>
+													</div>
+												</div>
+											</div>
+											
+											<div class="preset-info">
+												<strong><?php esc_html_e('Media Left', 'ymc-smart-filter') ?></strong>
+												<span><?php esc_html_e('Image on the right, content on the left', 'ymc-smart-filter') ?></span>
+											</div>
+
+										</label>
+
+										<label class="preset-card js-preset-card" data-preset="minimal">
+
+											<input type="radio" name="ymc_fg_custom_layout_builder[start][preset]" value="minimal">
+
+											<div class="preset-preview">
+												<div class="preset-preview preview--minimal">
+													<div class="block block-title"></div>
+													<div class="block block-meta"></div>
+													<div class="block block-excerpt"></div>
+												</div>
+											</div>
+
+											<div class="preset-info">
+												<strong><?php esc_html_e('Minimal', 'ymc-smart-filter') ?></strong>
+												<span><?php esc_html_e('Text-only layout', 'ymc-smart-filter') ?></span>
+											</div>
+
+										</label>
+
+										<label class="preset-card js-preset-card" data-preset="modern-grid">
+											<input type="radio" name="ymc_fg_custom_layout_builder[start][preset]" value="modern-grid">
+
+											<div class="preset-preview">
+												<div class="preset-preview preview--modern-grid">
+														<div class="block block-image"></div>
+														<div class="preview-row">
+															<div class="preview-col-left">
+																<div class="block block-title"></div>
+																<div class="block block-text"></div>
+															</div>
+															<div class="preview-col-right">
+																<div class="block block-meta"></div>
+																<div class="block block-button"></div>
+															</div>
+														</div>
+												</div>
+											</div>
+
+											<div class="preset-info">
+												<strong><?php esc_html_e('Modern Grid', 'ymc-smart-filter') ?></strong>
+												<span><?php esc_html_e('2-column compact layout', 'ymc-smart-filter') ?></span>
+											</div>
+										</label>
+
+									</div>
+
+								</div>
+
+								<?php $is_hidden_start_panel = $ymc_fg_custom_layout_builder['start']['type'] === 'current' ? '' : ' is-hidden'; ?>
+
+								<div class="start-panel__current js-start-panel-item<?php echo esc_attr($is_hidden_start_panel); ?>" data-mode="current">
+								 	<button type="button" class="button button--primary js-convert-classic">
+										<span class="dashicons dashicons-layout"></span>
+			        					<span><?php echo esc_html__('Import Classic Layout', 'ymc-smart-filter'); ?></span>
+									</button>
+								</div>
+
+								<?php $is_hidden_start_panel = $ymc_fg_custom_layout_builder['start']['type'] === 'scratch' ? '' : ' is-hidden'; ?>
+
+								<div class="start-panel__scratch js-start-panel-item<?php echo esc_attr($is_hidden_start_panel); ?>" data-mode="scratch"></div>
+
+							</div>							
+
+						</div>						
+						
+						<div class="layout-builder__editor <?php echo esc_attr($is_editor_hidden); ?> js-layout-builder-editor" data-post-id="<?php echo esc_attr($post_id); ?>">
+							
+							<div class="layout-builder__toolbar">
+								<span class="layout-builder__title"><?php echo esc_html__('Layout Builder', 'ymc-smart-filter'); ?></span>
+
+								<div class="layout-builder__actions">
+									<button type="button" class="button button--secondary js-builder-reset">
+										<span class="dashicons dashicons-undo"></span>
+										<span><?php echo esc_html__('Reset', 'ymc-smart-filter'); ?></span>
+									</button>
+									<button type="button" class="button button--primary button--green js-builder-save">
+										<span class="dashicons dashicons-yes"></span>
+										<span><?php echo esc_html__('Apply Layout', 'ymc-smart-filter'); ?></span>
+									</button>
+								</div>
+							</div>
+
+							<div class="layout-builder__header js-builder-preset"></div>
+							
+							<div class="layout-builder__body">
+
+								<!-- Canvas -->
+								<div class="layout-builder__canvas js-builder-canvas">
+									<div class="layout-builder__canvas-inner"></div>
+								</div>
+
+								<!-- Sidebar -->
+								<div class="layout-builder__sidebar js-builder-sidebar">
+									<div class="layout-builder__sidebar-empty"></div>
+								</div>
+
+							</div>
+
+						</div>
+
+					</div>
+					
+				</fieldset>
+
+	         <?php $is_hidden_grid_settings = $ymc_fg_post_layout === 'layout_carousel' ? ' is-hidden' : ''; ?>
 
             <fieldset class="form-group form-group--with-bg js-grid-settings<?php echo esc_attr($is_hidden_grid_settings); ?>">
                 <div class="group-elements">
@@ -240,7 +516,7 @@ if (!defined( 'ABSPATH')) exit;
                 </div>
             </fieldset>
 
-	        <?php $is_hidden_carousel_settings = $ymc_fg_post_layout === 'layout_carousel' ? '' : ' is-hidden'; ?>
+	         <?php $is_hidden_carousel_settings = $ymc_fg_post_layout === 'layout_carousel' ? '' : ' is-hidden'; ?>
 
             <fieldset class="form-group form-group--with-bg carousel-settings js-carousel-settings<?php echo esc_attr($is_hidden_carousel_settings); ?>">
 
