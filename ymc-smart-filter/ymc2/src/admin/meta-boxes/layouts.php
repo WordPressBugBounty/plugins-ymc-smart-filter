@@ -412,8 +412,8 @@ if (!defined( 'ABSPATH')) exit;
 										<span><?php echo esc_html__('Reset', 'ymc-smart-filter'); ?></span>
 									</button>
 									<button type="button" class="button button--primary button--green js-builder-save">
-										<span class="dashicons dashicons-yes"></span>
-										<span><?php echo esc_html__('Apply Layout', 'ymc-smart-filter'); ?></span>
+										<span class="fa-solid fa-floppy-disk"></span>
+										<span class="button-text js-btn-text"><?php echo esc_html__('Apply Layout', 'ymc-smart-filter'); ?></span>
 									</button>
 								</div>
 							</div>

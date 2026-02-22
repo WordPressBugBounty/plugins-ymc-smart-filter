@@ -55,6 +55,7 @@ class FG_Layout_Renderer {
             case 'html':       self::renderHtml($context, $settings); break;
             case 'shortcode':  self::renderShortcode($context, $settings); break;
             case 'badge':      self::renderBadge($context, $settings); break;
+            case 'author':     self::renderAuthor($context, $settings); break;
 
         }
     }
@@ -328,67 +329,79 @@ class FG_Layout_Renderer {
      * Render button
      */
     protected static function renderButton(array $context, array $settings) : void {
-        $post_id = $context['post_id']; 
-        $href = '';
-        $source = $settings['link_source'] ?? 'post';
-        $tag = 'a';
-       
-        switch ($source) {
-            case 'post':
-                $href = get_permalink($post_id);
-                break;
-            case 'custom':
-                $href = $settings['custom_url'] ?? '';
-                break;
-            case 'acf':
-                $field_key = $settings['acf_link_key'] ?? '';
-                if ($field_key && function_exists('get_field')) {
-                    $href = get_field($field_key, $post_id);
-                }
-                break;
-            case 'none':
-            default:
-                $href = '';
-                $tag = 'span';
-                break;
-        }
+      $post_id = $context['post_id']; 
+      $href = '';
+      $source = $settings['link_source'] ?? 'post';
+      $tag = 'a';
+      
+      switch ($source) {
+         case 'post':
+               $href = get_permalink($post_id);
+               break;
+         case 'custom':
+               $href = $settings['custom_url'] ?? '';
+               break;
+         case 'acf':
+               $field_key = $settings['acf_link_key'] ?? '';
+               if ($field_key && function_exists('get_field')) {
+                  $href = get_field($field_key, $post_id);
+               }
+               break;
+         case 'none':
+         default:
+               $href = '';
+               $tag = 'span';
+               break;
+      }
         
-        if ($source !== 'none' && empty($href)) {
-            $tag = 'span';
-        }        
-        
-        $classes = [ 'btn' ]; 
+      if ($source !== 'none' && empty($href)) {
+         $tag = 'span';
+      }        
+      
+      $classes = [ 'btn' ]; 
 
-        if ($tag === 'a') {
-            $classes[] = 'js-post-link';
-        } else {
-            $classes[] = 'btn-static';
-        }
+      if ($tag === 'a') {
+         $classes[] = 'js-post-link';
+      } else {
+         $classes[] = 'btn-static';
+      }
 
-        $classes[] = 'sb-btn';
-        $classes[] = 'btn-' . ($settings['btn_style'] ?? 'primary');
-        $classes[] = 'btn-' . ($settings['btn_size'] ?? 'middle');               
+      $classes[] = 'sb-btn';
+      $classes[] = 'btn-' . ($settings['btn_style'] ?? 'primary');
+      $classes[] = 'btn-' . ($settings['btn_size'] ?? 'middle');               
 
-        if (!empty($settings['full_width'])) $classes[] = 'btn-block';         
-        
-        if (!empty($settings['custom_class'])) {
-            $classes[] = esc_attr($settings['custom_class']);
-        }
-       
-        $html_tag = '<'. $tag;
-        
-        if ($tag === 'a') {
-            $html_tag .= ' href="' . esc_url($href) . '"';
-            $html_tag .= ' target="' . esc_attr($settings['target'] ?? '_self') . '"';
-        }
+      if (!empty($settings['full_width'])) $classes[] = 'btn-block';         
+      
+      if (!empty($settings['custom_class'])) {
+         $classes[] = esc_attr($settings['custom_class']);
+      }
 
-        $html_tag .= ' class="' . implode(' ', $classes) . '">';
-        $html_tag .= esc_html($settings['label'] ?? 'Read More');
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        $html_tag .= '</'. $tag .'>';
+      $alignment = $settings['alignment'] ?? 'left';
+      $wrapper_classes = [
+         'post-card__button-wrapper',
+         'is-align-' . $alignment
+      ];
+      
+      $html_tag = '<'. $tag;
+      
+      if ($tag === 'a') {
+         $html_tag .= ' href="' . esc_url($href) . '"';
+         $html_tag .= ' target="' . esc_attr($settings['target'] ?? '_self') . '"';
+      }
 
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo $html_tag;
+      $html_tag .= ' class="' . implode(' ', $classes) . '">';
+      $html_tag .= esc_html($settings['label'] ?? 'Read More');
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      $html_tag .= '</'. $tag .'>';
+
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      echo sprintf(
+         '<div class="%s">%s</div>',
+         esc_attr(implode(' ', $wrapper_classes)),
+          // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+         $html_tag
+      );
+
     } 
 
     /**
@@ -606,6 +619,91 @@ class FG_Layout_Renderer {
          esc_attr($inline_css),
          esc_html($badge_text)
       );
+   }
+
+
+   /**
+    * Render Author
+    */
+   protected static function renderAuthor(array $context, array $settings) : void {
+      $post_id = $context['post_id'];
+
+      $post = get_post($post_id);
+      if (!$post) {
+         return;
+      }
+
+      $author_id     = $post->post_author;     
+      $show_avatar   = !empty($settings['show_avatar']);
+      $avatar_size   = $settings['avatar_size'] ?? 32;
+      $avatar_shape  = $settings['avatar_shape'] ?? 'circle';
+
+      $show_name     = !empty($settings['show_name']);
+      $author_source = $settings['author_source'] ?? 'profile';
+      $manual_name   = $settings['manual_name'] ?? 'Admin';
+      $prefix        = $settings['prefix'] ?? ''; 
+      
+      $link_author   = ($author_source === 'profile') && !empty($settings['link_author']);
+      $layout        = $settings['layout'] ?? 'horizontal';
+      $alignment     = $settings['alignment'] ?? 'left';
+      $custom_class  = $settings['custom_class'] ?? '';
+      
+      if (!$show_avatar && !$show_name) {
+         return;
+      }
+     
+      $display_name = ($author_source === 'manual') 
+         ? $manual_name 
+         : get_the_author_meta('display_name', $author_id);
+     
+      $wrapper_classes = [
+         'sb-author',
+         'is-layout-' . $layout,
+         'is-align-' . $alignment,
+      ];
+
+      if (!empty($custom_class)) {
+         $wrapper_classes[] = esc_attr($custom_class);
+      }
+     
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+      echo '<div class="' . implode(' ', $wrapper_classes) . '">';
+     
+      if ($show_avatar) {
+         $avatar_wrapper_classes = [
+            'sb-author__avatar',
+            'is-shape-' . $avatar_shape
+         ];
+
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped         
+         echo '<div class="' . implode(' ', $avatar_wrapper_classes) . '">';         
+         echo get_avatar($author_id, $avatar_size, '', 'author avatar');
+         echo '</div>';
+      }
+     
+      if ($show_name) {
+         echo '<div class="sb-author__content">';         
+         if (!empty($prefix)) {
+             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+            echo '<span class="sb-author__prefix">' . esc_html($prefix) . ' </span>';
+         }
+        
+         if ($link_author) {
+            echo sprintf(
+               '<a href="%s" class="sb-author__name" target="_blank">%s</a>',
+               esc_url(get_author_posts_url($author_id)),
+               esc_html($display_name)
+            );
+         } 
+         else {
+             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped 
+            echo '<span class="sb-author__name">' . esc_html($display_name) . '</span>';
+         }
+
+         echo '</div>';
+      }
+
+      echo '</div>';
    }
    
    /**

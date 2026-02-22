@@ -1,7 +1,7 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.6.2
+Version: 3.6.3
 Donate link: https://www.paypal.com/webapps/shoppingcart?flowlogging_id=c9ce7a67edea0&mfid=1771188342028_c9ce7a67edea0#/checkout/openButton
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
@@ -78,6 +78,8 @@ If you prefer using the old version of Filter & Grids, you can enable **Legacy M
 
 == Changelog ==
 
+= 3.6.3 =
+Added available drag and drop elements in Structural Layout Builder.
 = 3.6.1 =
 Added: New styling options for numeric pagination (Leading Zero, Roman Numerals, Lower Alpha).
 = 3.6.0 =
