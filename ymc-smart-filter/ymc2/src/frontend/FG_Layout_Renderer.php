@@ -56,6 +56,7 @@ class FG_Layout_Renderer {
             case 'shortcode':  self::renderShortcode($context, $settings); break;
             case 'badge':      self::renderBadge($context, $settings); break;
             case 'author':     self::renderAuthor($context, $settings); break;
+            case 'social_share': self::renderSocialShare($context, $settings); break;
 
         }
     }
@@ -705,6 +706,140 @@ class FG_Layout_Renderer {
 
       echo '</div>';
    }
+
+
+   /**
+     * Render Social Share
+     */
+   protected static function renderSocialShare(array $context, array $settings) : void {
+		$post_id = $context['post_id'] ?? get_the_ID();
+		if (!$post_id) return;
+		
+		$display_mode      = $settings['display_mode'] ?? 'inline';
+		$networks          = $settings['networks'] ?? ['telegram', 'facebook', 'copy'];
+		$icon_style        = $settings['icon_style'] ?? 'circle';
+		$alignment         = $settings['alignment'] ?? 'center';
+		$float_pos         = $settings['floating_position'] ?? 'top-right';
+		$show_labels       = !empty($settings['show_labels']);
+		$color_type        = $settings['color_type'] ?? 'brand';
+		$custom_color      = $settings['custom_color'] ?? '#098ab8';
+		$custom_class      = $settings['custom_class'] ?? '';
+		
+		$is_expandable = ($display_mode === 'expandable');
+       
+		$current_url   = urlencode(get_permalink($post_id));
+		$current_title = urlencode(get_the_title($post_id));        
+		
+		$lib = [
+			'telegram' => [
+					'label' => 'Telegram',
+					'url'   => "https://t.me/share/url?url={$current_url}&text={$current_title}",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.25-5.54 3.69-.52.36-1 .53-1.42.52-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.35-.49.96-.75 3.78-1.65 6.31-2.74 7.58-3.27 3.61-1.5 4.35-1.76 4.84-1.77.11 0 .35.03.5.16.12.1.16.24.18.34.02.06.02.18.01.2z"/></svg>'
+			],
+			'whatsapp' => [
+					'label' => 'WhatsApp',
+					'url'   => "https://api.whatsapp.com/send?text={$current_title}%20{$current_url}",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12.012 2c-5.508 0-9.987 4.479-9.987 9.988 0 1.757.455 3.405 1.253 4.846L2 22l5.304-1.393c1.4.76 2.992 1.192 4.685 1.192 5.508 0 9.987-4.479 9.987-9.988 0-5.509-4.479-9.988-9.987-9.988zm4.847 14.125c-.215.604-1.241 1.105-1.707 1.166-.434.058-.99.079-2.716-.639-2.207-.916-3.629-3.167-3.74-3.313-.11-.147-.894-1.187-.894-2.27 0-1.083.568-1.613.77-1.835.202-.222.44-.277.587-.277.147 0 .294.002.422.008.134.007.314-.051.491.375.183.443.624 1.52.678 1.631.055.111.092.239.019.387-.074.147-.11.239-.221.369-.111.13-.232.29-.332.388-.11.11-.225.23-.096.452.129.222.573.945 1.231 1.53.847.756 1.562.99 1.782 1.101.22.11.349.093.479-.056.129-.148.552-.646.699-.868.147-.222.294-.185.497-.11.202.074 1.286.606 1.506.716.22.111.368.166.422.26.056.092.056.535-.159 1.14z"/></svg>'
+			],
+			'facebook' => [
+					'label' => 'Facebook',
+					'url'   => "https://www.facebook.com/sharer/sharer.php?u={$current_url}",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H7.9v-2.89h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.77l-.44 2.89h-2.33v6.99C18.34 21.12 22 16.99 22 12z"/></svg>'
+			],
+			'linkedin' => [ 
+					'label' => 'LinkedIn',
+					'url'   => "https://www.linkedin.com/sharing/share-offsite/?url={$current_url}",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>'
+			],
+			'instagram' => [
+					'label' => 'Instagram',
+					'url'   => "https://instagram.com", 
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>'
+			],
+			'youtube' => [
+					'label' => 'YouTube',
+					'url'   => "https://youtube.com",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33zM9.75 15.02l5.75-3.27-5.75-3.27v6.54z"/></svg>'
+			],
+			'twitter' => [
+					'label' => 'X',
+					'url'   => "https://twitter.com/intent/tweet?url={$current_url}&text={$current_title}",
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'
+			],
+			'copy' => [
+					'label' => 'Copy',
+					'url'   => '#',
+					'svg'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>'
+			]
+		];
+		
+		$wrapper_classes = [
+			'post-card__social-sharer',
+			'sb-social-share',
+			'is-style-' . $icon_style,
+			'is-color-' . $color_type,
+			'is-mode-' . $display_mode
+		];
+
+		if ($is_expandable) {
+			$wrapper_classes[] = 'is-float-' . $float_pos;
+		} else {
+			$wrapper_classes[] = 'is-align-' . $alignment;
+		}
+
+		if (!empty($custom_class)) {
+			$wrapper_classes[] = esc_attr($custom_class);
+		}
+		
+		$style_attr = '';
+		if ($color_type === 'custom' && !empty($custom_color)) {
+			$style_attr = sprintf('style="--sb-social-custom-color: %s;"', esc_attr($custom_color));
+		}
+	
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo sprintf('<div class="%s" %s>', implode(' ', $wrapper_classes), $style_attr);
+
+		if ($is_expandable) {
+			echo '<button class="sb-social-share__toggle" aria-label="Share">';
+			echo '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>';
+			echo '</button>';
+		}
+
+		echo '<div class="sb-social-share__list">';
+        
+		$post_permalink = get_permalink($post_id);
+
+		foreach ($networks as $net) {
+			if (!isset($lib[$net])) continue;
+			
+			$item = $lib[$net];
+			$is_copy = ($net === 'copy');
+
+			printf(
+					'<a href="%s" class="sb-social-share__item is-%s" target="_blank" rel="noopener" title="%s" data-url="%s" %s>',
+					$is_copy ? '#' : esc_url($item['url']),
+					esc_attr($net),
+					esc_attr($item['label']),
+					esc_url($post_permalink),
+					$is_copy ? 'onclick="if(window.sbCopyLink){sbCopyLink(event);} return false;"' : ''
+			);
+
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '<span class="sb-social-share__icon">' . $item['svg'] . '</span>'; 
+			
+			if ($show_labels) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<span class="sb-social-share__label">' . esc_html($item['label']) . '</span>';
+			}
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			echo '</a>';
+		}
+		echo '</div>'; 
+		echo '</div>';
+
+    }
+            
+
    
    /**
     * Render ACF Custom Field
