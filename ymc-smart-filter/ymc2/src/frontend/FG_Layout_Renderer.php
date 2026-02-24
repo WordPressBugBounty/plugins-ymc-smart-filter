@@ -716,6 +716,7 @@ class FG_Layout_Renderer {
 		if (!$post_id) return;
 		
 		$display_mode      = $settings['display_mode'] ?? 'inline';
+      $direction         = $settings['floating_direction'] ?? 'vertical';
 		$networks          = $settings['networks'] ?? ['telegram', 'facebook', 'copy'];
 		$icon_style        = $settings['icon_style'] ?? 'circle';
 		$alignment         = $settings['alignment'] ?? 'center';
@@ -778,7 +779,8 @@ class FG_Layout_Renderer {
 			'sb-social-share',
 			'is-style-' . $icon_style,
 			'is-color-' . $color_type,
-			'is-mode-' . $display_mode
+			'is-mode-' . $display_mode,
+         'is-direction-' . $direction
 		];
 
 		if ($is_expandable) {
