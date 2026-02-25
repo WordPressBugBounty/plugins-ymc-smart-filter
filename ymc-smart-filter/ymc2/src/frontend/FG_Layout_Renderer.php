@@ -57,6 +57,7 @@ class FG_Layout_Renderer {
             case 'badge':      self::renderBadge($context, $settings); break;
             case 'author':     self::renderAuthor($context, $settings); break;
             case 'social_share': self::renderSocialShare($context, $settings); break;
+            case 'social_links': self::renderSocialLinks($context, $settings); break;
 
         }
     }
@@ -839,14 +840,105 @@ class FG_Layout_Renderer {
 		echo '</div>'; 
 		echo '</div>';
 
-    }
+   }
             
 
-   
    /**
+    * Render Social Links
+    */
+   protected static function renderSocialLinks(array $context, array $settings): void {
+      $post_id = $context['post_id'] ?? get_the_ID();
+      if (!$post_id) return;
+      
+      $source       = $settings['source'] ?? 'manual';
+      $style        = $settings['icon_style'] ?? 'plain';
+      $alignment    = $settings['alignment'] ?? 'left';   
+      $custom_class = $settings['custom_class'] ?? '';      
+      
+      $supported_networks = ['facebook', 'instagram', 'linkedin', 'twitter', 'youtube'];    
+     
+      $icons = [
+         'facebook'  => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.12 8.44 9.88v-6.99H7.9v-2.89h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.77l-.44 2.89h-2.33v6.99C18.34 21.12 22 16.99 22 12z"/></svg>',
+         'instagram' => '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg',
+         'linkedin'  => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>',
+         'youtube'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33zM9.75 15.02l5.75-3.27-5.75-3.27v6.54z"/></svg>',
+         'twitter'   => '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+      ];
+      
+      $links_to_render = [];      
+      
+      $author_id = 0;
+      if ($source === 'author') {
+         $author_id = get_post_field('post_author', $post_id);
+      }
+      
+      foreach ($supported_networks as $net) {
+        $setting_val = $settings["{$net}_url"] ?? '';
+        if (empty($setting_val)) continue;
+
+        if ($source === 'manual') {           
+            $links_to_render[$net] = $setting_val;
+        } 
+        else {           
+            if ($author_id) {
+                $value = '';
+               
+                if (function_exists('get_field')) {
+                    $value = get_field($setting_val, 'user_' . $author_id);
+                }
+                
+                if (empty($value)) {
+                    $value = get_the_author_meta($setting_val, $author_id);
+                }
+                
+                if (!empty($value) && is_string($value)) {
+                    $links_to_render[$net] = $value;
+                }
+            }
+        }
+    }
+     
+      if (empty($links_to_render)) return;
+      
+      $wrapper_classes = [
+         'post-card__social-links',
+         'sb-social-links',
+         'is-style-' . $style,
+         'is-alignment-' . $alignment,
+         'is-source-' . $source
+      ];
+
+      if (!empty($custom_class)) {
+         $wrapper_classes[] = esc_attr($custom_class);
+      }
+     
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      echo sprintf('<div class="%s">', implode(' ', $wrapper_classes));
+
+      foreach ($links_to_render as $network => $url) {
+         $icon_svg = $icons[$network] ?? '';
+         
+         printf(
+               '<a href="%s" class="sb-social-links__item is-%s" target="_blank" rel="noopener noreferrer" aria-label="%s">
+                  <span class="sb-social-links__icon">%s</span>
+               </a>',
+               esc_url($url),
+               esc_attr($network),
+               esc_attr(ucfirst($network)),
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+               $icon_svg
+         );
+      }
+
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      echo '</div>';
+   }   
+   
+   
+    /**
     * Render ACF Custom Field
     */
-    protected static function renderAcfField(array $context, array $settings) : void {
+   protected static function renderAcfField(array $context, array $settings) : void {
         $field_name = $settings['field_key'] ?? '';
         if (empty($field_name) || $field_name === 'none') return;
 
@@ -899,7 +991,7 @@ class FG_Layout_Renderer {
         }
 
         echo '</div>';
-    }
+   }
     
 
     // === LIST ACF FIELDS RENDERERS === //
