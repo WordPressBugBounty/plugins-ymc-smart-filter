@@ -37,8 +37,8 @@ class FG_Layout_Renderer {
         $settings = $node['settings'] ?? [];
 
         switch ($type) {
-            case 'card':   	   self::renderCard($context, $node); break;
-            case 'row':    	   self::renderRow($context, $node); break;
+            case 'card':   	 self::renderCard($context, $node); break;
+            case 'row':    	 self::renderRow($context, $node); break;
             case 'column':     self::renderColumn($context, $node); break;            
             case 'raw_html':   self::renderRawHtml($context, $settings); break;
             case 'image':      self::renderImage($context, $settings); break;
@@ -58,6 +58,7 @@ class FG_Layout_Renderer {
             case 'author':     self::renderAuthor($context, $settings); break;
             case 'social_share': self::renderSocialShare($context, $settings); break;
             case 'social_links': self::renderSocialLinks($context, $settings); break;
+            case 'rating'      : self::renderRating($context, $settings); break;
 
         }
     }
@@ -411,28 +412,28 @@ class FG_Layout_Renderer {
      */
     protected static function renderCategories(array $context, array $settings) : void {
         
-        if (empty($settings['show'])) {
-            return;
-        }
+      if (empty($settings['show'])) {
+         return;
+      }
 
-        $post_id    = $context['post_id'];
-        $categories = ymc_get_attached_post_taxonomies($post_id);
+      $post_id    = $context['post_id'];
+      $categories = ymc_get_attached_post_taxonomies($post_id);
 
-        if (!empty($categories) && is_array($categories)) {
-            $limit        = isset($settings['limit']) ? (int)$settings['limit'] : 3;
-            $custom_class = self::getCustomClass($settings);
-            
-            if ($limit > 0) {
-               $categories = array_slice($categories, 0, $limit);
+      if (!empty($categories) && is_array($categories)) {
+         $limit        = isset($settings['limit']) ? (int)$settings['limit'] : 3;
+         $custom_class = self::getCustomClass($settings);
+         
+         if ($limit > 0) {
+            $categories = array_slice($categories, 0, $limit);
+         }
+
+         echo '<div class="post-card__categories sb-categories' . esc_attr($custom_class) . '">';
+            foreach ($categories as $label) {
+               echo '<span class="post-taxonomy">' . esc_html($label) . '</span>';
             }
-
-            echo '<div class="post-card__categories sb-categories' . esc_attr($custom_class) . '">';
-               foreach ($categories as $label) {
-                  echo '<span class="post-taxonomy">' . esc_html($label) . '</span>';
-               }
-            echo '</div>';
-        }
-    }
+         echo '</div>';
+      }
+   }
     
 
     /**
@@ -933,6 +934,83 @@ class FG_Layout_Renderer {
       // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
       echo '</div>';
    }   
+   
+
+   /**
+    * Render Raiting
+    */
+   protected static function renderRating(array $context, array $settings): void {
+      $post_id = $context['post_id'] ?? get_the_ID();
+      if (!$post_id) return;
+     
+      $source       = $settings['source'] ?? 'dynamic';
+      $meta_key     = $settings['meta_key'] ?? 'team_rating';
+      $manual_val   = $settings['manual_value'] ?? '';
+      $max_stars    = (int)($settings['max_scale'] ?? 5);
+      $star_color   = $settings['star_color'] ?? '#ffb400';
+      $alignment    = $settings['alignment'] ?? 'flex-start';
+      $custom_class = $settings['custom_class'] ?? '';      
+      $rating_value = 0;
+
+      if ($source === 'manual') {
+         $rating_value = $manual_val;
+      } else {         
+         if (function_exists('get_field')) {
+           $rating_value = get_field($meta_key, $post_id);
+         }
+         if (empty($rating_value)) {
+            $rating_value = get_post_meta($post_id, $meta_key, true);
+         }
+      }
+      
+      if ($rating_value === '' || $rating_value === null || $rating_value === false) {
+         return;
+      }
+
+      $rating_value = floatval($rating_value);      
+      $rating_value = max(0, min((float)$rating_value, $max_stars));
+     
+      $svg_full  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+      $svg_half  = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zM12 15.4V6.1l1.71 4.04 4.38.38-3.32 2.88 1 4.28L12 15.4z"/></svg>';
+      $svg_empty = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>';
+     
+      $wrapper_classes = [
+         'post-card__rating',
+         'sb-rating',
+         'is-alignment-' . $alignment,
+         'is-source-' . $source
+      ];
+      if (!empty($custom_class)) $wrapper_classes[] = esc_attr($custom_class);
+      
+      printf('<div class="%s" style="--star-color: %s; display: flex; align-items: center; justify-content: %s; gap: 4px;">', 
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      implode(' ', $wrapper_classes),
+         esc_attr($star_color),
+         esc_attr($alignment)
+      );
+     
+      for ($i = 1; $i <= $max_stars; $i++) {
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+         echo '<span class="sb-rating__star" style="width: 20px; height: 20px; color: var(--star-color);">';
+         
+         if ($rating_value >= $i) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped           
+            echo $svg_full;
+         } elseif ($rating_value > ($i - 1) && $rating_value < $i) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped   
+            echo ($rating_value - ($i - 1) >= 0.25 && $rating_value - ($i - 1) < 0.75) ? $svg_half : ($rating_value - ($i - 1) >= 0.75 ? $svg_full : $svg_empty);
+         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped        
+            echo $svg_empty;
+         }
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+         echo '</span>';
+      }
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+      echo sprintf('<span class="sb-rating__value" style="margin-left: 8px; font-weight: bold;">%s</span>', $rating_value);
+      // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped      
+      echo '</div>';
+   }
    
    
     /**
