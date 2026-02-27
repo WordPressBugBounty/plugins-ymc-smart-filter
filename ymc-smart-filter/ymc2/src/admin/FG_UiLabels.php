@@ -367,11 +367,19 @@ class FG_UiLabels {
 	 * Get label by category and key
 	 */
 	public static function get(string $category, string $key, string $default = ''): string
-	{
-		$value = self::$labels[$category][$key] ?? $default;
-		// phpcs:ignore WordPress
-		return __($value, 'ymc-smart-filter');
-	}
+	{	
+
+      $value = self::$labels[$category][$key] ?? $default;
+
+      if (is_string($value)) {
+         // phpcs:ignore WordPress
+         return __($value, 'ymc-smart-filter');
+      }
+
+      return is_array($value)
+         ? self::translate_recursive($value)
+         : (string) $value;
+   }
 
 	/**
 	 * Get all labels of a specific category
@@ -379,8 +387,29 @@ class FG_UiLabels {
 	public static function all(string $category): array
 	{
 		$items = self::$labels[$category] ?? [];
-		// phpcs:ignore WordPress
-		return array_map(fn($label) => __($label, 'ymc-smart-filter'), $items);
+		// phpcs:ignore WordPress		
+      return self::translate_recursive($items);
 	}
+
+
+   /**
+    * Recursively translate only string values
+    */
+   protected static function translate_recursive($value)
+   {
+      if (is_string($value)) {
+         // phpcs:ignore WordPress
+         return __($value, 'ymc-smart-filter');
+      }
+
+      if (is_array($value)) {
+         foreach ($value as $k => $v) {
+               $value[$k] = self::translate_recursive($v);
+         }
+         return $value;
+      }
+
+      return $value;
+   }
 
 }

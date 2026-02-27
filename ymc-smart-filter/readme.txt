@@ -1,8 +1,8 @@
 ===  Filter & Grids ===
 Plugin Name: Filter & Grids
 Contributors: YMC, Roman
-Version: 3.6.7
-Donate link: https://www.paypal.com/webapps/shoppingcart?flowlogging_id=c9ce7a67edea0&mfid=1771188342028_c9ce7a67edea0#/checkout/openButton
+Version: 3.6.8
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, sort, masonry, wordpress
 Requires at least: 5.5
 Tested up to: 6.9

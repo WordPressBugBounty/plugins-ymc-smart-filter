@@ -196,6 +196,8 @@ class FG_Layout_Renderer {
 
         $size         = $settings['size'] ?? 'medium';
         $link         = $settings['link'] ?? 'post';
+        $meta_key     = $settings['meta_key'] ?? '';
+        $target       = $settings['target'] ?? '';
         $aspect_ratio = $settings['aspect_ratio'] ?? 'auto';
         $object_fit   = $settings['object_fit'] ?? 'cover';
         $custom_class = self::getCustomClass($settings);
@@ -226,14 +228,37 @@ class FG_Layout_Renderer {
        
         echo '<div class="post-card__image sb-image' . esc_attr($custom_class) . '">';
             if ($link === 'post') {
-                echo '<a href="' . esc_url(get_permalink($post_id)) . '" style="display: block;">';
+               $url = get_permalink($post_id);               
+            }
+            elseif ($link === 'custom' && !empty($meta_key)) {               
+               $url = get_post_meta($post_id, $meta_key, true);
+            }
+
+            $target_attr = '';
+            $rel_attr    = '';
+
+            if (!empty($target)) {
+               $allowed_targets = ['_blank', '_self', '_parent', '_top'];
+
+               if (in_array($target, $allowed_targets, true)) {
+                  $target_attr = ' target="' . esc_attr($target) . '"';
+
+                  if ($target === '_blank') {
+                     $rel_attr = ' rel="noopener noreferrer"';
+                  }
+               }
+            }
+
+            if (!empty($url)) {
+               // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped          
+               echo '<a href="' . esc_url($url) . '"' . $target_attr . $rel_attr . '>';
             }
 
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo $post_image;
 
-            if ($link === 'post') {
-                echo '</a>';
+            if (!empty($url)) {
+               echo '</a>';
             }
         echo '</div>';
     }
