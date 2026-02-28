@@ -225,7 +225,7 @@ class FG_Shortcodes {
 	public static function add_admin_bar_menu($wp_admin_bar) : void {
 		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
 		$icon = '<span class="ab-icon" style="background-image: url('. $icon_url . ') !important; background-repeat: no-repeat; background-position: center; width: 18px; height: 18px; margin-top: 3px;"></span>';
-		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filter') . '</span>';
+		$title = $icon . '<span class="ab-label">' . esc_html__('YMC Filter', 'ymc-smart-filter') . '</span>';
 
 		$wp_admin_bar->add_menu(array(
 			'id'    => 'ymc-filter-grids',

@@ -80,7 +80,8 @@ defined( 'ABSPATH' ) || exit; ?>
                         </div>
                         <?php if( 'dependent' === $filter_type || in_array('dependent', array_column($filter_options, 'filter_type'), true) ) : ?>
                         <div class="form-item js-tax-sequence"
-                             data-tax-sequence='<?php echo !empty($filter_dependent_settings['tax_sequence']) ? json_encode(explode(',', $filter_dependent_settings['tax_sequence'])) : '[]'; ?>'>
+                             data-tax-sequence="<?php echo esc_attr( ! empty( $filter_dependent_settings['tax_sequence'] ) ? 
+					                  wp_json_encode( explode( ',', $filter_dependent_settings['tax_sequence'] ) ) : '[]' ); ?>">
                             <header class="form-label">
                                 <span class="heading-text">
                                     <?php esc_attr_e('Related Terms', 'ymc-smart-filter' ); ?></span>

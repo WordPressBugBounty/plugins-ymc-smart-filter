@@ -71,7 +71,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
                          data-label="<?php echo esc_attr($tax_label); ?>"
                          data-term-count="<?php echo count( $terms ); ?>"
                          data-term-threshold="<?php echo esc_attr( $filter_dropdown_setting['threshold'] ); ?>"
-                         data-all-terms="<?php echo json_encode(array_keys( $all_terms )); ?>">
+                         data-all-terms="<?php echo esc_attr( wp_json_encode( array_keys( $all_terms ) ) ); ?>">
 	                    <?php
                             $term_count = count( $terms );
                             $dropdown_mode = $term_count > $filter_dropdown_setting['threshold'] ? 'extended' : 'compact'; ?>

@@ -11,13 +11,13 @@ global $post_new_file, $post_type_object, $post; ?>
     <div class="headerbar-inner">
 
         <div class="title-wrap">
-            <div class="page-title"><?php esc_html_e('Edit Filter & Grids', 'ymc-smart-filter'); ?></div>
+            <div class="page-title"><?php esc_html_e('Edit YMC Filter', 'ymc-smart-filter'); ?></div>
             <input form="post" type="text" name="post_title" size="30" value="<?php echo esc_html($post->post_title); ?>"
                    id="title"
                    class="headerbar-title-field"
                    spellcheck="true"
                    autocomplete="off"
-                   placeholder="<?php esc_attr_e('Filter & Grids Title', 'ymc-smart-filter'); ?>" />
+                   placeholder="<?php esc_attr_e('YMC Filter Title', 'ymc-smart-filter'); ?>" />
         </div>
 
 

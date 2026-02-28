@@ -138,8 +138,9 @@ if (!defined( 'ABSPATH')) exit;
                             </div>
                         </div>
                         <?php
-                        if($taxonomies) :
-                            $number_of_iterations = 0;
+                        $number_of_iterations = 0;
+
+                        if(!empty($taxonomies)) :
                             foreach ($taxonomies as $key => $value) :
 	                            $filter_info = null;
 	                            foreach ($ymc_fg_filter_options as $filter) {
@@ -162,7 +163,7 @@ if (!defined( 'ABSPATH')) exit;
 
                                 <?php $is_visible_btn_all = $filter_all_button[$key]['is_visible'] ?? 'yes'; ?>
                                 <div class="filter-all-settings__cell">
-                                    <select class="form-select" name="ymc_fg_filter_all_button[<?php echo esc_attr($key); ?>][is_visible]"">
+                                    <select class="form-select" name="ymc_fg_filter_all_button[<?php echo esc_attr($key); ?>][is_visible]">
                                     <option value="yes"
                                         <?php selected($is_visible_btn_all, 'yes'); ?>>
                                         <?php echo esc_html('Visibile'); ?>

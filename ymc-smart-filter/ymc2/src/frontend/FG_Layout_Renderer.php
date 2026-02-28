@@ -339,7 +339,7 @@ class FG_Layout_Renderer {
             $reading_time = ymc_calculate_read_time($post_id);
             $read_html  = '<div class="post-meta post-meta--builder post-read-time">';
             $read_html .= '<span class="read-time-icon"></span>';
-            $read_html .= '<span class="read-time-text">' . $reading_time . ' ' . __('min read', 'ymc-smart-filter') . '</span>';
+            $read_html .= '<span class="read-time-text">' . esc_html($reading_time) . ' ' . __('min read', 'ymc-smart-filter') . '</span>';
             $read_html .= '</div>';
             $meta_items[] = $read_html;
         }

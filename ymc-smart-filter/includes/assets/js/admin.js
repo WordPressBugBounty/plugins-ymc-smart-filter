@@ -493,68 +493,41 @@
         }
 
         /**
-         * Initializes a CodeMirror editor for custom CSS.
-         */
-        function codeMirrorCSS() {
-
+          * Initializes a CodeMirror editor for custom CSS via WordPress API.
+          */
+         function codeMirrorCSS() {
             let editorSource = document.querySelector("#advanced #ymc-custom-css");
+            if (!editorSource) return;
+           
+            let editorSettings = _smart_filter_object.code_editor_css;             
+            let editState = wp.codeEditor.initialize(editorSource, editorSettings);
+            let editor = editState.codemirror;
 
-            let editor = CodeMirror.fromTextArea( editorSource, {
-                //value: "",
-                lineNumbers: true,
-                mode:  "css",
-                theme: "eclipse",
-                styleActiveLine: true,
-                autoCloseTags:true,
-                lineWrapping: true,
-                tabSize: 2,
-                autofocus: true,
-                smartIndent: false,
-                autoRefresh: true,
-                placeholder: "/*** Here your code CSS... ***/",
-                extraKeys: {"Ctrl-Space": "autocomplete"}
+            editor.setSize(null, "400");            
+            editor.on('change', (cm) => {
+               cm.save();               
             });
+         }
 
-            editor.setSize(null, "400");
-
-            editor.on('change', (args) => {
-                editorSource.innerHTML = args.getValue().replace(/(\r\n|\n|\r)/gm, "");
-            });
-
-            // editor.toTextArea();
-            // editor.refresh();
-        }
-
-        /**
-         * Initializes CodeMirror editor for custom JavaScript.
-         */
-        function codeMirrorAfterJS() {
-
+         /**
+          * Initializes CodeMirror editor for custom JavaScript via WordPress API.
+          */
+         function codeMirrorAfterJS() {
             let editorSource = document.querySelector("#advanced #ymc-custom-after-js");
+            if (!editorSource) return;
 
-            let editor = CodeMirror.fromTextArea( editorSource, {
-                //value: "",
-                lineNumbers: true,
-                mode:  "javascript",
-                theme: "eclipse",
-                styleActiveLine: true,
-                autoCloseTags:true,
-                lineWrapping: true,
-                tabSize: 2,
-                autofocus: true,
-                smartIndent: false,
-                autoRefresh: true,
-                placeholder: "/*** Enter your custom action here… ***/",
-                extraKeys: {"Ctrl-Space": "autocomplete"}
-            });
+            let editorSettings = _smart_filter_object.code_editor_js;
+            
+            let editState = wp.codeEditor.initialize(editorSource, editorSettings);
+            let editor = editState.codemirror;
 
             editor.setSize(null, "400");
 
-            editor.on('change', (args) => {
-                editorSource.innerHTML = args.getValue().replace(/(\r\n|\n|\r)/gm, "");
+            editor.on('change', (cm) => {
+               cm.save();
             });
+         }
 
-        }
 
         /**
          * Function to handle displaying popup hints and info based on user interaction
@@ -562,7 +535,7 @@
          */
         function popupHints(e) {
             e.preventDefault();
-            
+
             let popupHints = document.querySelector('#advanced .custom-js .popup-hints');
             let btnCloseMethods = popupHints.querySelector('.popup-hints--btn-close');
             let btnCloseInfo = popupHints.querySelector('.popup-hints--description .btn-close');
@@ -581,7 +554,7 @@
             // Open Info
             popupHints.querySelectorAll('.popup-hints--wrp .line-hint').forEach((el) => {
 
-               el.addEventListener('click', (e) => {
+                el.addEventListener('click', (e) => {
 
                     let methodName = e.target.dataset.method;
 
@@ -603,8 +576,8 @@
                                 $(popupHints).find('.popup-hints--wrp .line-hint').removeClass('active');
                             });
                         }
-                   });
-               });
+                    });
+                });
             });
         }
 
@@ -802,7 +775,7 @@
                     }
                 });
             }, optionsInfinityScroll);
-            
+
             postsObserver.observe(document.querySelector('.ymc__container-settings #general #selection-posts .choices-list li:last-child'));
         }
 
@@ -874,7 +847,7 @@
             }, optionsInfinityScroll);
 
             postsObserver.observe(document.querySelector('.ymc__container-settings #general #featured-posts .list-posts__inner li:last-child'));
-            
+
         }
 
         /**
@@ -1046,7 +1019,7 @@
 
                             for (let key in dataTax) {
 
-                            taxonomyWrp.append(`<div id="${key}" class="group-elements" draggable="true">
+                                taxonomyWrp.append(`<div id="${key}" class="group-elements" draggable="true">
                             <i class="fas fa-grip-vertical handle"></i>
                             <input id="id-${key}" type="checkbox" name="ymc-taxonomy[]" value="${key}">
                             <label for="id-${key}">${dataTax[key]}</label>
@@ -1206,24 +1179,24 @@
             }
             else {
 
-               let act = confirm("Are you sure you want to disable this taxonomy?");
-               if( act ) {
+                let act = confirm("Are you sure you want to disable this taxonomy?");
+                if( act ) {
 
-                   termWrp.find('.item-'+$(e.target).val()).remove();
-                   let checkboxes = $(e.target).closest('.group-elements').siblings().find('input[type="checkbox"]');
-                   let flag = true;
+                    termWrp.find('.item-'+$(e.target).val()).remove();
+                    let checkboxes = $(e.target).closest('.group-elements').siblings().find('input[type="checkbox"]');
+                    let flag = true;
 
-                   checkboxes.each(function () {
-                       if( $(this).is(':checked') ) {
-                           flag = false;
-                       }
-                   });
+                    checkboxes.each(function () {
+                        if( $(this).is(':checked') ) {
+                            flag = false;
+                        }
+                    });
 
-                   ( flag ) ? termsSection.addClass('hidden') : '';
-               }
-               else {
-                   $(e.target).prop('checked', true);
-               }
+                    ( flag ) ? termsSection.addClass('hidden') : '';
+                }
+                else {
+                    $(e.target).prop('checked', true);
+                }
             }
         });
 
@@ -1639,13 +1612,13 @@
             }
 
             $('#TB_ajaxContent .ymc-icons-content .panel-setting .toggle-align-icon[data-align="'+alignterm+'"]').
-                addClass('selected').siblings().removeClass('selected');
+            addClass('selected').siblings().removeClass('selected');
 
             // Set current settings
             termCurrentBg.wpColorPicker('color', bgTerm);
             termCurrentColor.wpColorPicker('color', colorTerm);
             ( defaultTerm !== '' ) ? termCurrentDefault.attr('checked', defaultTerm).prop('checked', true) :
-                                     termCurrentDefault.removeAttr('checked');
+                termCurrentDefault.removeAttr('checked');
 
             ( hideTerm !== '' ) ? termCurrentHide.attr('checked','checked').prop('checked', true) :
                 termCurrentHide.removeAttr('checked');
@@ -1695,7 +1668,7 @@
         $(document).on('click','#TB_ajaxContent .ymc-icons-content .remove-link', function (e) {
 
             $('#ymc-terms .entry-terms .open-popup .indicator-icon').
-               empty().closest('.item-inner').attr('data-color-icon','').attr('data-class-icon','').removeClass('open-popup');
+            empty().closest('.item-inner').attr('data-color-icon','').attr('data-class-icon','').removeClass('open-popup');
 
             updatedOptionsIcons();
 
@@ -1896,9 +1869,9 @@
             let rowCloneHtml = $($(e.target).closest('.from-element').find('.rows-options')[length - 1]).clone(true);
             $(e.target).closest('.from-element').find('.ymc-btn').before(rowCloneHtml);
 
-           let newItem = $($(e.target).closest('.from-element').find('.rows-options')[length]);
-           newItem.find('.ymc-multiple-orderby').attr('name','ymc-multiple-sort['+length+'][orderby]');
-           newItem.find('.ymc-multiple-order').attr('name','ymc-multiple-sort['+length+'][order]');
+            let newItem = $($(e.target).closest('.from-element').find('.rows-options')[length]);
+            newItem.find('.ymc-multiple-orderby').attr('name','ymc-multiple-sort['+length+'][orderby]');
+            newItem.find('.ymc-multiple-order').attr('name','ymc-multiple-sort['+length+'][order]');
 
             $(this).siblings('.btnRemoveMultipleSort').show();
         });
@@ -2071,7 +2044,7 @@
 
         // Load Featured Posts
         $('.ymc__container-settings #general .featured-posts .list-posts .list-posts__inner').on('scroll', loadFeaturedPosts);
-        
+
         // Expand Selected Posts
         $('.ymc__container-settings #general .wrapper-selection .button-expand a').on('click', function (e) {
             e.preventDefault();
@@ -2144,7 +2117,7 @@
 
         // Sort Selected Posts
         sortSelectedPosts();
-        
+
         // Sort Featured Posts
         sortSelectedFeaturedPosts();
     });

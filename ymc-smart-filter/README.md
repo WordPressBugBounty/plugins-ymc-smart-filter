@@ -1,8 +1,8 @@
-<img src="/Logo_3.0.0.png" alt="Filter & Grids Logo" width="250" />
+<img src="/Logo_3.0.0.svg" alt="YMC Filter Logo" width="250" />
 
 # YMC Filter Grids 
 
-**Filter & Grids** is a powerful and flexible WordPress plugin that allows you to easily filter and display your posts, custom post types, and other content in beautifully designed grid layouts.  
+**YMC Filter** is a powerful and flexible WordPress plugin that allows you to easily filter and display your posts, custom post types, and other content in beautifully designed grid layouts.  
 With an intuitive interface and customizable filters, you can create dynamic, responsive, and visually appealing content grids without touching a single line of code.
 
 ### Key Features
@@ -12,15 +12,15 @@ With an intuitive interface and customizable filters, you can create dynamic, re
 - **Ajax-powered loading** — load filtered results without reloading the page.
 - **Easy integration** — insert grids anywhere with a shortcode or block editor.
 
-Whether you’re building a portfolio, a product catalog, or a news feed, **Filter & Grids** gives you full control over how your content is displayed and how your visitors interact with it.
+Whether you’re building a portfolio, a product catalog, or a news feed, **YMC Filter** gives you full control over how your content is displayed and how your visitors interact with it.
 
 ---
 
-# Filter & Grids
+# YMC Filter
 
 [![Version](https://img.shields.io/badge/version-3.0.0-blue.svg)](UPGRADE-NOTICE.md)
 
-**Filter & Grids** is a powerful and flexible WordPress plugin that allows you to easily filter and display posts, custom post types, and other content in beautifully designed grid layouts.
+**YMC Filter** is a powerful and flexible WordPress plugin that allows you to easily filter and display posts, custom post types, and other content in beautifully designed grid layouts.
 
 ---
 
@@ -80,7 +80,7 @@ This documentation describes available **WordPress filter hooks** for customizin
 
 ## 📘 Introduction
 
-YMC Filter Grids provides flexible rendering of post filters with options to extend, override, or manipulate components using WordPress native `apply_filters()` functionality.
+YMC Filter provides flexible rendering of post filters with options to extend, override, or manipulate components using WordPress native `apply_filters()` functionality.
 
 This document helps developers understand where and how to hook into the plugin's logic.
 
@@ -91,8 +91,8 @@ This document helps developers understand where and how to hook into the plugin'
 To use a filter hook, add the following to your theme or plugin:
 
 - Activate Plugin or upload the entire 'ymc-smart-filter' folder to the '/wp-content/plugins/' directory.
-- Add new Filter & Grids
-- Copy Filter & Grids shortcode and paste to any page or post
+- Add new YMC Filter
+- Copy YMC Filter shortcode and paste to any page or post
 - Set setting for each post
 
 
@@ -201,6 +201,15 @@ do_action('ymc/filter/layout/right/after_{filter_id}');
 do_action('ymc/filter/layout/right/after_{filter_id}_{$instance_index}');
 ```
 
+#### Available Actions Inside the Filter
+```php
+do_action('ymc/filter/layout/inner/before_{$taxonomy_slug}_{filter_id}');
+do_action('ymc/filter/layout/inner/after_{$taxonomy_slug}_{filter_id}');
+```
+- `string $taxonomy_slug`:  represents the taxonomy slug.
+- `string filter_id`:  represents the filter ID.
+
+It is used to generate taxonomy-specific action hooks. Used for Default filter.
 
 ### Pagination Filters
 `ymc/pagination/prev_text`
@@ -572,7 +581,7 @@ Usage Example:
 ```js
 ymcHooks.addAction('ymc/grid/after_update_72', function(data, container) {
   const grid = new MagicGrid({
-      container: container,
+      container: container.querySelector('.posts-grid'),
       static: false,
       items: data.posts_count,
       gutter: 30,
@@ -582,6 +591,9 @@ ymcHooks.addAction('ymc/grid/after_update_72', function(data, container) {
       animate: true,
       center: true
      });
+
+      grid.listen();
+      grid.positionItems();    
   });
 });
 ```

@@ -2,9 +2,9 @@
 
 /**
  *
- * Plugin Name:       Filter & Grids
+ * Plugin Name:       YMC Filter
  * Description:       A powerful and flexible plugin to filter and display posts, custom post types, and other content in responsive grid layouts.
- * Version:           3.6.8
+ * Version:           3.7.0
  * Author:            YMC
  * Author URI:        https://github.com/YMC-22/Filter-Grids/
  * License:           GPL-2.0-or-later
@@ -91,7 +91,7 @@ if ( class_exists( YMC_Filter_Grids::class, false ) ) {
 		if ( file_exists( YMC_SMART_FILTER_DIR . 'includes/Plugin.php' ) ) {
 			require_once YMC_SMART_FILTER_DIR . 'includes/Plugin.php';
 		} else {
-			wp_die( 'Filter & Grids: Legacy version file not found.' );
+			wp_die( 'YMC Filter: Legacy version file not found.' );
 		}
 	}
 }

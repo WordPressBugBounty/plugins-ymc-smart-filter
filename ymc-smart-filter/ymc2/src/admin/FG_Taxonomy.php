@@ -59,20 +59,39 @@ class FG_Taxonomy {
 	 *
 	 * @return void
 	 */
-	private static function set_data_attributes(string $name, array &$tax_attrs) : void {
-		if($tax_attrs) {
-			foreach ($tax_attrs as $items) {
-				if( isset($items['name']) && $name === $items['name'] ) {	
-					self::$tax_background = isset($items['background']) ? (string)$items['background'] : '';
-					self::$tax_color      = isset($items['color'])      ? (string)$items['color']      : '';
-               self::$tax_label      = isset($items['label'])      ? (string)$items['label']      : '';
-               self::$tax_status     = isset($items['status'])     ? (string)$items['status']     : '';
-					
-					break;
-				}
-			}
-		}
-	}
+   private static function set_data_attributes(string $name, array $tax_attrs = []) : void {
+      if (empty($tax_attrs) || !is_array($tax_attrs)) {
+         return;
+      }
+
+      foreach ($tax_attrs as $items) {
+
+         if (!is_array($items)) {
+               continue;
+         }
+
+         if (isset($items['name']) && (string)$items['name'] === $name) {
+
+            self::$tax_background = isset($items['background']) && is_scalar($items['background'])
+               ? (string)$items['background']
+               : '';
+
+            self::$tax_color = isset($items['color']) && is_scalar($items['color'])
+               ? (string)$items['color']
+               : '';
+
+            self::$tax_label = isset($items['label']) && is_scalar($items['label'])
+               ? (string)$items['label']
+               : '';
+
+            self::$tax_status = isset($items['status']) && is_scalar($items['status'])
+               ? (string)$items['status']
+               : '';
+
+            break;
+         }
+      }
+   }
 
 
 	/**
@@ -115,6 +134,8 @@ class FG_Taxonomy {
 		$selected_tax = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
 		$tax_attrs    = Data_Store::get_meta_value($post_id, 'ymc_fg_tax_attrs');
 		$tax_sort     = Data_Store::get_meta_value($post_id, 'ymc_fg_tax_sort');
+      $tax_attrs    = is_array($tax_attrs) ? $tax_attrs : [];
+      $tax_sort     = is_array($tax_sort) ? $tax_sort : [];
 		
       $selected_tax = is_array($selected_tax) ? $selected_tax : [];
 
@@ -130,23 +151,20 @@ class FG_Taxonomy {
 				self::set_data_attributes($name, $tax_attrs);
 
 				$is_tax_sel = (in_array($name, $selected_tax)) ? 'checked' : '';
-				
-				$display_label = (!empty(self::$tax_label)) ? self::$tax_label : $label;
-				$class_status  = (!empty(self::$tax_status)) ? ' ' . self::$tax_status : '';
 
-				self::$tax_label = (self::$tax_label) ? : $label;
-				$class_status = (self::$tax_status) ? ' '. self::$tax_status : '';
+            $display_label = self::$tax_label !== '' ? self::$tax_label : $label;
+            $class_status  = self::$tax_status !== '' ? ' ' . self::$tax_status : '';
 
 				echo '<div class="taxonomies-list__item'. esc_attr($class_status).'"
 					   data-tax-original-name="'. esc_attr($label) .'"
-					   data-tax-name="'. esc_attr((string)$name) .'"
-					   data-tax-label="'. esc_attr((string)$display_label).'"
-					   data-tax-color="'. esc_attr((string)self::$tax_color).'"
-					   data-tax-bg="'. esc_attr((string)self::$tax_background).'"
-					   data-tax-status="'. esc_attr((string)self::$tax_status).'">
+					   data-tax-name="'. esc_attr($name) .'"
+					   data-tax-label="'. esc_attr($display_label) .'"
+					   data-tax-color="'. esc_attr(self::$tax_color) .'"
+					   data-tax-bg="'. esc_attr(self::$tax_background) .'"
+					   data-tax-status="'. esc_attr(self::$tax_status) .'">
                   <i class="fa-solid fa-up-down-left-right icon-is-drag js-tax-handle"></i>
-					   <input class="form-checkbox js-tax-checkbox" id="'. esc_attr((string)$name) .'" data-label="'. esc_attr($label) .'" type="checkbox" name="ymc_fg_taxonomies[]" '. esc_attr($is_tax_sel) .' value="'.esc_attr($name).'">
-					   <label class="field-label" for="'. esc_attr((string)$name) .'">'. esc_html((string)$display_label) .'</label>
+					   <input class="form-checkbox js-tax-checkbox" id="'. esc_attr($name) .'" data-label="'. esc_attr($label) .'" type="checkbox" name="ymc_fg_taxonomies[]" '. esc_attr($is_tax_sel) .' value="'.esc_attr($name).'">
+					   <label class="field-label" for="'. esc_attr($name) .'">'. esc_html($display_label) .'</label>
 					   <i class="fa-solid fa-ellipsis-vertical icon-is-settings js-tax-settings"></i>
                   </div>';
 

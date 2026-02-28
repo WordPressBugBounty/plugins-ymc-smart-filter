@@ -25,7 +25,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$this->get_options( $filter_id );
 		$class_by_name_taxonomy = implode( '-', $tax_name );
 
-        // Get all button settings
+      // Get all button settings
 		$filter_all_button = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_all_button');
 		$is_visible_all_button = 'yes';
 		$all_button_label = __( 'All', 'ymc-smart-filter' );
@@ -49,7 +49,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		// Get selection mode
 		$is_multiple_mode  = Data_Store::get_meta_value($filter_id, 'ymc_fg_selection_mode');
 
-        // Get all terms
+      // Get all terms
 		$all_terms = [];
 		$display_terms_mode = (string) Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
 		$hide_empty = ($display_terms_mode === 'all_terms_hide_empty' || $display_terms_mode === 'selected_terms_hide_empty');
@@ -83,14 +83,14 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
                 <div class="filter-buttons">
                     <?php $is_hidden = 'yes' === $is_visible_all_button ? '' : ' is-hidden'; ?>
                     <button class="filter-button filter-button--all is-active js-filter-button-all<?php echo esc_attr($is_hidden); ?>"
-                            data-all-terms='<?php echo json_encode(array_keys( $all_terms )); ?>'>
+                            data-all-terms='<?php echo esc_attr(wp_json_encode( array_keys( $all_terms ))); ?>'>
                         <span class="text">
-                        <?php
+                        <?php                        
                         // phpcs:ignore WordPress
                         echo esc_html( $translated_label ); ?></span>
                     </button>
 
-                    <?php
+               <?php
 					foreach ($tax_name as $tax) {
 						$terms = $this->get_selected_terms_by_taxonomy($filter_id, $tax);
 						$terms = $this->sort_terms_manual( $terms, $filter_id );
@@ -100,7 +100,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 								if ('false' === $this->get_term_visible( $term_id)) {
 									continue;
 								}
-								// phpcs:ignore WordPress
+								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 								echo $this->render_term_button( $term_id, $term_label );
 							}
 						}
@@ -124,8 +124,8 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_class            = $this->get_term_class( $term_id );
 		$term_name             = $this->get_term_name( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-        $term_is_disabled      = ! $this->hasAttachedPosts( $term_id ) ? 'is-disabled' : '';
-        $disabled              = ! $this->hasAttachedPosts( $term_id ) ? 'disabled' : '';
+      $term_is_disabled      = ! $this->hasAttachedPosts( $term_id ) ? 'is-disabled' : '';
+      $disabled              = ! $this->hasAttachedPosts( $term_id ) ? 'disabled' : '';
 
 		$classes = array_filter([
 			$icon_alignment,
@@ -142,7 +142,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
                 data-termid="<?php echo esc_attr( $term_id ); ?>"
                 aria-pressed="false" <?php echo esc_attr($disabled); ?>>
 			<?php
-			// phpcs:ignore WordPress
+				// phpcs:ignore WordPress
             echo $term_icon; ?>
             <span class="text"><?php echo esc_html( $term_name ); ?></span>
         </button>

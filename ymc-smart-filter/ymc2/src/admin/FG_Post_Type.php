@@ -34,8 +34,8 @@ class FG_Post_Type {
 			'ymc_filters',
 			array(
 				'labels'                 => array(
-					'name'               => __( 'Filter & Grids', 'ymc-smart-filter' ),
-					'singular_name'      => __( 'Filter & Grids', 'ymc-smart-filter' ),
+					'name'               => __( 'YMC Filter', 'ymc-smart-filter' ),
+					'singular_name'      => __( 'YMC Filter', 'ymc-smart-filter' ),
 					'add_new'            => __( 'Add Filter', 'ymc-smart-filter' ),
 					'add_new_item'       => __( 'Add New Filter', 'ymc-smart-filter' ),
 					'edit_item'          => __( 'Edit Filter', 'ymc-smart-filter' ),

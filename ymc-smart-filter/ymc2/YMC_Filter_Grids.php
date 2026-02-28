@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use YMCFilterGrids\FG_Autoloader;
-use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_Ajax_Admin, FG_License_Manager, FG_General_Settings};
+use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_Ajax_Admin, FG_General_Settings};
 use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes, FG_Ajax_Responder};
 
 /**
@@ -22,11 +22,11 @@ use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes, FG_Ajax_Respond
 final class YMC_Filter_Grids {
 
 	/**
-	 * Filter & Grids version.
+	 * YMC Filter version.
 	 *
 	 * @var string
 	 */
-	public string $version = '3.6.8';
+	public string $version = '3.7.0';
 
 
 	/**
@@ -216,9 +216,7 @@ final class YMC_Filter_Grids {
 			FG_Post_Type::init();
 			FG_Meta_Boxes::init();
 			FG_Save_Meta_Boxes::init();
-			FG_General_Settings::init();
-			// TODO: Enable license manager
-			// FG_License_Manager::init();
+			FG_General_Settings::init();			
 		}
 
 	}

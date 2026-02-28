@@ -555,7 +555,7 @@ class Meta_Boxes {
 			{
 				add_meta_box(
 					'ymc_filters_attached' ,
-					__('Filter & Grids','ymc-smart-filter'),
+					__('YMC Filter','ymc-smart-filter'),
 					array($this,'ymc_attached_filters_callback'),
 					Plugin::instance()->variables->display_cpt(['attachment', 'popup']),
 					'side',
@@ -584,7 +584,7 @@ class Meta_Boxes {
 
 		//add_meta_box( 'ymc_side_meta_box_advertising' , __('Advanced Functionality','ymc-smart-filter'), array($this,'ymc_side_meta_box_advertising'), 'ymc_filters', 'side', 'core');
 
-		add_meta_box( 'ymc_side_meta_box' , __('Filter & Grids Features','ymc-smart-filter'), array($this,'ymc_side_meta_box'), 'ymc_filters', 'side', 'core');
+		add_meta_box( 'ymc_side_meta_box' , __('YMC Filter Features','ymc-smart-filter'), array($this,'ymc_side_meta_box'), 'ymc_filters', 'side', 'core');
 
 	}
 
@@ -769,11 +769,11 @@ class Meta_Boxes {
 
 	public function ymc_filter_grids_widget() {
 
-		add_meta_box( 'ymc_filter_grids_display',  __('Filter & Grids','ymc-smart-filter'), array($this,'ymc_filter_grids_callback'), 'dashboard', 'side', 'high' );
+		add_meta_box( 'ymc_filter_grids_display',  __('YMC Filter','ymc-smart-filter'), array($this,'ymc_filter_grids_callback'), 'dashboard', 'side', 'high' );
 	}
 
 	public function ymc_filter_grids_callback() {
-		echo wp_kses_post('<b>Welcome to Filter & Grids.</b> <br/>
+		echo wp_kses_post('<b>Welcome to YMC Filter.</b> <br/>
 		<p>This plugin will allow you to easily and quickly create all kinds of post grids with their filters.</p> 
 		<p>Create your first grid of posts: <a href="'. site_url().'/wp-admin/post-new.php?post_type=ymc_filters">Create</a></p>
 		<p>For more detailed information see <a target="_blank" href="https://github.com/YMC-22/smart-filter">documentation <span style="text-decoration: none;" class="dashicons dashicons-external"></span></a> on using this plugin.</p>');
@@ -793,7 +793,7 @@ class Meta_Boxes {
 
         $wp_admin_bar->add_menu( array(
             'id' => 'ymc-filter-grids',
-            'title' => __('Filter & Grids','ymc-smart-filter'),
+            'title' => __('YMC Filter','ymc-smart-filter'),
             'href' => admin_url('edit.php?post_type=ymc_filters'),
             'meta'   => array( 'target' => '_blank' )
         ));

@@ -439,7 +439,7 @@ class Get_Posts {
 			endif;
 
 		else :
-			echo "<div class='ymc-notification'>" . esc_html($ymc_empty_post_result, 'ymc-smart-filter') . "</div>";
+			echo "<div class='ymc-notification'>" . esc_html($ymc_empty_post_result) . "</div>";
 			$message = esc_html__('No posts found','ymc-smart-filter');
 		endif;
 

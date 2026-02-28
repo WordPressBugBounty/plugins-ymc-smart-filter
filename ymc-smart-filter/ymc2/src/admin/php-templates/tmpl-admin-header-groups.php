@@ -18,7 +18,7 @@ global $post_new_file, $post_type_object, $post; ?>
 <div class="ymc-header-bar">
     <div class="header-bar-inner">
         <div class="title-wrap">
-            <div class="page-title page-title--groups"><?php esc_html_e('All Filters & Grids', 'ymc-smart-filter'); ?></div>
+            <div class="page-title page-title--groups"><?php esc_html_e('All YMC Filters', 'ymc-smart-filter'); ?></div>
         </div>
         <div class="header-bar-actions" id="submitpost">
 		    <?php

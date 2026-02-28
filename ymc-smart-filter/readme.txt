@@ -1,12 +1,12 @@
-===  Filter & Grids ===
-Plugin Name: Filter & Grids
+===  YMC Filter ===
+Plugin Name: YMC Filter
 Contributors: YMC, Roman
-Version: 3.6.8
+Version: 3.7.0
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
-Tags: filter, grid, ajax, search, sort, masonry, wordpress
+Tags: filter, grid, ajax, search, masonry
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: trunk
+Stable tag: 3.7.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -15,10 +15,10 @@ A powerful and flexible plugin to filter and display posts, custom post types, a
 
 == Description ==
 
-Filter & Grids is a powerful and flexible WordPress plugin that allows you to easily filter and display your posts, custom post types, and other content in responsive grid layouts.
+YMC Filter is a powerful and flexible WordPress plugin that allows you to easily filter and display your posts, custom post types, and other content in responsive grid layouts.
 With an intuitive interface and customizable filters, you can create dynamic, engaging, and visually appealing grids without touching a single line of code.
 
-Whether you’re building a blog, portfolio, news site, or product showcase – Filter & Grids helps you display content the way you want: searchable, filterable, and optimized for all devices.
+Whether you’re building a blog, portfolio, news site, or product showcase – YMC Filter helps you display content the way you want: searchable, filterable, and optimized for all devices.
 
 == Key Features ==
 
@@ -55,8 +55,8 @@ Whether you’re building a blog, portfolio, news site, or product showcase – 
 
 == Frequently Asked Questions ==
 
-= Is Filter & Grids free? =
-Yes, Filter & Grids is free to use.
+= Is YMC Filter free? =
+Yes, YMC Filter is free to use.
 
 = Where can I find the Documentation for the plugin? =
 Detailed information can be found on GitHub at this <a target="_blank" href="https://github.com/YMC-22/Filter-Grids/tree/main">link</a>.
@@ -71,13 +71,15 @@ Yes, it integrates with Elementor, WPBakery, and Gutenberg.
 Yes, there is a built-in export/import functionality.
 
 = How can I switch to the old version of the plugin (Legacy Mode)? =
-If you prefer using the old version of Filter & Grids, you can enable **Legacy Mode**:
-1. Go to **Filter & Grids → Settings** in your WordPress admin panel.
+If you prefer using the old version of YMC Filter, you can enable **Legacy Mode**:
+1. Go to **YMC Filter → Settings** in your WordPress admin panel.
 2. Enable the option **Legacy Mode**.
 3. Click **Save settings**.
 
 == Changelog ==
 
+= 3.7.0 =
+Security improvements: Fixed escaping and sanitization in frontend and admin templates.
 = 3.6.7 =
 Added new elements to Structural Layout Builder.
 = 3.6.3 =

@@ -89,7 +89,7 @@ class FG_Meta_Boxes {
 
 	public static function add_metabox() : void {
 		add_meta_box( 'ymc_main_meta_box' , __('Settings', 'ymc-smart-filter'), array(__CLASS__,'top_meta_box'), 'ymc_filters', 'normal', 'core');
-		add_meta_box( 'ymc_side_meta_box' , __('Filter & Grids Features', 'ymc-smart-filter'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
+		add_meta_box( 'ymc_side_meta_box' , __('YMC Filter Features', 'ymc-smart-filter'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
     }
 
 	public static function top_meta_box() : void {
@@ -233,7 +233,7 @@ class FG_Meta_Boxes {
 
 		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
 		$icon = '<span class="ab-icon" style="background-image: url('. $icon_url . ') !important; background-repeat: no-repeat; background-position: center; width: 18px; height: 18px; margin-top: 3px;"></span>';
-		$title = $icon . '<span class="ab-label">' . esc_html__('Filter & Grids', 'ymc-smart-filter') . '</span>';
+		$title = $icon . '<span class="ab-label">' . esc_html__('YMC Filter', 'ymc-smart-filter') . '</span>';
 
 		$wp_admin_bar->add_menu(array(
 			'id'    => 'ymc-filter-grids',
@@ -257,7 +257,7 @@ class FG_Meta_Boxes {
 
 		add_meta_box(
 			'fg-attached-filters',
-			__('Filter & Grids', 'ymc-smart-filter'),
+			__('YMC Filter', 'ymc-smart-filter'),
 			function() use ($matches) {
 				echo '<ul>';
 				foreach ($matches[1] as $filter_id) {
@@ -281,7 +281,7 @@ class FG_Meta_Boxes {
 	public static function filter_grids_widget() {
 		wp_add_dashboard_widget(
 			'ymc_filter_grids_display',
-			__( 'Filter & Grids', 'ymc-smart-filter' ),
+			__( 'YMC Filter', 'ymc-smart-filter' ),
 			array( __CLASS__, 'filter_grids_callback' )
 		);
 	}
@@ -293,7 +293,7 @@ class FG_Meta_Boxes {
 		$filters_count = wp_count_posts( 'ymc_filters' )->publish ?? 0;
 		?>
         <div class="ymc-dashboard-widget" style="font-size: 13px; line-height: 1.5;">
-            <p><strong><?php esc_html_e( 'Welcome to Filter & Grids.', 'ymc-smart-filter' ); ?></strong></p>
+            <p><strong><?php esc_html_e( 'Welcome to YMC Filter.', 'ymc-smart-filter' ); ?></strong></p>
             <p><?php esc_html_e( 'This plugin allows you to easily and quickly create all kinds of post grids with their filters.', 'ymc-smart-filter' ); ?></p>
 
             <p>
