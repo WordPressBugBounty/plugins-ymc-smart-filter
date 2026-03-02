@@ -1025,14 +1025,15 @@ class FG_Ajax_Responder {
 			wp_send_json_error( [ 'message' => __('Missing taxonomy', 'ymc-smart-filter') ] );
 		}
 
-		$paged = intval( $_POST['paged'] ?? 1 );
+		// $paged = intval( $_POST['paged'] ?? 1 );
 		$per_page = intval( $_POST['per_page'] ?? 20 );
+      $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
 
 		$args = [
 			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
 			'number'     => $per_page,
-			'offset'     => ($paged - 1) * $per_page,
+			'offset'     => $offset,
 			'search'     => $query
 		];
 
