@@ -577,7 +577,11 @@ class FG_Layout_Renderer {
         $shortcode_text = $settings['content'] ?? ''; 
         $class = self::getCustomClass($settings);
 
+        $post_id = isset($field['post']->ID) ? $field['post']->ID : get_the_ID();
+
         if (!empty($shortcode_text)) {
+            $shortcode_text = preg_replace('/^\[([^\s\]]+)/', '[$1 post_id="' . $post_id . '"', $shortcode_text);
+
             // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
             echo sprintf(
                 '<div class="post-card__shortcode sb-shortcode %s">%s</div>',

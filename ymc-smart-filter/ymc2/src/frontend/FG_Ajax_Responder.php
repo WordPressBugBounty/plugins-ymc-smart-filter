@@ -1021,8 +1021,8 @@ class FG_Ajax_Responder {
 		$taxonomy  = sanitize_key( $_POST['taxonomy'] ?? '' );
 		$filter_id = intval( $_POST['filter_id'] ?? 0 );
 
-		if ( empty( $taxonomy ) ) {
-			wp_send_json_error( [ 'message' => __('Missing taxonomy', 'ymc-smart-filter') ] );
+		if ( empty( $taxonomy ) || empty( $filter_id ) ) {
+			wp_send_json_error( [ 'message' => __('Missing parameters', 'ymc-smart-filter') ] );
 		}
 
 		// $paged = intval( $_POST['paged'] ?? 1 );
@@ -1033,9 +1033,12 @@ class FG_Ajax_Responder {
 			'taxonomy'   => $taxonomy,
 			'hide_empty' => false,
 			'number'     => $per_page,
-			'offset'     => $offset,
-			'search'     => $query
+			'offset'     => $offset			
 		];
+
+      if (!empty($query)) {
+        $args['search'] = $query;        
+      }
 
 		$terms = get_terms( $args );
 

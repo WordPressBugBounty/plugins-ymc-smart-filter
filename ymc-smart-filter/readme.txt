@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC, Roman
-Version: 3.7.1
+Version: 3.7.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 5.5
 Tested up to: 6.9
-Stable tag: 3.7.1
+Stable tag: 3.7.2
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
