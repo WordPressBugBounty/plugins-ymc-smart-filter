@@ -16,6 +16,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 
+   private array $current_post_types = [];
+
 	public function render(int $filter_id, array $tax_name, array $filter_options): string {
 
 		if (empty($filter_id) && empty($tax_name) && empty($filter_options)) {
@@ -24,6 +26,8 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 
 		$this->get_options( $filter_id );
 		$class_by_name_taxonomy = implode( '-', $tax_name );
+      
+      $this->current_post_types = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');  
 
       // Get all button settings
 		$filter_all_button = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_all_button');
@@ -101,7 +105,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 									continue;
 								}
 								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-								echo $this->render_term_button( $term_id, $term_label );
+								echo $this->render_term_button( $term_id, $term_label, $this->current_post_types );
 							}
 						}
 					}
@@ -115,7 +119,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		return ob_get_clean();
 	}
 
-	private function render_term_button( int $term_id, string $fallback_name ): string {
+	private function render_term_button( int $term_id, string $fallback_name, array $current_post_types ): string {
 		$term_class_is_default = $this->get_term_default( $term_id );
 		$term_class_is_default = 'true' === $term_class_is_default ? 'is-default' : '';
 		$term_style            = $this->get_term_style( $term_id );
@@ -124,8 +128,9 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_class            = $this->get_term_class( $term_id );
 		$term_name             = $this->get_term_name( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-      $term_is_disabled      = ! $this->hasAttachedPosts( $term_id ) ? 'is-disabled' : '';
-      $disabled              = ! $this->hasAttachedPosts( $term_id ) ? 'disabled' : '';
+      $has_posts             = $this->hasAttachedPosts( $term_id, $current_post_types );
+      $term_is_disabled      = ! $has_posts ? 'is-disabled' : '';
+      $disabled              = ! $has_posts ? 'disabled' : '';
 
 		$classes = array_filter([
 			$icon_alignment,
@@ -151,5 +156,6 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 	}
 
 }
+
 
 

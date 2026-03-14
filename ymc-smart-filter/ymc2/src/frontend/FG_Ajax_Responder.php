@@ -1011,70 +1011,148 @@ class FG_Ajax_Responder {
 
 	/**
 	 * Get filter search terms
+    * 
+    * @since 3.8.0
 	 *
 	 * @return void
 	 */
-	public static function get_filter_search_terms() : void {
-		check_ajax_referer('get_filter_search_terms-ajax-nonce', 'nonce_code');
+   public static function get_filter_search_terms(): void {
+      check_ajax_referer('get_filter_search_terms-ajax-nonce', 'nonce_code');
 
-		$query     = sanitize_text_field( $_POST['query'] ?? '' );
-		$taxonomy  = sanitize_key( $_POST['taxonomy'] ?? '' );
-		$filter_id = intval( $_POST['filter_id'] ?? 0 );
+      $query     = sanitize_text_field($_POST['query'] ?? '');
+      $taxonomy  = sanitize_key($_POST['taxonomy'] ?? '');
+      $filter_id = intval($_POST['filter_id'] ?? 0);
 
-		if ( empty( $taxonomy ) || empty( $filter_id ) ) {
-			wp_send_json_error( [ 'message' => __('Missing parameters', 'ymc-smart-filter') ] );
-		}
-
-		// $paged = intval( $_POST['paged'] ?? 1 );
-		$per_page = intval( $_POST['per_page'] ?? 20 );
-      $offset = isset($_POST['offset']) ? intval($_POST['offset']) : 0;
-
-		$args = [
-			'taxonomy'   => $taxonomy,
-			'hide_empty' => false,
-			'number'     => $per_page,
-			'offset'     => $offset			
-		];
-
-      if (!empty($query)) {
-        $args['search'] = $query;        
+      if (empty($taxonomy) || empty($filter_id)) {
+         wp_send_json_error([
+            'message' => 'Missing parameters'
+         ]);
       }
 
-		$terms = get_terms( $args );
+      $per_page = max(1, intval($_POST['per_page'] ?? 20));
+      $offset   = max(0, intval($_POST['offset'] ?? 0));
 
-		if ( is_wp_error( $terms ) ) {
-			wp_send_json_error( [ 'message' => $terms->get_error_message() ] );
-		}
+      $display_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
+      $post_types   = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');     
+      $direction    = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_direction');
 
-		$filter = new FG_Filter_Dropdown();
+      $filter = new FG_Filter_Dropdown(); 
+      $filter->init_filter($filter_id);    
 
-		$close_button = '<li class="ymc-dropdown__close"><button type="button" class="dropdown-close-btn" aria-label="Close dropdown">×</button></li>';
+      if (in_array($display_mode, ['selected_terms', 'selected_terms_hide_empty'])) {                
+         $all_terms = $filter->fetch_selected_terms_by_taxonomy($filter_id, $taxonomy);
+      } 
+      else {
+         $args = [
+            'taxonomy'   => $taxonomy,
+            'hide_empty' => false
+         ];
 
-		ob_start();
+         $terms = get_terms($args);
 
-		if ( ! empty( $terms ) ) {
-			foreach ( $terms as $term ) {
-				// phpcs:ignore WordPress
-				echo $filter->render_term_button( $term->term_id, $term->name, [ $taxonomy ], $filter_id );
-			}
-		}
-		if( empty($terms) && !empty($query) ) {
-			echo '<li class="ymc-dropdown__empty js-dropdown-empty">'
-			     . esc_html__( 'No terms found', 'ymc-smart-filter' ) . '</li>';
-		}
+         if (is_wp_error($terms)) {
+               wp_send_json_error([
+                  'message' => $terms->get_error_message()
+               ]);
+         }
 
+         $all_terms = [];
 
-		$terms_html = ob_get_clean();
-		$terms_html = preg_replace( '/\s+/', ' ', $terms_html );
-		$terms_html = preg_replace( '/>\s+</', '><', $terms_html );
-		$terms_html = trim( $terms_html );
+         foreach ($terms as $term) {
+            $all_terms[$term->term_id] = $term->name;
+         }
+      }      
 
-		wp_send_json_success( [
-			'terms'     => $terms_html,
-			'terms_count' => count($terms),
-			'close_btn' => $close_button
-		] );
-	}
+      if (in_array($display_mode, ['all_terms_hide_empty', 'selected_terms_hide_empty'])) {
+
+         foreach ($all_terms as $term_id => $name) {
+
+               $has_posts = false;
+
+               foreach ($post_types as $type) {
+
+                  $count = get_term_meta($term_id, "ymc_fg_count_{$type}", true);
+
+                  if ((int)$count > 0) {
+                     $has_posts = true;
+                     break;
+                  }
+               }
+
+               if (!$has_posts) {
+                  unset($all_terms[$term_id]);
+               }
+         }
+      }      
+
+      if (!empty($query)) {
+
+         $query = mb_strtolower($query);
+
+         $all_terms = array_filter($all_terms, function ($name) use ($query) {
+
+            return mb_strpos(mb_strtolower($name), $query) !== false;
+
+         });
+      }
+     
+      if ($direction === 'manual') {
+         $all_terms = $filter->apply_manual_sort($all_terms, $filter_id);
+      }     
+      else {
+         if ($direction === 'desc') {
+            arsort($all_terms, SORT_NATURAL | SORT_FLAG_CASE);
+         } else {
+            asort($all_terms, SORT_NATURAL | SORT_FLAG_CASE);
+         }
+      }      
+
+      $total_count = count($all_terms);
+
+      $paged_terms = array_slice(
+         $all_terms,
+         $offset,
+         $per_page,
+         true
+      );      
+
+      ob_start();
+
+      if (!empty($paged_terms)) {
+         // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+         foreach ($paged_terms as $term_id => $term_name) {            
+            echo $filter->render_term_button(
+                  $term_id,
+                  $term_name,
+                  [$taxonomy],
+                  $filter_id,
+                  $post_types
+               );
+         }
+      } 
+      elseif ($offset === 0 && !empty($query)) {
+
+         echo '<li class="ymc-dropdown__empty js-dropdown-empty">'
+            . esc_html__('No terms found', 'ymc-smart-filter')
+            . '</li>';
+      }
+
+      $terms_html = ob_get_clean();
+
+      $terms_html = trim(preg_replace('/>\s+</', '><', $terms_html));      
+
+      $close_button =
+         '<li class="ymc-dropdown__close">
+               <button type="button" class="dropdown-close-btn" aria-label="Close dropdown">×</button>
+         </li>';     
+
+      wp_send_json_success([
+         'terms'       => $terms_html,
+         'terms_count' => count($paged_terms),
+         'total_count' => $total_count,
+         'close_btn'   => $close_button,
+      ]);
+   }
 
 
 	/**

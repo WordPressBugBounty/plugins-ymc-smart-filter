@@ -3,6 +3,7 @@
 namespace YMCFilterGrids\abstracts;
 
 use YMCFilterGrids\FG_Data_Store as Data_Store;
+use YMCFilterGrids\admin\FG_Term as FG_Term;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -180,82 +181,96 @@ abstract class FG_Abstract_Filter_Impl {
 
 
 	/**
-	 * Get selected terms by taxonomy and display terms mode
-	 * Sort terms by ASC / DESC
-	 * @param string $taxonomy
-	 * @param int $filter_id
-	 *
-	 * Key is term id and value is term name
-	 * @return array
-	 */
-	protected function get_selected_terms_by_taxonomy(int $filter_id, string $taxonomy) : array {
-		if ($taxonomy === '') {
-			return [];
-		}
-		$terms_selected_ids = $this->get_all_selected_terms($filter_id);
-		$display_terms_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
-		$direction = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_direction');
-		$orderby = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_field');
-		$order = 'ASC';
-		$hide_empty = true;
+    * Retrieve terms for a specific taxonomy based on filter settings and display modes.
+    *
+    * This method fetches terms considering the selected display mode (all or specific IDs),
+    * applies post count filtering via meta queries for different post types, 
+    * and handles database-level pagination using limit and offset.
+    *
+    * @since 3.8.0
+    *
+    * @param int    $filter_id The ID of the filter configuration.
+    * @param string $taxonomy  The slug of the taxonomy to retrieve terms from.
+    * @param int    $limit     The maximum number of terms to return (0 for all).
+    * @param int    $offset    The number of terms to skip (used for pagination).
+    *
+    * @return array<int, string> Associative array where the key is the term_id and the value is the term name.
+    */
+   protected function get_selected_terms_by_taxonomy(int $filter_id, string $taxonomy, int $limit = 0, int $offset = 0) : array {
+      
+      if ($taxonomy === '') {
+         return [];
+      }
 
-		switch ($display_terms_mode) {
-			case 'all_terms':
-				$hide_empty = false;
-				$terms_selected_ids = '';
-				break;
-			case 'all_terms_hide_empty':
-				$hide_empty = true;
-				$terms_selected_ids = '';
-				break;
-			case 'selected_terms':
-				$hide_empty = false;
-				$terms_selected_ids = !empty($terms_selected_ids) ?
-					$terms_selected_ids : '-1';
-				break;
-			case 'selected_terms_hide_empty':
-				$hide_empty = true;
-				$terms_selected_ids = !empty($terms_selected_ids) ?
-					$terms_selected_ids : '-1';
-				break;
-		}
+      $terms_selected_ids = $this->get_all_selected_terms($filter_id);
 
-		if ($direction === 'desc') {
-			$order = 'DESC';
-		}
+      $display_mode  = Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
+      $direction     = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_direction');
+      $orderby       = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_field');      
+      $post_types    = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
+      
+      $order = ($direction === 'desc') ? 'DESC' : 'ASC';  
 
-		$terms = get_terms([
-			'taxonomy'   => $taxonomy,
-			'hide_empty' => $hide_empty,
-			'include'    => $terms_selected_ids,
-			'orderby'    => $orderby,
-			'order'      => $order
-		]);
-		$list_terms = [];
-		if( $terms && ! is_wp_error( $terms ) ) {
-			foreach( $terms as $term ) {
-				$list_terms[$term->term_id] = $term->name;
-			}
-		}
+      $args = [
+         'taxonomy'   => $taxonomy,
+         'hide_empty' => false,
+         'number'     => $limit,  
+         'offset'     => $offset, 
+         'orderby'    => $orderby,
+         'order'      => $order
+      ];
+      
+      if (in_array($display_mode, ['selected_terms', 'selected_terms_hide_empty'])) {
+         $args['include'] = !empty($terms_selected_ids) ? $terms_selected_ids : [0];
+      }
+      
+      if (in_array($display_mode, ['all_terms_hide_empty', 'selected_terms_hide_empty'])) {
+         $meta_query = ['relation' => 'OR'];
 
-		return $list_terms;
-	}
+         foreach ($post_types as $type) {
+            $meta_query[] = [
+               'key' => "ymc_fg_count_{$type}", 
+               'value' => 0, 
+               'compare' => '>', 
+               'type' => 'NUMERIC'
+            ];
+         }
+         $args['meta_query'] = $meta_query;
+      }
 
+      $terms = get_terms($args);
+      $list_terms = [];
 
-	/**
-	 * Check if term has attached posts
-	 * @param $term_id
-	 * @param $taxonomy
-	 *
-	 * @return bool
-	 */
-	protected function hasAttachedPosts($term_id, $taxonomy = '') {
-		$term = get_term($term_id, $taxonomy);
-		if ( is_wp_error($term) || ! $term) {
-			return false;
-		}
-		return (int) $term->count > 0;
-	}
+      if ($terms && !is_wp_error($terms)) {
+        foreach ($terms as $term) {
+            $list_terms[$term->term_id] = $term->name;
+        }
+      }
+
+      return $list_terms;
+   }
+
+   
+   /**
+    * Check if term has attached posts for specific post types
+    * @param int $term_id
+    * @param array $post_types
+    * @param string $taxonomy
+    *
+    * @return bool
+    */
+   protected function hasAttachedPosts(int $term_id, array $post_types = [], string $taxonomy = '') {
+      
+      if (empty($post_types)) {         
+         $term = get_term($term_id, $taxonomy);
+         return !is_wp_error($term) && $term && (int)$term->count > 0;
+      }
+     
+      $count = FG_Term::get_post_counts($post_types, $term_id);
+
+      return $count > 0;
+   }
+
 
 	/**
 	 * Gets the number of posts attached to a term by ID,
@@ -266,39 +281,15 @@ abstract class FG_Abstract_Filter_Impl {
 	 * @param array $post_types
 	 * @return int
 	 */
-	protected function get_post_count_by_term_id(int $term_id, array $tax_names, array $post_types): int {
-		$valid_tax = null;
+   protected function get_post_count_by_term_id(int $term_id, array $tax_names, array $post_types): int {
+      $count = 0;
+      foreach ($post_types as $type) {
+         $meta = get_term_meta($term_id, "ymc_fg_count_{$type}", true);
+         $count += (int) $meta;
+      }
 
-		foreach ($tax_names as $taxonomy) {
-			$term = get_term($term_id, $taxonomy);
-
-			if ($term && !is_wp_error($term)) {
-				$valid_tax = $taxonomy;
-				break;
-			}
-		}
-
-		if (!$valid_tax) {
-			return 0;
-		}
-
-		$query = new \WP_Query([
-			'post_type'      => $post_types,
-			'post_status'    => 'publish',
-			'posts_per_page' => 1,
-			'fields'         => 'ids',
-			'tax_query'      => [
-				[
-					'taxonomy' => $valid_tax,
-					'field'    => 'term_id',
-					'terms'    => $term_id,
-				]
-			],
-			'no_found_rows' => false,
-		]);
-
-		return (int) $query->found_posts;
-	}
+      return $count;
+   }
 
 
 	/**
@@ -332,6 +323,28 @@ abstract class FG_Abstract_Filter_Impl {
 		}
 		return $terms;
 	}
+
+   // Wrappers methods
+   /**
+    * Initialize filter
+    */
+   public function init_filter(int $filter_id): void {
+      $this->get_options($filter_id);
+   }
+
+   /**
+    * Apply manual sort
+    */
+   public function apply_manual_sort(array $terms, int $filter_id): array {
+      return $this->sort_terms_manual($terms, $filter_id);
+   }
+
+   /**
+    * Fetch selected terms
+    */
+   public function fetch_selected_terms_by_taxonomy(int $filter_id, string $taxonomy): array {
+      return $this->get_selected_terms_by_taxonomy($filter_id, $taxonomy);
+   }
 
 
 

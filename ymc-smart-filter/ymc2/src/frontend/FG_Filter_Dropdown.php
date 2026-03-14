@@ -15,125 +15,106 @@ defined( 'ABSPATH' ) || exit;
  */
 class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 
-	public function render( int $filter_id, array $tax_name, array $filter_options ): string {
+   private array $current_post_types = [];
 
-		if (empty($filter_id) && empty($tax_name) && empty($filter_options)) {
-			return '';
-		}
 
-		$placement = $filter_options['placement'];
+   public function render( int $filter_id, array $tax_name, array $filter_options ): string {
+      if (empty($filter_id) || empty($tax_name)) {
+         return '';
+      }
 
-		$this->get_options($filter_id);
-		$class_by_name_taxonomy = implode('-', $tax_name);
-		$is_multiple_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_selection_mode');
-		$tax_attrs = Data_Store::get_meta_value($filter_id, 'ymc_fg_tax_attrs');
-        $filter_dropdown_setting = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_dropdown_setting');
+      $placement = $filter_options['placement'] ?? 'top';
+      $this->get_options($filter_id);
+    
+      $class_by_name_taxonomy = implode('-', $tax_name);
+      $is_multiple_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_selection_mode');
+      $tax_attrs = Data_Store::get_meta_value($filter_id, 'ymc_fg_tax_attrs');
+      $filter_dropdown_setting = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_dropdown_setting');
+      $threshold = intval($filter_dropdown_setting['threshold'] ?? 40);
 
-		// Get all terms
-		$all_terms = [];
-		$display_terms_mode = (string) Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
-		$hide_empty = ($display_terms_mode === 'all_terms_hide_empty' || $display_terms_mode === 'selected_terms_hide_empty');
-		$term_selected = in_array($display_terms_mode, ['all_terms', 'all_terms_hide_empty'], true)
-			? []
-			: array_map('intval', (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_terms'));
+      $this->current_post_types = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types'); 
 
-		ob_start();
+      ob_start();
 
-        ?>
+      foreach ($tax_name as $tax) :         
+         $all_matching_terms = $this->get_selected_terms_by_taxonomy($filter_id, $tax); 
+         $all_matching_terms = $this->sort_terms_manual( $all_matching_terms, $filter_id );
+         $total_count = count($all_matching_terms);         
+         
+         $dropdown_mode = $total_count > $threshold ? 'extended' : 'compact';         
+         
+         $initial_limit = ($dropdown_mode === 'extended') ? 20 : 0;
+         $render_terms = ($initial_limit > 0) 
+               ? array_slice($all_matching_terms, 0, $initial_limit, true) 
+               : $all_matching_terms;
 
-		<?php if($tax_name) :
+         $tax_label = $this->get_tax_label_by_name($tax_attrs, $tax);
+         $tax_style = $this->get_tax_style_by_name($tax_attrs, $tax);
+         ?>
 
-			foreach ($tax_name as $tax) :
+         <div class="filter filter-dropdown filter-dropdown-<?php echo esc_attr($placement); ?> filter-<?php echo esc_attr($class_by_name_taxonomy); ?> filter-<?php echo esc_attr($filter_id); ?>"
+               data-filter-type="dropdown"
+               data-selection-mode="<?php echo esc_attr( $is_multiple_mode ); ?>">
+               
+               <div class="filter-dropdown-inner">
+                  <div class="ymc-dropdown js-dropdown"
+                        data-label="<?php echo esc_attr($tax_label); ?>"
+                        data-term-count="<?php echo esc_attr($total_count); ?>"
+                        data-term-threshold="<?php echo esc_attr($threshold); ?>"
+                        data-all-terms="<?php echo esc_attr( wp_json_encode( array_keys( $all_matching_terms ) ) ); ?>">
 
-				$terms     = $this->get_selected_terms_by_taxonomy($filter_id, $tax);
-				$terms     = $this->sort_terms_manual( $terms, $filter_id );
-				$tax_label = $this->get_tax_label_by_name($tax_attrs, $tax);
-				$style     = $this->get_tax_style_by_name($tax_attrs, $tax);
+                     <?php if( 'compact' === $dropdown_mode ) : ?>
+                           <div class="ymc-dropdown__selected is-compact js-dropdown-selected" <?php 
+                              // phpcs:ignore WordPress
+                              echo $tax_style; ?>>
+                              <span class="ymc-dropdown__label js-dropdown-label">
+                                 <?php echo esc_html( $tax_label ); ?>
+                              </span>
+                              <span class="ymc-dropdown__arrow" aria-hidden="true"></span>
+                           </div>
+                     <?php else : ?>
+                           <div class="ymc-dropdown__selected is-extended js-dropdown-selected">
+                              <span class="ymc-dropdown__label js-dropdown-label"></span>
+                              <div class="ymc-dropdown__search-wrapper">
+                                 <input type="text"
+                                          class="ymc-dropdown__search js-dropdown-search"
+                                          placeholder="<?php echo esc_html( $tax_label ); ?>"
+                                          data-taxonomy="<?php echo esc_attr($tax); ?>"
+                                          data-filter-id="<?php echo esc_attr($filter_id); ?>"
+                                          autocomplete="off"
+                                          readonly>
+                                 <span class="ymc-dropdown__arrow js-dropdown-arrow" aria-hidden="true"></span>
+                                 <span class="ymc-dropdown__clear js-dropdown-clear" aria-hidden="true"></span>
+                                 <span class="ymc-dropdown__loader js-dropdown-loader" style="display:none;"></span>
+                              </div>
+                           </div>
+                     <?php endif; ?>
 
-				$terms_by_tax = get_terms([
-					'taxonomy'   => $tax,
-					'include'    => $term_selected,
-					'hide_empty' => $hide_empty
-				]);
+                     <ul class="ymc-dropdown__list">
+                           <li class="ymc-dropdown__close">
+                              <button type="button" class="dropdown-close-btn" aria-label="Close dropdown">×</button>
+                           </li>
+                           <?php
+                           if (!empty($render_terms)) {
+                              foreach ($render_terms as $term_id => $term_label) {                                 
+                                 if ('false' === $this->get_term_visible($term_id)) continue;
+                                 // phpcs:ignore WordPress
+                                 echo $this->render_term_button($term_id, $term_label, [$tax], $filter_id, $this->current_post_types);
+                              }
+                           }
+                           ?>
+                     </ul>
+                  </div>
+               </div>
+         </div>
 
-				if (!is_wp_error($terms_by_tax) && ! empty($terms_by_tax)) {
-					foreach ($terms_by_tax as $term) {
-						$all_terms[$term->term_id] = $term->name;
-					}
-				}
-                ?>
+      <?php
+      endforeach;
 
-			     <div class="filter filter-dropdown filter-dropdown-<?php echo esc_attr($placement); ?>  filter-<?php echo esc_attr($class_by_name_taxonomy); ?> filter-<?php echo esc_attr($filter_id); ?>"
-			     data-filter-type="dropdown"
-                 data-selection-mode="<?php echo esc_attr( $is_multiple_mode ); ?>">
-                 <div class="filter-dropdown-inner">
-                    <div class="ymc-dropdown js-dropdown"
-                         data-label="<?php echo esc_attr($tax_label); ?>"
-                         data-term-count="<?php echo count( $terms ); ?>"
-                         data-term-threshold="<?php echo esc_attr( $filter_dropdown_setting['threshold'] ); ?>"
-                         data-all-terms="<?php echo esc_attr( wp_json_encode( array_keys( $all_terms ) ) ); ?>">
-	                    <?php
-                            $term_count = count( $terms );
-                            $dropdown_mode = $term_count > $filter_dropdown_setting['threshold'] ? 'extended' : 'compact'; ?>
-	                    <?php if( 'compact' === $dropdown_mode ) : ?>
-                            <div class="ymc-dropdown__selected is-compact js-dropdown-selected" <?php
-                               // phpcs:ignore WordPress
-                                echo $style; ?>>
-                            <span class="ymc-dropdown__label js-dropdown-label">
-                                <?php echo esc_html( $tax_label ); ?>
-                            </span>
-                                <span class="ymc-dropdown__arrow" aria-hidden="true"></span>
-                            </div>
-	                    <?php else : ?>
-                            <div class="ymc-dropdown__selected is-extended js-dropdown-selected">
-                                <span class="ymc-dropdown__label js-dropdown-label"></span>
-                                <div class="ymc-dropdown__search-wrapper">
-                                    <input
-                                        type="text"
-                                        class="ymc-dropdown__search js-dropdown-search"
-                                        placeholder="<?php echo esc_html( $tax_label ); ?>"
-                                        data-taxonomy="<?php echo esc_attr($tax); ?>"
-                                        data-filter-id="<?php echo esc_attr($filter_id); ?>"
-                                        autocomplete="off"
-                                        readonly>
-                                    <span class="ymc-dropdown__arrow js-dropdown-arrow" aria-hidden="true"></span>
-                                    <span class="ymc-dropdown__clear js-dropdown-clear" aria-hidden="true"></span>
-                                    <span class="ymc-dropdown__loader js-dropdown-loader" style="display:none;"></span>
-                                </div>
-                            </div>
-	                    <?php endif; ?>
-                        <ul class="ymc-dropdown__list">
-                            <li class="ymc-dropdown__close">
-                                <button type="button" class="dropdown-close-btn" aria-label="Close dropdown">×</button>
-                            </li>
-		                    <?php
-			                    if (!empty($terms)) {
-				                    foreach ($terms as $term_id => $term_label) {
-					                    if ('false' === $this->get_term_visible( $term_id)) {
-						                    continue;
-					                    }
-					                    // phpcs:ignore WordPress
-					                    echo $this->render_term_button( $term_id, $term_label, $tax_name, $filter_id );
-				                    }
-			                    }
-		                    ?>
-                        </ul>
-                    </div>
-                 </div>
-                 </div>
+      return ob_get_clean();
+   }
 
-        <?php
-
-		$all_terms = [];
-
-        endforeach;
-
-        endif;
-
-        return ob_get_clean();
-	}
-
-	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id ): string {
+	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id, array $current_post_types ): string {
 		$post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
 
 		$term_class_is_default = $this->get_term_default( $term_id );
@@ -143,7 +124,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = $this->get_term_name( $term_id );
 		$term_icon             = $this->get_icon( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id ) ? 'is-disabled' : '';
+		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';
 		$post_count            = $this->get_post_count_by_term_id($term_id, $tax_name, $post_types);
 
 		$classes = array_filter([
@@ -210,3 +191,5 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 	}
 
 }
+
+

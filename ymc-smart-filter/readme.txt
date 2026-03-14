@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
-Contributors: YMC, Roman
-Version: 3.7.2
+Contributors: YMC
+Version: 3.8.0
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 5.5
-Tested up to: 6.9
-Stable tag: 3.7.2
+Tested up to: 6.9.4
+Stable tag: 3.8.0
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -78,6 +78,9 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.8.0 =
+Fix: Term counting and display issues for shared taxonomies. 
+Fix: Manual sorting and attribute rendering for terms loaded via AJAX.
 = 3.7.0 =
 Security improvements: Fixed escaping and sanitization in frontend and admin templates.
 = 3.6.7 =
