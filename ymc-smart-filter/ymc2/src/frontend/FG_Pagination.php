@@ -42,6 +42,16 @@ class FG_Pagination {
 		$prev_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_prev_button_text');
 		$next_button_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_next_button_text');
 		$number_format    = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_number_format');
+		$pagin_mid_size   = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_mid_size');
+      $pagin_end_size   = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_end_size');
+
+      // defaults + sanitize
+      $pagin_mid_size = $pagin_mid_size !== '' ? (int) $pagin_mid_size : 2;
+      $pagin_end_size = $pagin_end_size !== '' ? (int) $pagin_end_size : 1;
+
+      // limits
+      $pagin_mid_size = max(1, min(5, $pagin_mid_size));
+      $pagin_end_size = max(1, min(3, $pagin_end_size));
 
 		$prev_button_text = $prev_button_text ?: esc_html__( 'Prev', 'ymc-smart-filter' );
 		$next_button_text = $next_button_text ?: esc_html__( 'Next', 'ymc-smart-filter' );
@@ -62,7 +72,8 @@ class FG_Pagination {
 			'current'   => max(1, $paged),
 			'prev_text' => $prev_button_text,
 			'next_text' => $next_button_text,
-			'mid_size'  => 3
+			'mid_size'  => $pagin_mid_size,
+         'end_size'  => $pagin_end_size
 		]);
 
 		if (empty($pagination)) {

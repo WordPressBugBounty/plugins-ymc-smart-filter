@@ -766,7 +766,7 @@ if (!defined( 'ABSPATH')) exit;
                   <div class="spacer-25"></div>
                 </div>
 
-	             <?php $is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
+	             <?php //$is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
                 <div class="group-elements js-navigation-buttons<?php echo esc_attr($is_numeric_hidden); ?>">
 	                <?php ymc_render_field_header('Previous Button Text',
                         'Text displayed on the button to navigate to the previous item or page.'); ?>
@@ -779,6 +779,20 @@ if (!defined( 'ABSPATH')) exit;
                     <input class="form-input" type="text" placeholder="Prev" name="ymc_fg_next_button_text"
                            value="<?php echo esc_attr($ymc_fg_next_button_text); ?>">
                     <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements js-pagination-range<?php echo esc_attr($is_numeric_hidden); ?>">
+                  <?php ymc_render_field_header('Pages Around Current',
+                        'Number of page links displayed on each side of the current page. Example: 1 ... 4 5 [6] 7 8 ... 20'); ?>
+                        <input class="form-input" type="number" name="ymc_fg_pagination_mid_size" min="1" max="5"
+                           value="<?php echo esc_attr($ymc_fg_pagination_mid_size); ?>">
+                    <div class="spacer-25"></div>
+
+                     <?php ymc_render_field_header('Pages at Start & End',
+                           'Number of page links shown at the beginning and end of the pagination.'); ?>
+                           <input class="form-input" type="number" name="ymc_fg_pagination_end_size" min="1" max="3"
+                              value="<?php echo esc_attr($ymc_fg_pagination_end_size); ?>">
+                     <div class="spacer-25"></div>                    
                 </div>
 
 	             <?php $is_load_more_hidden = (in_array($ymc_fg_pagination_type, ['numeric'], true )) ? ' is-hidden' : ''; ?>

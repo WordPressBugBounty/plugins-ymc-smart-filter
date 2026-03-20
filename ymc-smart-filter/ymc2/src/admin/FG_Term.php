@@ -129,16 +129,20 @@ class FG_Term {
 	 * Cache key
 	 * @var string
 	 */
-	private static string $cache_key = 'ymc_fg_term_post_counts';
+	private const BASE_CACHE_KEY = 'ymc_fg_term_post_counts';
 
 
 	/**
 	 * Get cache key
 	 * @return string
 	 */
-	public static function get_cache_key() : string {
-		return self::$cache_key;
-	}
+   public static function get_cache_key(string $tax_name = '', array $post_types = []) : string {
+      if ($tax_name && $post_types) {
+         return self::build_cache_key($tax_name, $post_types);
+      }
+      
+      return self::BASE_CACHE_KEY;
+   }
 
 
 	/**
@@ -290,24 +294,42 @@ class FG_Term {
 	/**
 	 * Update post counts
 	 * @param string $taxName
-	 * @param int $termId
-	 * @param string $cache_key
+	 * @param int $termId	 
 	 *
 	 * @return void
 	 */
-	public static function update_post_counts(string $tax_name, int $term_id, string $cache_key) : void {
-		if (get_transient($cache_key) === false) {
-			$post_types = (array) get_taxonomy($tax_name)->object_type;
-			foreach ($post_types as $type) {
-				$args = [
-					'posts_per_page' => -1,
-					'post_type' => $type,
-					'tax_query' => [['taxonomy' => $tax_name, 'terms' => $term_id]],
-				];
-				$countQuery = new \WP_Query($args);
-				update_term_meta($term_id, "ymc_fg_count_{$type}", $countQuery->found_posts);
-			}
-		}
+	public static function update_post_counts(string $tax_name, int $term_id) : void {
+
+      $taxonomy = get_taxonomy($tax_name);
+
+      if (!$taxonomy) {
+         return;
+      }
+
+      $post_types = (array) $taxonomy->object_type;
+      
+      foreach ($post_types as $type) {
+         $args = [
+            'posts_per_page' => 1,
+            'post_status' => 'publish',
+            'post_type' => $type,
+            'fields' => 'ids',
+            'no_found_rows' => false,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+            'tax_query' => [
+               [
+                  'taxonomy' => $tax_name, 
+                  'field' => 'term_id',
+                  'terms' => $term_id
+               ]
+            ]
+         ];
+         $countQuery = new \WP_Query($args);
+         update_term_meta($term_id, "ymc_fg_count_{$type}", (int) $countQuery->found_posts);
+      }
+
+      wp_reset_postdata();		
 	}
 
 
@@ -366,8 +388,17 @@ class FG_Term {
 					self::determine_term_sorting($term_sort_direction, $term_sort,$terms);
 
 					if($terms) {
-						foreach ($terms as $term_id => $name) {
-							self::update_post_counts($tax_name, $term_id, self::$cache_key);
+                                    
+                  $cache_key = self::get_cache_key($tax_name, $post_types);
+
+                  if (get_transient($cache_key) === false) {
+                     foreach ($terms as $term_id => $name) {
+                        self::update_post_counts($tax_name, $term_id);
+                     }
+                     set_transient($cache_key, true, 30 * MINUTE_IN_SECONDS);                     
+                  }
+
+						foreach ($terms as $term_id => $name) {							
 							self::set_data_attributes($term_id, $term_attrs);
 							self::$term_name = (self::$term_name) ? : $name;
 
@@ -407,10 +438,7 @@ class FG_Term {
 					          <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filter') .'</div></div>';
 					}
 					echo '</div></article>';
-
-					if (get_transient(self::$cache_key) === false) {
-						set_transient(self::$cache_key, true, 30);
-					}
+					
 				}
 			}
 
@@ -445,5 +473,11 @@ class FG_Term {
 
 		return $list_terms;
 	}
+
+
+   private static function build_cache_key(string $tax_name, array $post_types): string {
+      sort($post_types);
+      return 'ymc_fg_term_post_counts_' . $tax_name . '_' . md5(implode('|', $post_types));
+   }
 
 }

@@ -28,6 +28,7 @@ class FG_Ajax_Admin {
 		add_action('wp_ajax_action_search_feed_posts', array( __CLASS__, 'ajax_search_feed_posts'));
 		add_action('wp_ajax_action_save_taxonomy_attrs', array( __CLASS__, 'ajax_save_taxonomy_attrs'));
 		add_action('wp_ajax_action_save_term_attrs', array( __CLASS__, 'ajax_save_term_attrs'));
+		add_action('wp_ajax_action_clear_terms_cache', array( __CLASS__, 'ajax_clear_terms_cache'));
 		add_action('wp_ajax_action_get_selected_taxonomies', array( __CLASS__, 'ajax_get_selected_taxonomies'));
 		add_action('wp_ajax_action_upload_term_icon', array( __CLASS__, 'ajax_upload_term_icon'));
 		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings'));
@@ -126,13 +127,13 @@ class FG_Ajax_Admin {
 		check_ajax_referer('get-term-ajax-nonce', 'nonce_code');
 
 		$payload = json_decode(sanitize_text_field(wp_unslash($_POST['payload'])));
-		$slug = $payload->slug;
+		$tax = $payload->slug;
 		$label = $payload->label;
 		$post_id = (int) $payload->post_id;
 		$item_term = [];
 		$data = [];
 
-		if (empty($slug) || empty($label) || empty($post_id)) {
+		if (empty($tax) || empty($label) || empty($post_id)) {
 			wp_send_json_error([
 				'message' => __('Invalid data received.', 'ymc-smart-filter')
 			], 400);
@@ -141,15 +142,22 @@ class FG_Ajax_Admin {
 		$post_types = (array) Data_Store::get_meta_value($post_id,'ymc_fg_post_types');
 
 		$args = [
-			'taxonomy' => $slug,
+			'taxonomy' => $tax,
 			'hide_empty' => false
 		];
 		$terms = get_terms($args);
 
 		if($terms && ! is_wp_error($terms)) {
 
-			foreach( $terms as $term ) {
-				Term::update_post_counts($slug, $term->term_id, Term::get_cache_key());
+         $cache_key = Term::get_cache_key($tax, $post_types);
+         if (get_transient($cache_key) === false) {
+            foreach ($terms as $term) {
+               Term::update_post_counts($tax, $term->term_id);
+            }
+            set_transient($cache_key, true, 30 * MINUTE_IN_SECONDS);
+         }
+
+			foreach( $terms as $term ) {           			
 				$post_count = Term::get_post_counts($post_types, $term->term_id);
 
 				$item_term[] = [
@@ -161,7 +169,7 @@ class FG_Ajax_Admin {
 			}
 		}
 
-		$data['tax_slug']   =  $slug;
+		$data['tax_slug']   =  $tax;
 		$data['tax_label']  =  $label;
 		$data['terms']      =  $item_term;
 
@@ -462,6 +470,26 @@ class FG_Ajax_Admin {
 		wp_send_json($data);
 	}
 
+   /**
+    * Clear terms cache
+    */
+   public static function ajax_clear_terms_cache() : void {
+      check_ajax_referer('clear-terms-cache-ajax-nonce', 'nonce_code');
+
+      global $wpdb;
+
+      $wpdb->query(
+         "DELETE FROM {$wpdb->options}
+            WHERE option_name LIKE '_transient_ymc_fg_term_post_counts%' 
+            OR option_name LIKE '_transient_timeout_ymc_fg_term_post_counts%'"
+      );      
+
+      $data = array(
+			'response' => 1			
+		);
+		wp_send_json($data);
+
+   }
 
 	/**
 	 * Get selected taxonomies

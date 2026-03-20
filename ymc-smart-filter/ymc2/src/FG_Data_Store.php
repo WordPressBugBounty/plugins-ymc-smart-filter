@@ -81,6 +81,10 @@ class FG_Data_Store {
 
 		'ymc_fg_next_button_text'      => '',
 
+      'ymc_fg_pagination_mid_size'   => 2,
+
+      'ymc_fg_pagination_end_size'   => 1,
+
 		'ymc_fg_load_more_text'        => '',
 
 		'ymc_fg_post_image_size'       => 'medium',

@@ -168,6 +168,16 @@ class FG_Save_Meta_Boxes {
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_next_button_text'])) : '';
 		update_post_meta($post_id, 'ymc_fg_next_button_text', $next_button_text);
 
+      // Pagination Mid Size
+		$pagination_mid_size = isset($_POST['ymc_fg_pagination_mid_size'])
+			? sanitize_text_field(wp_unslash($_POST['ymc_fg_pagination_mid_size'])) : 2;
+		update_post_meta($post_id, 'ymc_fg_pagination_mid_size', $pagination_mid_size);
+
+      // Pagination End Size
+		$pagination_end_size = isset($_POST['ymc_fg_pagination_end_size'])
+			? sanitize_text_field(wp_unslash($_POST['ymc_fg_pagination_end_size'])) : 1;
+		update_post_meta($post_id, 'ymc_fg_pagination_end_size', $pagination_end_size);      
+
 		// Load More Button Text
 		$load_more_text = isset($_POST['ymc_fg_load_more_text'])
 			? sanitize_text_field(wp_unslash($_POST['ymc_fg_load_more_text'])) : '';

@@ -210,6 +210,7 @@ class FG_Backend_Scripts {
 					'searchFeedPostsAjax_nonce'   => wp_create_nonce('search-feed-posts-ajax-nonce'),
 					'saveTaxAttrAjax_nonce'       => wp_create_nonce('save-taxonomy-attr-ajax-nonce'),
 					'saveTermAttrAjax_nonce'      => wp_create_nonce('save-term-attr-ajax-nonce'),
+					'clearTermsCacheAjax_nonce'   => wp_create_nonce('clear-terms-cache-ajax-nonce'),
 					'getSelectTaxAjax_nonce'      => wp_create_nonce('get-select-tax-ajax-nonce'),
 					'uploadTermIconAjax_nonce'    => wp_create_nonce('upload-term-icon-ajax-nonce'),
 					'exportSettingsAjax_nonce'    => wp_create_nonce('export-settings-ajax-nonce'),

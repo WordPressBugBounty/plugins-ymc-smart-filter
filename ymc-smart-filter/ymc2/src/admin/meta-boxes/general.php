@@ -78,7 +78,7 @@ if (!defined( 'ABSPATH')) exit;
                         </button>
                     </div>
 	                <?php ymc_render_field_header('Taxonomy(s)', 'Select taxonomy(s). Sortable with Drag & Drop feature. 
-	                Taxonomy sorting does not apply to Combined filter type'); ?>
+	                Taxonomy sorting does not apply to Combined filter type.'); ?>
 	                <?php
 	                // phpcs:ignore WordPress
                     echo Taxonomy::output_html($post_id, $ymc_fg_post_types); ?>
@@ -89,22 +89,32 @@ if (!defined( 'ABSPATH')) exit;
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Term(s)',
                         'Select terms. Sortable with Drag and Drop feature.<hr> To manually sort terms, enable the 
-                        "Manual (Custom Order)" option in the <b>Appearance -> Filter Settings -> Term Sort Direction</b> section.'); ?>
+                        "Manual (Custom Order)" option in the <b>Appearance -> Filter Settings -> Term Sort Direction</b> section.<hr>
+                        Post counts are cached for <b>30 minutes</b>. Updates may not appear immediately after assigning posts to a term.
+                        To retrieve up-to-date data, please clear the cache by clicking the "Clear Terms Cache" button.'); ?>
                 </div>
 
                 <div class="group-elements">
                     <div class="control-bar">
                         <button class="button button--secondary btn-reload js-terms-updated js-btn-tooltip"
-                                data-tooltip-html="<?php esc_attr_e('Update all terms and their attributes..','ymc-smart-filter'); ?>"
-                                title="<?php esc_attr_e('Update all terms and their attributes..','ymc-smart-filter'); ?>">
-                            <i class="reload"></i>
+                                data-tooltip-html="<?php esc_attr_e('Update all terms and their attributes.','ymc-smart-filter'); ?>"
+                                title="<?php esc_attr_e('Update all terms and their attributes.','ymc-smart-filter'); ?>">
+                           <i class="reload"></i>
 		                    <?php esc_html_e('Update Terms','ymc-smart-filter'); ?>
                         </button>
+
+                        <button class="button button--secondary btn-clear-cache js-terms-clear-cache js-btn-tooltip"
+                                 data-tooltip-html="<?php esc_attr_e('Clear cached term post counts and recalculate them on next page load','ymc-smart-filter'); ?>"
+                                 title="<?php esc_attr_e('Clear cached term post counts and recalculate them on next page load.','ymc-smart-filter'); ?>">
+                           <i class="clear-cache"></i>
+                           <?php esc_html_e('Clear Terms Cache','ymc-smart-filter'); ?>                           
+                        </button>
+
                         <button class="button button--secondary btn-remove js-tax-clear js-btn-tooltip"
                                 data-tooltip-html="<?php esc_attr_e('Delete all taxonomy terms and their attributes.','ymc-smart-filter'); ?>"
                                 title="<?php esc_attr_e('Delete all taxonomy terms and their attributes.','ymc-smart-filter'); ?>">
-                            <i class="fa-solid fa-trash"></i>
-		                    <?php esc_html_e('Delete Terms','ymc-smart-filter'); ?>
+                           <i class="fa-solid fa-trash"></i>
+		                     <?php esc_html_e('Delete Terms','ymc-smart-filter'); ?>
                         </button>
                     </div>
                 </div>
