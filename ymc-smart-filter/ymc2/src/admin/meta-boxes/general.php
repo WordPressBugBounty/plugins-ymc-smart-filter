@@ -90,7 +90,7 @@ if (!defined( 'ABSPATH')) exit;
 	                <?php ymc_render_field_header('Term(s)',
                         'Select terms. Sortable with Drag and Drop feature.<hr> To manually sort terms, enable the 
                         "Manual (Custom Order)" option in the <b>Appearance -> Filter Settings -> Term Sort Direction</b> section.<hr>
-                        Post counts are cached for <b>30 minutes</b>. Updates may not appear immediately after assigning posts to a term.
+                        Post counts are cached for <b>1 hour</b>. Updates may not appear immediately after assigning posts to a term.
                         To retrieve up-to-date data, please clear the cache by clicking the "Clear Terms Cache" button.'); ?>
                 </div>
 

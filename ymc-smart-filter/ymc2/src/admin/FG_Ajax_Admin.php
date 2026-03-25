@@ -154,7 +154,7 @@ class FG_Ajax_Admin {
             foreach ($terms as $term) {
                Term::update_post_counts($tax, $term->term_id);
             }
-            set_transient($cache_key, true, 30 * MINUTE_IN_SECONDS);
+            set_transient($cache_key, true, 60 * MINUTE_IN_SECONDS);
          }
 
 			foreach( $terms as $term ) {           			

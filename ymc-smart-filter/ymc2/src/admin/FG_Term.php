@@ -395,7 +395,7 @@ class FG_Term {
                      foreach ($terms as $term_id => $name) {
                         self::update_post_counts($tax_name, $term_id);
                      }
-                     set_transient($cache_key, true, 30 * MINUTE_IN_SECONDS);                     
+                     set_transient($cache_key, true, 60 * MINUTE_IN_SECONDS);                     
                   }
 
 						foreach ($terms as $term_id => $name) {							

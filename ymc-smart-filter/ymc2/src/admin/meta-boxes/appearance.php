@@ -765,8 +765,7 @@ if (!defined( 'ABSPATH')) exit;
                         value="<?php echo esc_attr($ymc_fg_per_page); ?>">
                   <div class="spacer-25"></div>
                 </div>
-
-	             <?php //$is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
+	             
                 <div class="group-elements js-navigation-buttons<?php echo esc_attr($is_numeric_hidden); ?>">
 	                <?php ymc_render_field_header('Previous Button Text',
                         'Text displayed on the button to navigate to the previous item or page.'); ?>
