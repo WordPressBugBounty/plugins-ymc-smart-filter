@@ -200,8 +200,9 @@ if (!defined( 'ABSPATH')) exit;
         </div>
         <div class="form-wrap">
 				<?php 
-					$current_mode = $ymc_fg_custom_layout_builder['mode']['type'] ?? 'classic';
-					$is_hidden_start_mode = ($current_mode !== 'structural') ? ' is-hidden' : '';					
+					$current_mode = $ymc_fg_custom_layout_builder['mode']['type'] ?? 'classic'; 
+					$is_hidden_start_mode = ($current_mode === 'structural' && 
+                  !in_array($ymc_fg_post_layout, ['layout_standard','layout_carousel'], true)) ? '' : ' is-hidden';				
 				?>
 				<div class="notification notification--warning<?php echo esc_attr($is_hidden_start_mode); ?>">
                <?php
@@ -221,7 +222,7 @@ if (!defined( 'ABSPATH')) exit;
                     <legend class="form-legend">
 		            <?php esc_html_e('Post Elements','ymc-smart-filter'); ?></legend>
 	                <?php ymc_render_field_header('Post Display Settings',
-		                'Control which elements of the post are visible on the front end.'); ?>
+		                'Control which elements of the post are visible on the front end. This applies only to the Standard post layout.'); ?>
 	                <?php $post_display_settings = UiLabels::all('post_display_settings'); ?>
                     <div class="post-settings-section">
                         <div class="post-elements-grid">
