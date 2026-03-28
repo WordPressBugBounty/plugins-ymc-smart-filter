@@ -358,9 +358,12 @@ class FG_Layout_Renderer {
      */
     protected static function renderButton(array $context, array $settings) : void {
       $post_id = $context['post_id']; 
+      $filter_id = $context['filter_id'];
+      $counter = $context['counter'];
       $href = '';
       $source = $settings['link_source'] ?? 'post';
       $tag = 'a';
+      $popup_attr = '';
       
       switch ($source) {
          case 'post':
@@ -374,6 +377,10 @@ class FG_Layout_Renderer {
                if ($field_key && function_exists('get_field')) {
                   $href = get_field($field_key, $post_id);
                }
+               break;
+         case 'popup' :
+               $href = '#';
+               $popup_attr = ' data-post-id="' . $post_id . '" data-grid-id="' . $filter_id . '" data-counter="' . $counter . '"';
                break;
          case 'none':
          default:
@@ -396,7 +403,11 @@ class FG_Layout_Renderer {
 
       $classes[] = 'sb-btn';
       $classes[] = 'btn-' . ($settings['btn_style'] ?? 'primary');
-      $classes[] = 'btn-' . ($settings['btn_size'] ?? 'middle');               
+      $classes[] = 'btn-' . ($settings['btn_size'] ?? 'middle'); 
+      
+      if($source === 'popup') {
+         $classes[] = 'js-ymc-popup-trigger';
+      }
 
       if (!empty($settings['full_width'])) $classes[] = 'btn-block';         
       
@@ -415,6 +426,10 @@ class FG_Layout_Renderer {
       if ($tag === 'a') {
          $html_tag .= ' href="' . esc_url($href) . '"';
          $html_tag .= ' target="' . esc_attr($settings['target'] ?? '_self') . '"';
+      }
+
+      if($source === 'popup') {
+         $html_tag .= $popup_attr;
       }
 
       $html_tag .= ' class="' . implode(' ', $classes) . '">';

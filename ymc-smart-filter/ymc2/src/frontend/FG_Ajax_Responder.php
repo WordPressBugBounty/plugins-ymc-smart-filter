@@ -448,7 +448,8 @@ class FG_Ajax_Responder {
 							'query'     => $query,
 							'filter_id' => $filter_id,
 							'index'     => $index,
-							'post_id'   => $post->ID
+							'post_id'   => $post->ID,
+                     'counter'   => $counter
 						]);
 						// phpcs:enable
 					}
