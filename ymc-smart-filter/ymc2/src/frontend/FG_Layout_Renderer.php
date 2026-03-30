@@ -363,7 +363,7 @@ class FG_Layout_Renderer {
       $href = '';
       $source = $settings['link_source'] ?? 'post';
       $tag = 'a';
-      $popup_attr = '';
+      $popup_attr = '';     
       
       switch ($source) {
          case 'post':
@@ -374,8 +374,13 @@ class FG_Layout_Renderer {
                break;
          case 'acf':
                $field_key = $settings['acf_link_key'] ?? '';
-               if ($field_key && function_exists('get_field')) {
-                  $href = get_field($field_key, $post_id);
+               if ($field_key && is_string($field_key) && function_exists('get_field')) {
+                  $value = get_field($field_key, $post_id);                  
+                  if (is_array($value) && isset($value['url'])) {
+                     $href = $value['url'];
+                  } else {
+                     $href = $value; 
+                  }
                }
                break;
          case 'popup' :
@@ -387,7 +392,7 @@ class FG_Layout_Renderer {
                $href = '';
                $tag = 'span';
                break;
-      }
+      }     
         
       if ($source !== 'none' && empty($href)) {
          $tag = 'span';
@@ -426,6 +431,10 @@ class FG_Layout_Renderer {
       if ($tag === 'a') {
          $html_tag .= ' href="' . esc_url($href) . '"';
          $html_tag .= ' target="' . esc_attr($settings['target'] ?? '_self') . '"';
+
+         if (!empty($settings['is_download'])) {
+            $html_tag .= ' download';
+         }
       }
 
       if($source === 'popup') {
