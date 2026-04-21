@@ -26,8 +26,11 @@ class FG_Filter_Date_Picker extends FG_Abstract_Filter_Impl implements IFilter {
 				<div class="filter-date-picker-inner">
 
                     <div class="date-picker-wrapper">
-                        <div class="date-picker__selected js-dropdown-selected">
-		                    <?php esc_html_e('All time', 'ymc-smart-filter'); ?>
+                        <div class="date-picker__selected js-dropdown-selected">		                    
+                        <?php 
+                           $all_time_label = apply_filters('ymc_filter_all_time_label', __('All time', 'ymc-smart-filter'));
+                           echo esc_html($all_time_label); 
+                        ?>
                         </div>
 
                         <div class="date-picker__range js-date-range">

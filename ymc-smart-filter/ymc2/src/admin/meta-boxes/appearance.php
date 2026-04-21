@@ -115,6 +115,16 @@ if (!defined( 'ABSPATH')) exit;
                     <div class="spacer-25"></div>
                 </div>
 
+                <div class="group-elements">
+                  <?php ymc_render_field_header('Post Count',
+                     'Displays the number of posts assigned to each term in parentheses (e.g. Category (5)).'); ?>
+                      <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_show_post_count"
+                        id="ymc_fg_show_post_count" <?php checked( $ymc_fg_show_post_count, 'yes' );  ?>>
+                  <label class="field-label" for="ymc_fg_show_post_count">
+                     <?php esc_html_e('Show post count next to each term', 'ymc-smart-filter'); ?></label>
+                  <div class="spacer-25"></div>
+                </div> 
+
                 <?php $is_hidden = ($ymc_fg_filter_type === 'default' || $ymc_fg_filter_type === 'composite') ? '' : ' is-hidden'; ?>
                 <div class="group-elements js-filter-button-all<?php echo esc_attr($is_hidden); ?>">
                     <?php

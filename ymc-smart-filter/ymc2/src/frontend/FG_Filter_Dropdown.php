@@ -32,7 +32,8 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
       $filter_dropdown_setting = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_dropdown_setting');
       $threshold = intval($filter_dropdown_setting['threshold'] ?? 40);
 
-      $this->current_post_types = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types'); 
+      $this->current_post_types = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
+      $show_post_count = (string) Data_Store::get_meta_value($filter_id, 'ymc_fg_show_post_count'); 
 
       ob_start();
 
@@ -99,7 +100,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
                               foreach ($render_terms as $term_id => $term_label) {                                 
                                  if ('false' === $this->get_term_visible($term_id)) continue;
                                  // phpcs:ignore WordPress
-                                 echo $this->render_term_button($term_id, $term_label, [$tax], $filter_id, $this->current_post_types);
+                                 echo $this->render_term_button($term_id, $term_label, [$tax], $filter_id, $this->current_post_types, $show_post_count);
                               }
                            }
                            ?>
@@ -114,7 +115,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
       return ob_get_clean();
    }
 
-	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id, array $current_post_types ): string {
+	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id, array $current_post_types, string $show_post_count = 'no' ): string {
 		$post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
 
 		$term_class_is_default = $this->get_term_default( $term_id );
@@ -124,8 +125,11 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = $this->get_term_name( $term_id );
 		$term_icon             = $this->get_icon( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';
-		$post_count            = $this->get_post_count_by_term_id($term_id, $tax_name, $post_types);
+		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';		
+
+      if('yes' === $show_post_count) {
+         $post_count = $this->get_post_count_by_term_id($term_id, $tax_name, $current_post_types);
+      }
 
 		$classes = array_filter([
 			$term_class,
@@ -138,14 +142,17 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 
         <li class="ymc-dropdown__item js-dropdown-item <?php echo esc_attr(implode(' ', $classes)); ?>">
             <label class="ymc-dropdown__checkbox">
-                <input type="checkbox" value="<?php echo esc_attr( $term_id ); ?>" data-value="<?php echo esc_attr( $term_id ); ?>">
-                <span class="checkmark"></span>
-	            <span class="term-name" <?php echo wp_kses_post( $term_style ); ?>><?php echo esc_html( $term_name ); ?></span>
-                <span class="post-count" <?php echo wp_kses_post( $term_style ); ?>>(<?php echo esc_html( $post_count ); ?>)</span>
-                <?php
-                    // phpcs:ignore WordPress
-                    echo $term_icon;
-                ?>
+               <input type="checkbox" value="<?php echo esc_attr( $term_id ); ?>" data-value="<?php echo esc_attr( $term_id ); ?>">
+               <span class="checkmark"></span>
+	            <span class="term-name" <?php echo wp_kses_post( $term_style ); ?>><?php echo esc_html( $term_name ); ?></span>                
+               
+               <?php if('yes' === $show_post_count) : ?>
+               <span class="post-count" <?php echo wp_kses_post( $term_style ); ?>>(<?php echo esc_html( $post_count ); ?>)</span>                  
+               <?php endif; ?>
+               <?php
+                  // phpcs:ignore WordPress
+                  echo $term_icon;
+               ?>
             </label>
         </li>
 

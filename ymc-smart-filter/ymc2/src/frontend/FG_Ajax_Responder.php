@@ -1036,6 +1036,7 @@ class FG_Ajax_Responder {
       $display_mode = Data_Store::get_meta_value($filter_id, 'ymc_fg_display_terms_mode');
       $post_types   = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');     
       $direction    = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_sort_direction');
+      $show_post_count = (string) Data_Store::get_meta_value($filter_id, 'ymc_fg_show_post_count');
 
       $filter = new FG_Filter_Dropdown(); 
       $filter->init_filter($filter_id);    
@@ -1127,7 +1128,8 @@ class FG_Ajax_Responder {
                   $term_name,
                   [$taxonomy],
                   $filter_id,
-                  $post_types
+                  $post_types,
+                  $show_post_count
                );
          }
       } 

@@ -348,7 +348,9 @@ class FG_Data_Store {
 		'ymc_fg_custom_layout_builder' => [
 			'mode'   => [ 'type' => 'classic' ],	
 			'start'  => [ 'type' => 'preset', 'preset' => 'standard' ]			
-		]		
+		],
+      
+      'ymc_fg_show_post_count' => 'no'
 
 	];
 

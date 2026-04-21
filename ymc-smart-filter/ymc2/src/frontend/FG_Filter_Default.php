@@ -75,6 +75,9 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 			}
 		}
 
+      $this->current_post_types = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
+      $show_post_count = (string) Data_Store::get_meta_value($filter_id, 'ymc_fg_show_post_count');
+
 		ob_start();
 
 		?>
@@ -105,7 +108,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 									continue;
 								}
 								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-								echo $this->render_term_button( $term_id, $term_label, $this->current_post_types );
+								echo $this->render_term_button( $term_id, $term_label, $this->current_post_types, $show_post_count );
 							}
 						}
 					}
@@ -119,7 +122,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		return ob_get_clean();
 	}
 
-	private function render_term_button( int $term_id, string $fallback_name, array $current_post_types ): string {
+	private function render_term_button( int $term_id, string $fallback_name, array $current_post_types, string $show_post_count = 'no' ): string {
 		$term_class_is_default = $this->get_term_default( $term_id );
 		$term_class_is_default = 'true' === $term_class_is_default ? 'is-default' : '';
 		$term_style            = $this->get_term_style( $term_id );
@@ -131,6 +134,10 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
       $has_posts             = $this->hasAttachedPosts( $term_id, $current_post_types );
       $term_is_disabled      = ! $has_posts ? 'is-disabled' : '';
       $disabled              = ! $has_posts ? 'disabled' : '';
+      
+      if('yes' === $show_post_count) {
+         $post_count = $this->get_post_count_by_term_id($term_id, [], $current_post_types);
+      }      
 
 		$classes = array_filter([
 			$icon_alignment,
@@ -150,6 +157,9 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 				// phpcs:ignore WordPress
             echo $term_icon; ?>
             <span class="text"><?php echo esc_html( $term_name ); ?></span>
+            <?php if('yes' === $show_post_count) : ?>
+               <span class="post-count">(<?php echo esc_html( $post_count ); ?>)</span>
+            <?php endif; ?>
         </button>
 		<?php
 		return ob_get_clean();
