@@ -323,12 +323,24 @@ class FG_Ajax_Responder {
 				$whitelist = apply_filters( 'ymc/filter/query/wp/allowed_callbacks_'.$filter_id, $whitelist );
 
 				if (is_callable( $allowed_callback) && in_array($allowed_callback, $whitelist, true)) {
-					$query_args = call_user_func( $allowed_callback, [
-						'post_type' => $post_types,
-						'taxonomy'  => $taxonomies,
-						'terms'     => $terms,
-						'page_id'   => $page_id
-					]);
+
+               $filter_params = [
+                  'post_type' => $post_types,
+                  'taxonomy'  => $taxonomies,
+                  'terms'     => $terms,
+                  'page_id'   => $page_id,
+                  'extra_args' => []
+               ];
+
+               if ( ! empty( $filter_date['from'] ) ) {                  
+                  $filter_params['extra_args']['data_from'] = (int) $filter_date['from'];
+               }
+
+               if ( ! empty( $filter_date['to'] ) ) {
+                  $filter_params['extra_args']['data_to'] = (int) $filter_date['to'];
+               }               
+               
+               $query_args = call_user_func( $allowed_callback, $filter_params );
 
 					if ( is_array( $query_args ) ) {
 						$args = array_merge( $args, $query_args );

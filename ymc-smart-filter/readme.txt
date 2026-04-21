@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.8.7
+Version: 3.8.8
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 5.5
 Tested up to: 6.9.4
-Stable tag: 3.8.7
+Stable tag: 3.8.8
 Requires PHP: 7.2
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -78,6 +78,8 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.8.8 =
+Added support for the `extra_args` parameter in query modification callbacks.
 = 3.8.6 =
 Added option to display post count next to each term in filter.
 = 3.8.0 =
