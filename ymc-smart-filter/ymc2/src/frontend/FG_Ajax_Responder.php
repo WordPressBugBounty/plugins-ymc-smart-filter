@@ -565,8 +565,11 @@ class FG_Ajax_Responder {
 		ob_start();
 
 		$post = get_post($post_id);
+
+      $post_status = Data_Store::get_meta_value($grid_id, 'ymc_fg_post_status');
+      $selected_statuses = is_array($post_status) ? $post_status : [];
 		
-		if ( ! empty( $post ) && $post->post_status === 'publish' && ! post_password_required( $post ) ) {
+		if ( ! empty( $post ) && in_array( $post->post_status, $selected_statuses, true ) && ! post_password_required( $post ) ) {
 			
 			if( has_post_thumbnail($post_id) ) :
 				echo '<figure class="post-image">' .get_the_post_thumbnail( $post_id, 'full' ). '</figure>';

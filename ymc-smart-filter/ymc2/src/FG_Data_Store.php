@@ -107,7 +107,7 @@ class FG_Data_Store {
 
 		'ymc_fg_post_order_by'         => 'title',
 
-		'ymc_fg_post_status'           => 'publish',
+		'ymc_fg_post_status'           => ['publish'],
 
 		'ymc_fg_no_results_message'    => 'No results found',
 

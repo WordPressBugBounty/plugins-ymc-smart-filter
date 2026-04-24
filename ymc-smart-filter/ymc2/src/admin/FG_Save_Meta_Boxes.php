@@ -251,8 +251,8 @@ class FG_Save_Meta_Boxes {
 
 		// Post status
 		$post_status = isset($_POST['ymc_fg_post_status'])
-			? sanitize_text_field(wp_unslash($_POST['ymc_fg_post_status'])) : 30;
-		update_post_meta($post_id, 'ymc_fg_post_status', $post_status);
+			? array_map( 'sanitize_text_field', wp_unslash($_POST['ymc_fg_post_status'])) : ['publish'];
+		update_post_meta($post_id, 'ymc_fg_post_status', $post_status);    
 
 		// No results message
 		$no_results_message = isset($_POST['ymc_fg_no_results_message'])

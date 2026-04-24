@@ -521,17 +521,17 @@ if (!defined( 'ABSPATH')) exit;
 	                <?php $post_status = UiLabels::all('post_status'); ?>
 	                <?php ymc_render_field_header('Post Status',
 		                'Select the status of posts to include (e.g., published, draft, pending).'); ?>
-                    <select class="form-select" name="ymc_fg_post_status">
+                    <select class="form-select form-select--multiple" multiple name="ymc_fg_post_status[]">
 		                <?php
 		                if($post_status) :
-			                foreach ($post_status as $key => $value) :
-				                printf(
-					                '<option value="%s"%s>%s</option>',
-					                esc_attr($key),
-					                selected($ymc_fg_post_status, $key, false),
-					                esc_html($value)
-				                );
-			                endforeach;
+                         $selected_statuses = is_array($ymc_fg_post_status) ? $ymc_fg_post_status : [];
+			               foreach ($post_status as $key => $value) :
+                           $is_selected = in_array($key, $selected_statuses, true) ? 'selected' : ''; ?>
+                            <option value="<?php echo esc_attr($key); ?>" <?php echo $is_selected; ?>>
+                              <?php echo esc_html($value); ?>
+                            </option>
+                        <?php			              
+			               endforeach;
 		                endif;
 		                ?>
                     </select>
