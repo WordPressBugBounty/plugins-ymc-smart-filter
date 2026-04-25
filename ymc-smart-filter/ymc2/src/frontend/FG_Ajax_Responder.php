@@ -567,7 +567,7 @@ class FG_Ajax_Responder {
 		$post = get_post($post_id);
 
       $post_status = Data_Store::get_meta_value($grid_id, 'ymc_fg_post_status');
-      $selected_statuses = is_array($post_status) ? $post_status : [];
+      $selected_statuses = is_array($post_status) ? $post_status : ['publish'];
 		
 		if ( ! empty( $post ) && in_array( $post->post_status, $selected_statuses, true ) && ! post_password_required( $post ) ) {
 			

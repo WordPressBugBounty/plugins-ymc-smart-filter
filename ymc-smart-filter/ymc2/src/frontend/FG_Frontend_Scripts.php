@@ -111,20 +111,21 @@ class FG_Frontend_Scripts {
 	 * Register all Filter Grids styles.
 	 */
 	private static function register_styles() : void {
-		$suffix = '.min';
-		//$suffix = '';
+		$suffix = '.min';		
 		$version = YMC_VERSION;
+      
+      wp_register_style(
+         'query_ui', 
+         YMC_PLUGIN_URL . 'assets/css/lib/query-ui.css',
+         array(), 
+         $version
+      );
 
 		$register_styles = array(
-			'query_ui'    => array(
-				'src'     => YMC_PLUGIN_URL . 'assets/css/lib/query-ui.css',
-				'deps'    => array(),
-				'version' => $version
-			),
-			'ymc_style'   => array(
-				'src'     => YMC_PLUGIN_URL .  'assets/css/style'. $suffix .'.css',
-				'deps'    => array(),
-				'version' => $version
+			   'ymc_style'   => array(
+				'src'         => YMC_PLUGIN_URL .  'assets/css/style'. $suffix .'.css',
+				'deps'        => array(),
+				'version'     => $version
 			)
 		);
 		foreach ( $register_styles as $name => $props ) {
@@ -144,8 +145,7 @@ class FG_Frontend_Scripts {
 	/**
 	 * Register/queue frontend scripts.
 	 */
-	public static function load_scripts() : void {
-		wp_enqueue_script( 'jquery-ui-datepicker');
+	public static function load_scripts() : void {		
 		self::register_scripts();
 	}
 

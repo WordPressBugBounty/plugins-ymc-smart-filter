@@ -54,11 +54,33 @@ class FG_Shortcodes {
 		$custom_container_class = esc_attr(Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_container_class'));
 		$custom_container_class = $custom_container_class ? " $custom_container_class" : '';
 		$post_layout  = Data_Store::get_meta_value($filter_id,'ymc_fg_post_layout');
-        $grid_style = ($post_layout === 'layout_carousel') ? 'carousel' : Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
+      $grid_style = ($post_layout === 'layout_carousel') ? 'carousel' : Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
+
+      // Check if date picker is needed
+      $filter_layout = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_type');
+      $ymc_fg_filter_options = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_options');
+      
+      $needs_datepicker = false;
+      
+      if ('date_picker' === $filter_layout) {
+         $needs_datepicker = true;
+      }
+      
+      if ( ! $needs_datepicker && is_array($ymc_fg_filter_options) ) {        
+         $types = array_column($ymc_fg_filter_options, 'filter_type');
+         if ( in_array('date_picker', $types, true) ) {
+            $needs_datepicker = true;
+         }
+      }
+     
+      if ($needs_datepicker) {
+         wp_enqueue_script('jquery-ui-datepicker');
+         wp_enqueue_style('query_ui'); 
+      }
 
 		ob_start(); ?>
 
-        <?php $custom_css = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_css'); ?>
+      <?php $custom_css = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_css'); ?>
 		<?php if (!empty($custom_css)) :
 			$minified_css = ymc_minify_css($custom_css); ?>
             <style id="ymc-custom-css-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>"><?php echo esc_html($minified_css); ?></style>
@@ -77,7 +99,7 @@ class FG_Shortcodes {
              data-grid-style="<?php echo esc_attr($grid_style); ?>"
              data-filter-id="<?php echo esc_attr($filter_id); ?>">
 			<?php
-			// phpcs:ignore WordPress
+			   // phpcs:ignore WordPress
             echo Components::init($filter_id, self::$counter_filter); ?>
 		</div>
 		<?php
