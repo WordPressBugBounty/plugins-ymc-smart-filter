@@ -55,6 +55,7 @@ class FG_Shortcodes {
 		$custom_container_class = $custom_container_class ? " $custom_container_class" : '';
 		$post_layout  = Data_Store::get_meta_value($filter_id,'ymc_fg_post_layout');
       $grid_style = ($post_layout === 'layout_carousel') ? 'carousel' : Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
+      $grid_style = Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
 
       // Check if date picker is needed
       $filter_layout = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_type');
@@ -66,11 +67,24 @@ class FG_Shortcodes {
          $needs_datepicker = true;
       }
       
-      if ( ! $needs_datepicker && is_array($ymc_fg_filter_options) ) {        
+      if ( ! $needs_datepicker && is_array($ymc_fg_filter_options) ) {
          $types = array_column($ymc_fg_filter_options, 'filter_type');
          if ( in_array('date_picker', $types, true) ) {
             $needs_datepicker = true;
          }
+      }
+
+
+      // Activate main script and style
+      wp_enqueue_script('ymc_script');
+      wp_enqueue_style('ymc_style');
+     
+      if ('yes' === get_option('ymc_fg_enable_js_filter_api')) {
+         wp_enqueue_script('ymc_api');
+      }      
+
+      if ('masonry' === $grid_style) {
+         wp_enqueue_script('ymc_masonry');
       }
      
       if ($needs_datepicker) {

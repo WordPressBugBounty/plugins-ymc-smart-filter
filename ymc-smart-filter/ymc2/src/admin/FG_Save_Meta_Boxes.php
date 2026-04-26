@@ -108,9 +108,7 @@ class FG_Save_Meta_Boxes {
 		// Grid Style & Enqueue script Masonry
 		if(isset($_POST['ymc_fg_grid_style'])) {
 			$grid_style = sanitize_text_field(wp_unslash($_POST['ymc_fg_grid_style']));
-			update_post_meta($post_id, 'ymc_fg_grid_style', $grid_style);
-			$enable_js_masonry = $grid_style === 'masonry' ? 'yes' : 'no';
-			update_option( 'ymc_fg_enable_js_masonry', $enable_js_masonry, false);
+			update_post_meta($post_id, 'ymc_fg_grid_style', $grid_style);			
 		}
 
 		// Multiple Taxonomy

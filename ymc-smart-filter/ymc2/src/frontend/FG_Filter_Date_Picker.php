@@ -62,57 +62,57 @@ class FG_Filter_Date_Picker extends FG_Abstract_Filter_Impl implements IFilter {
                             <div class="date-picker__close js-dropdown-close" title="Close">&#10006;</div>
                             <ul class="date-picker__list">
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="all">
-                                        <input id="all" type="radio" name="date"  value="All time" data-value="all_time">
+                                    <label class="date-picker__label" for="all-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="all-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>"  value="All time" data-value="all_time">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('All time', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="today">
-                                        <input id="today" type="radio" name="date" value="Today" data-value="today">
+                                    <label class="date-picker__label" for="today-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="today-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Today" data-value="today">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Today', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="yesterday">
-                                        <input id="yesterday" type="radio" name="date" value="Yesterday" data-value="yesterday">
+                                    <label class="date-picker__label" for="yesterday-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="yesterday-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Yesterday" data-value="yesterday">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Yesterday', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="3_days">
-                                        <input id="3_days" type="radio" name="date" value="3 days" data-value="3_days">
+                                    <label class="date-picker__label" for="3_days-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="3_days-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="3 days" data-value="3_days">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Last 3 days', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="last_week">
-                                        <input id="last_week" type="radio" name="date" value="Last week" data-value="last_week">
+                                    <label class="date-picker__label" for="last_week-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="last_week-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Last week" data-value="last_week">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Last week', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="last_month">
-                                        <input id="last_month" type="radio" name="date" value="Last month" data-value="last_month">
+                                    <label class="date-picker__label" for="last_month-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="last_month-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Last month" data-value="last_month">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Last month', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="last_year">
-                                        <input id="last_year" type="radio" name="date" value="Last year" data-value="last_year">
+                                    <label class="date-picker__label" for="last_year-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="last_year-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Last year" data-value="last_year">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Last year', 'ymc-smart-filter'); ?></span>
                                     </label>
                                 </li>
                                 <li class="date-picker__item js-dropdown-item">
-                                    <label class="date-picker__label" for="other">
-                                        <input id="other" type="radio" name="date" value="Other time" data-value="other_time">
+                                    <label class="date-picker__label" for="other-<?php echo esc_attr($filter_id); ?>">
+                                        <input id="other-<?php echo esc_attr($filter_id); ?>" type="radio" name="date-<?php echo esc_attr($filter_id); ?>" value="Other time" data-value="other_time">
                                         <span class="checkmark"></span>
                                         <span class="name"><?php esc_html_e('Other time', 'ymc-smart-filter'); ?></span>
                                     </label>
