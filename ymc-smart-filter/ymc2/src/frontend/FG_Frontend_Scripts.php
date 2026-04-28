@@ -17,7 +17,7 @@ class FG_Frontend_Scripts {
 	 */
 	public static function init() : void {
 		add_action('wp_enqueue_scripts', array( __CLASS__, 'load_styles'));
-		add_action('wp_print_scripts', array( __CLASS__, 'load_scripts'), 99999);	
+      add_action('wp_enqueue_scripts', [__CLASS__, 'load_scripts']);			
       add_filter('script_loader_tag', [__CLASS__, 'add_module_type'], 10, 3);
 	}
 
@@ -57,7 +57,7 @@ class FG_Frontend_Scripts {
       wp_register_script(
          'ymc_script',
          YMC_PLUGIN_URL . 'assets/js/frontend/main' . $suffix . '.js',
-         array('jquery', 'wp-hooks', 'ymc_handlebar'),
+         array('jquery', 'wp-hooks', 'ymc_masonry', 'ymc_handlebar'),
          $version,
          true
       );
@@ -99,6 +99,13 @@ class FG_Frontend_Scripts {
 	private static function register_styles() : void {
 		$suffix = '.min';		
 		$version = YMC_VERSION;
+
+      wp_register_style(
+         'ymc_style',
+         YMC_PLUGIN_URL . 'assets/css/style'. $suffix .'.css',
+         [],
+         $version
+      );
       
       wp_register_style(
          'query_ui', 
@@ -106,14 +113,7 @@ class FG_Frontend_Scripts {
          array(), 
          $version
       );
-
-      wp_register_style(
-         'ymc_style', 
-         YMC_PLUGIN_URL .  'assets/css/style'. $suffix .'.css',
-         array(), 
-         $version
-      );
-
+      
 	}
 
 
@@ -122,6 +122,7 @@ class FG_Frontend_Scripts {
 	 */
 	public static function load_styles() : void {
 		self::register_styles();
+      wp_enqueue_style('ymc_style');
 	}
 
 

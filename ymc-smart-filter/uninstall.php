@@ -199,6 +199,5 @@ $wpdb->query( "DELETE FROM {$wpdb->termmeta} WHERE meta_key LIKE 'ymc_fg_count_%
 
 delete_option( 'ymc_plugin_legacy_is' );
 delete_option( 'ymc_fg_enable_js_filter_api' );
-delete_option( 'ymc_fg_enable_js_masonry' );
 delete_option( '_transient_ymc_fg_term_post_counts' );
 delete_option( '_transient_timeout_ymc_fg_term_post_counts' );

@@ -54,8 +54,7 @@ class FG_Shortcodes {
 		$custom_container_class = esc_attr(Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_container_class'));
 		$custom_container_class = $custom_container_class ? " $custom_container_class" : '';
 		$post_layout  = Data_Store::get_meta_value($filter_id,'ymc_fg_post_layout');
-      $grid_style = ($post_layout === 'layout_carousel') ? 'carousel' : Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
-      $grid_style = Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');
+      $grid_style = ($post_layout === 'layout_carousel') ? 'carousel' : Data_Store::get_meta_value($filter_id, 'ymc_fg_grid_style');     
 
       // Check if date picker is needed
       $filter_layout = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_type');
@@ -74,23 +73,17 @@ class FG_Shortcodes {
          }
       }
 
-
-      // Activate main script and style
-      wp_enqueue_script('ymc_script');
-      wp_enqueue_style('ymc_style');
-     
-      if ('yes' === get_option('ymc_fg_enable_js_filter_api')) {
-         wp_enqueue_script('ymc_api');
-      }      
-
-      if ('masonry' === $grid_style) {
-         wp_enqueue_script('ymc_masonry');
-      }
-     
       if ($needs_datepicker) {
          wp_enqueue_script('jquery-ui-datepicker');
          wp_enqueue_style('query_ui'); 
       }
+
+      // Activate main script
+      wp_enqueue_script('ymc_script');     
+     
+      if ('yes' === get_option('ymc_fg_enable_js_filter_api')) {
+         wp_enqueue_script('ymc_api');
+      }      
 
 		ob_start(); ?>
 

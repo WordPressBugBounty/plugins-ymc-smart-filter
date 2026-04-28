@@ -15,77 +15,49 @@ class FG_Backend_Scripts {
 	 * Hook in methods.
 	 */
 	public static function init() : void {
-		add_action('admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ));
-		add_action('admin_print_scripts', array( __CLASS__, 'localize_script' ));
+		add_action('admin_enqueue_scripts', array( __CLASS__, 'load_scripts' ));		
+      add_filter('script_loader_tag', [__CLASS__, 'add_module_type'], 10, 3);
 	}
 
-	/**
-	 * Register and enqueue a script for use.
-	 *
-	 * @uses   wp_enqueue_script()
-	 * @param  string   $handle    Name of the script. Should be unique.
-	 * @param  string   $path      Full URL of the script, or path of the script relative to the WordPress root directory.
-	 * @param  string[] $deps      An array of registered script handles this script depends on.
-	 * @param  string   $version   String specifying script version number, if it has one, which is added to the URL as a query string for cache busting purposes. If version is set to false, a version number is automatically added equal to current installed WordPress version. If set to null, no version is added.
-	 * @param  boolean  $in_footer Whether to enqueue the script before </body> instead of in the <head>. Default 'false'.
-	 */
-	private static function enqueue_script( $handle, $path, $deps, $version, $in_footer = array( 'strategy' => 'defer' ) ) : void {
-		wp_enqueue_script( $handle, $path, $deps, $version, $in_footer );
-		add_filter('script_loader_tag', function($tag, $handle, $src) {
-			if ( 'ymc_script' === $handle ) {
-				$tag = "<script id='{$handle}-js' type='module' src='". esc_url($src) ."'></script>";
-			}
-			return $tag;
-		}, 10, 3);
-	}
-
-
-	/**
-	 * Register and enqueue a styles for use.
-	 *
-	 * @uses   wp_enqueue_style()
-	 * @param  string   $handle  Name of the stylesheet. Should be unique.
-	 * @param  string   $path    Full URL of the stylesheet, or path of the stylesheet relative to the WordPress root directory.
-	 * @param  string[] $deps    An array of registered stylesheet handles this stylesheet depends on.
-	 * @param  string   $version String specifying stylesheet version number, if it has one, which is added to the URL as a query string for cache busting purposes. If version is set to false, a version number is automatically added equal to current installed WordPress version. If set to null, no version is added.
-	 * @param  string   $media   The media for which this stylesheet has been defined. Accepts media types like 'all', 'print' and 'screen', or media queries like '(orientation: portrait)' and '(max-width: 640px)'.
-	 */
-	private static function enqueue_style( $handle, $path, $deps, $version, $media = 'all' ) : void {
-		wp_enqueue_style( $handle, $path, $deps, $version, $media );
-	}
+   public static function add_module_type($tag, $handle, $src) : string {
+      if ($handle === 'ymc_script') {
+         return "<script id='{$handle}-js' type='module' src='" . esc_url($src) . "'></script>";
+      }
+      return $tag;
+   }
 
 
 	/**
 	 * Register all Filter Grids scripts.
 	 */
 	private static function register_scripts() : void {
-		$suffix = '.min';
-		//$suffix = '';
-		$version = YMC_VERSION;
 
-		$register_scripts = array(
-			'ymc_handlebar' => array(
-				'src'       => YMC_PLUGIN_URL . 'assets/js/lib/handlebars.min-v4.7.8.js',
-				'deps'      => array(),
-				'version'   => $version,
-				'in_footer' => false
-			),
-			'ymc_color-picker-alpha' => array(
-				'src'       => YMC_PLUGIN_URL . 'assets/js/lib/wp-color-picker-alpha.min.js',
-				'deps'      => array('jquery', 'wp-color-picker'),
-				'version'   => $version,
-				'in_footer' => true
-			),
-			'ymc_script'      => array(
-				'src'       => YMC_PLUGIN_URL . 'assets/js/admin/main'. $suffix .'.js',
-				'deps'      => array('jquery', 'jquery-ui-tooltip', 'wp-hooks'),
-				'version'   => $version,
-				'in_footer' => true
-			)
-		);
-		foreach ( $register_scripts as $name => $props ) {
-			self::enqueue_script( $name, $props['src'], $props['deps'], $props['version'], $props['in_footer'] );
-		}
+      $suffix = '.min';
+      $version = YMC_VERSION;
+
+      wp_register_script(
+         'ymc_handlebar',
+         YMC_PLUGIN_URL . 'assets/js/lib/handlebars.min-v4.7.8.js',
+         [],
+         $version,
+         false
+      );
+
+      wp_register_script(
+         'ymc_color-picker-alpha',
+         YMC_PLUGIN_URL . 'assets/js/lib/wp-color-picker-alpha.min.js',
+         ['jquery', 'wp-color-picker'],
+         $version,
+         true
+      );
+
+      wp_register_script(
+         'ymc_script',
+         YMC_PLUGIN_URL . 'assets/js/admin/main' . $suffix . '.js',
+         ['jquery', 'jquery-ui-tooltip', 'wp-hooks'],
+         $version,
+         true
+      );
 	}
 
 
@@ -93,25 +65,24 @@ class FG_Backend_Scripts {
 	 * Register all Filter Grids styles.
 	 */
 	private static function register_styles() : void {
-		$suffix = '.min';
-		//$suffix = '';
-		$version = YMC_VERSION;
 
-		$register_styles = array(
-			'query_ui'    => array(
-				'src'     => YMC_PLUGIN_URL . 'assets/css/lib/query-ui.css',
-				'deps'    => array(),
-				'version' => $version
-			),
-			'ymc_style'    => array(
-				'src'     => YMC_PLUGIN_URL . 'assets/css/admin'. $suffix .'.css',
-				'deps'    => array(),
-				'version' => $version
-			)
-		);
-		foreach ( $register_styles as $name => $props ) {
-			self::enqueue_style( $name, $props['src'], $props['deps'], $props['version'], 'all');
-		}
+      $suffix = '.min';
+      $version = YMC_VERSION;
+
+      wp_register_style(
+         'query_ui',
+         YMC_PLUGIN_URL . 'assets/css/lib/query-ui.css',
+         [],
+         $version
+      );
+
+      wp_register_style(
+         'ymc_style',
+         YMC_PLUGIN_URL . 'assets/css/admin' . $suffix . '.css',
+         [],
+         $version
+      );
+
 	}
 
 
@@ -119,9 +90,15 @@ class FG_Backend_Scripts {
 	 * Register/queue backend scripts.
 	 */
 	public static function load_scripts() : void {
+
 		$screen = get_current_screen();
+      
+      if ( !$screen ) {
+         return;
+      }
 
 		if ( $screen->id === 'ymc_filters' ) {
+
 			$settings_css = wp_enqueue_code_editor(array(
 				'type'       => 'text/css',
 				'codemirror' => array(
@@ -132,6 +109,7 @@ class FG_Backend_Scripts {
 					'lineWrapping'   => true
 				)
 			));
+
 			$settings_js = wp_enqueue_code_editor([
 				'type'       => 'text/javascript',
 				'codemirror' => [
@@ -165,9 +143,23 @@ class FG_Backend_Scripts {
 
 			self::register_scripts();
 			self::register_styles();
+
+         wp_enqueue_script('ymc_handlebar');
+         wp_enqueue_script('ymc_color-picker-alpha');
+         wp_enqueue_script('ymc_script');
+
+         wp_enqueue_style('query_ui');
+         wp_enqueue_style('ymc_style');
+
+         self::localize_script();
 		}
-		if( $screen->id === 'edit-ymc_filters' || $screen->id === 'ymc_filters_page_ymc-license' || $screen->id === 'ymc_filters_page_ymc-settings' ) {
-			self::register_styles();
+
+		if( $screen->id === 'edit-ymc_filters' || 
+          $screen->id === 'ymc_filters_page_ymc-license' || 
+          $screen->id === 'ymc_filters_page_ymc-settings' ) {
+
+			 self::register_styles();
+          wp_enqueue_style('ymc_style');
 		}
 	}
 
@@ -180,7 +172,7 @@ class FG_Backend_Scripts {
 	 */
 	public static function localize_script() : void {
 
-		if ( wp_script_is( 'ymc_script' ) ) {
+		if ( wp_script_is( 'ymc_script', 'enqueued' ) ) {
 
 			$post_id = isset($_GET['post']) ? intval($_GET['post']) : get_the_ID();
 
