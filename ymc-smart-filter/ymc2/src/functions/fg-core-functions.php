@@ -803,3 +803,26 @@ if (! function_exists( 'ymc_get_all_acf_fields_for_builder')) {
 }
 
 
+/**
+ * Sanitize array recursively
+ */
+if (! function_exists( 'ymc_sanitize_deep')) {
+   function ymc_sanitize_deep($value) {
+      if (is_array($value)) {
+         return array_map('ymc_sanitize_deep', $value);
+      }
+      if (is_numeric($value)) {
+         return (int) $value;
+      }
+      if (is_string($value)) {
+         return sanitize_text_field($value);
+      }
+      return $value;
+   }
+}
+
+
+
+
+
+

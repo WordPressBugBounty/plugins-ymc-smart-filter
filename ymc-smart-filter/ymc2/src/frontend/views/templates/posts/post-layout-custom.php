@@ -5,6 +5,9 @@ use YMCFilterGrids\frontend\FG_Layout_Renderer as Layout_Renderer;
 
 defined( 'ABSPATH' ) || exit;
 
+$filter_id           = $filter_id ?? 0;
+$counter             = $counter ?? 0;
+$post_layout         = $post_layout ?? 'custom';
 $post_number         = $paged === 1 ? 1 : ($per_page * ( $paged - 1)) + 1;
 $terms_attr          = Data_Store::get_meta_value($filter_id, 'ymc_fg_term_attrs');
 $animation_class     = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_animation_effect');
@@ -12,6 +15,10 @@ $animation_class     = $animation_class ? ' ' . esc_attr($animation_class) : '';
 $popup_enable        = Data_Store::get_meta_value($filter_id, 'ymc_fg_popup_enable');
 $popup_class_trigger = $popup_enable === 'no' ? '' : ' js-ymc-popup-trigger';
 $popup_class         = $popup_class_trigger;
+
+/** @var \WP_Query $query */
+$query = $query ?? $GLOBALS['wp_query'];
+
 
 while ($query->have_posts()) : $query->the_post();
 

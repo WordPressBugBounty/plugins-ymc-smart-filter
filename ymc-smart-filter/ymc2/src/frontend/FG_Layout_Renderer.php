@@ -70,6 +70,10 @@ class FG_Layout_Renderer {
         $settings = $node['settings'] ?? [];
         $custom_class = self::getCustomClass($settings);
 
+        $animation_class = Data_Store::get_meta_value($context['filter_id'], 'ymc_fg_post_animation_effect');       
+        $animation_class = $animation_class ? ' ' . esc_attr($animation_class) : '';
+        $custom_class .= $animation_class;
+
         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         echo '<article class="post-card post-layout-builder post-' . esc_attr($context['post_id']) . $custom_class . '">';
         self::renderChildren($node, $context);

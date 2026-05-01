@@ -5,6 +5,9 @@ use YMCFilterGrids\FG_Data_Store as Data_Store;
 defined( 'ABSPATH' ) || exit;
 
 $post_number = $paged === 1 ? 1 : ($per_page * ( $paged - 1)) + 1;
+$filter_id   = $filter_id ?? 0;
+$counter     = $counter ?? 0;
+$post_layout = $post_layout ?? 'standard';
 
 $length_excerpt        = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_excerpt_length');
 $post_image_size       = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_image_size');
@@ -30,14 +33,14 @@ while ($query->have_posts()) : $query->the_post();
 	$post_date_format      = apply_filters('ymc/post/layout/date_format_'. $filter_id, $post_date_format);
 	$post_date_format      = apply_filters('ymc/post/layout/date_format_'. $filter_id .'_'. $counter, $post_date_format);
 
-    $post_date             = get_the_date($post_date_format, $post_id);
-    $post_author           = get_the_author();
-    $post_excerpt          = get_the_excerpt($post_id);
+   $post_date             = get_the_date($post_date_format, $post_id);
+   $post_author           = get_the_author();
+   $post_excerpt          = get_the_excerpt($post_id);
 	$all_terms             = ymc_get_all_post_terms($post_id);
 	$tag_list              = '';
-    $cat_list              = '';
+   $cat_list              = '';
 	$post_image            = ymc_post_image_size($post_id, $post_image_size);
-    $post_image            = preg_replace('/\s(width|height|sizes)="[^"]*"/i', '', $post_image);
+   $post_image            = preg_replace('/\s(width|height|sizes)="[^"]*"/i', '', $post_image);
 	$taxonomies            = ymc_get_attached_post_taxonomies($post_id);
 	$views                 =  Data_Store::get_meta_value($post_id, 'ymc_fg_post_views_count');
 

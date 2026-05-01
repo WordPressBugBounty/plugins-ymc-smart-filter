@@ -324,21 +324,29 @@ class FG_Ajax_Responder {
 
 				if (is_callable( $allowed_callback) && in_array($allowed_callback, $whitelist, true)) {
 
+               $extra_args = [];
+
+               if ( ! empty( $params['extra_args'] ) && is_array( $params['extra_args'] ) ) {
+                  $extra_args = $params['extra_args'];
+               }
+
+               $extra_args = ymc_sanitize_deep($extra_args);
+
+               if (!empty($filter_date['from'])) {
+                  $extra_args['data_from'] = (int) $filter_date['from'];
+               }
+
+               if (!empty($filter_date['to'])) {
+                  $extra_args['data_to'] = (int) $filter_date['to'];
+               }
+
                $filter_params = [
                   'post_type' => $post_types,
                   'taxonomy'  => $taxonomies,
                   'terms'     => $terms,
                   'page_id'   => $page_id,
-                  'extra_args' => []
-               ];
-
-               if ( ! empty( $filter_date['from'] ) ) {                  
-                  $filter_params['extra_args']['data_from'] = (int) $filter_date['from'];
-               }
-
-               if ( ! empty( $filter_date['to'] ) ) {
-                  $filter_params['extra_args']['data_to'] = (int) $filter_date['to'];
-               }               
+                  'extra_args' => $extra_args
+               ];                             
                
                $query_args = call_user_func( $allowed_callback, $filter_params );
 
@@ -354,9 +362,7 @@ class FG_Ajax_Responder {
 				if ( is_string($user_input) && trim($user_input) !== '' ) {
 					parse_str( $user_input, $parsed_args );
 
-					if ( is_array($parsed_args) && ! empty($parsed_args) ) {
-						//$allowed_keys = ['post_type', 'posts_per_page', 'post_status', 'orderby', 'order'];
-						//$filtered_args = array_intersect_key( $parsed_args, array_flip($allowed_keys) );
+					if ( is_array($parsed_args) && ! empty($parsed_args) ) {						
 						$args = array_merge( $args, $parsed_args );
 					}
 				}
@@ -455,7 +461,7 @@ class FG_Ajax_Responder {
 				if (!empty($schema)) {
 					foreach ($query->posts as $index => $post) {
 						// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-						echo Layout_Renderer::render($schema, [
+						 Layout_Renderer::render($schema, [
 							'post'      => $post,
 							'query'     => $query,
 							'filter_id' => $filter_id,
@@ -1204,7 +1210,7 @@ class FG_Ajax_Responder {
 	 * @since 3.4.0
 	 *
 	 * @param string   $where Current SQL WHERE clause.
-	 * @param WP_Query $query Current WP_Query instance.
+	 * @param \WP_Query $query Current WP_Query instance.
 	 *
 	 * @return string Modified SQL WHERE clause.
 	 */

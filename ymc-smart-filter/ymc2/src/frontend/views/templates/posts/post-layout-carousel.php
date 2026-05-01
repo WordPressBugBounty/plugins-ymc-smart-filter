@@ -2,7 +2,12 @@
 
 use YMCFilterGrids\FG_Data_Store as Data_Store;
 
-defined( 'ABSPATH' ) || exit; ?>
+defined( 'ABSPATH' ) || exit; 
+
+$filter_id   = $filter_id ?? 0;
+$counter     = $counter ?? 0;
+$post_layout = $post_layout ?? 'carousel';
+?>
 
 <div class="carousel-container swiper swiper-<?php echo esc_attr($filter_id ); ?> js-swiper-<?php echo esc_attr($filter_id ).'-'. esc_attr($counter); ?>">
 
