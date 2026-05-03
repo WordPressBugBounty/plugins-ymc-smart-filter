@@ -1075,8 +1075,10 @@ YMCFilterGrid.removeParams('meta_query');
 
 The setExtraArgs() method allows you to pass custom parameters (extra_args) to the backend query callback.
 These parameters are sent with the AJAX request and can be accessed in PHP inside your custom WP_Query callback.
-
 This method is designed for advanced use cases where you need to extend or override query behavior dynamically.
+
+The setExtraArgs() method is intended for use with callback-based queries and works only when the following option is enabled in the plugin settings:
+Advanced → Advanced Query → Query Type → Callback.
 
 Parameters:
 - `extraArgs (object)`: An object containing custom key-value pairs to be passed to the backend.
@@ -1208,48 +1210,91 @@ add_filter('ymc/filter/query/wp/allowed_callbacks', function($callbacks) {
  * Callback function to modify WP_Query arguments.
  *
  * @param array $args {
- * An associative array of context data passed to the callback.
+ *     An associative array of context data passed to the callback.
  *
- * @type array  $post_type  List of post types to query.
- * @type array  $taxonomy   List of taxonomy slugs relevant to the query.
- * @type array  $terms      List of term IDs to filter by.
- * @type int    $page_id    Current page ID where the query is being executed.
- * @type array  $extra_args {
- * Optional. An associative array of additional (secondary) custom parameters.
+ *     @type array $post_type  List of post types to query.
+ *     @type array $taxonomy   List of taxonomy slugs relevant to the query.
+ *     @type array $terms      List of term IDs to filter by.
+ *     @type int   $page_id    Current page ID where the query is being executed.
  *
+ *     @type array $extra_args {
+ *         Optional. An associative array of additional custom parameters.
+ *
+ *         These parameters can be passed dynamically from JavaScript using:
+ *         YMCFilterGrid.setExtraArgs({...})
+ *
+ *         Example (JS):
+ *         YMCFilterGrid.setExtraArgs({
+ *             rating: 5,
+ *             custom_flag: 'featured'
+ *         });
+ *
+ *         Then in PHP:
+ *         $args['extra_args']['rating'] → 5
+ *         $args['extra_args']['custom_flag'] → 'featured'
+ *
+ *         Note:
+ *         - Available only when "Advanced Query → Query Type: Callback" is enabled.
+ *         - All values should be sanitized before use.
+ *     }
  * }
  *
  * @return array Modified or extended WP_Query arguments.
  */
 function custom_query_modifier( $args ) {
-    
+
    $page_id  = $args['page_id']; 
 
-   // Optional, custom parameters  
-   $extra     = $args['extra_args'] ?? [];
-   $rating    = $extra['rating'] ?? null;
-
-   // These values are automatically passed only under specific conditions:
-   // The Datepicker filter is used on the frontend (user selects a date range via jQuery UI Datepicker).
-   // The option "Enable Advanced Query → Query Type: Callback" is enabled in the plugin settings.
-   // These parameters are not available by default.
-   $data_from = $extra['data_from'] ?? null;
-   $data_to   = $extra['data_to'] ?? null;
-   
+   // Custom parameters passed from JS (setExtraArgs)
+   $extra  = $args['extra_args'] ?? [];
+   $rating = $extra['rating'] ?? null;  
 
    // Example 1:
-   // $query_modifier = [];
+   // if ( $rating ) {
+   //     return [
+   //         'meta_query' => [
+   //             [
+   //                 'key'     => 'rating',
+   //                 'value'   => $rating,
+   //                 'compare' => '='
+   //             ]
+   //         ]
+   //     ];
+   // }
 
-   //  if ( $rating ) {
-   //      $query_modifier['meta_query'][] = [
-   //          'key'     => 'rating',
-   //          'value'   => $rating,
-   //          'compare' => '='
-   //      ];
-   //  }
-   // return $query_modifier;
 
-   // OR Example 2:
+   // Example 2:
+   // Date range parameters (automatically injected when using Datepicker filter)
+   // See plugin settings: Advanced → Query Type → Callback
+   // When using date range parameters: 
+   // You must disable the default post date filter (date_query), otherwise it may conflict with your custom query logic.
+   $data_from = $extra['data_from'] ?? null;
+   $data_to   = $extra['data_to'] ?? null;
+
+   /*
+   $query_modifier = [
+      'meta_key'   => 'date',
+      'orderby'    => 'meta_value_num',
+      'order'      => 'DESC',
+
+      // Disable default WP date filter
+      'date_query' => null,
+   ];
+
+   if ( $data_from && $data_to ) {
+      $query_modifier['meta_query'][] = [
+         'key'     => 'date',
+         'value'   => [$data_from, $data_to],
+         'compare' => 'BETWEEN',
+         'type'    => 'NUMERIC'
+      ];
+   }
+
+    return $query_modifier;
+    */
+
+
+   // Example 3:
    return [
       'post_type'  => ['post', 'book'],
       'posts_per_page'  => 10,
@@ -1262,6 +1307,7 @@ function custom_query_modifier( $args ) {
       ]		
    ];
 }
+
 ```
 
 ### Changelog
