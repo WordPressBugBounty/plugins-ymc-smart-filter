@@ -482,7 +482,9 @@ class FG_Ajax_Admin {
          "DELETE FROM {$wpdb->options}
             WHERE option_name LIKE '_transient_ymc_fg_term_post_counts%' 
             OR option_name LIKE '_transient_timeout_ymc_fg_term_post_counts%'"
-      );      
+      );  
+
+      wp_cache_flush();    
 
       $data = array(
 			'response' => 1			

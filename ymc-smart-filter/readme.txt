@@ -1,13 +1,13 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.9.3
+Version: 3.9.5
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 5.5
 Tested up to: 6.9.4
-Stable tag: 3.9.3
-Requires PHP: 7.2
+Stable tag: 3.9.5
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
 
@@ -78,8 +78,11 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
-= 3.9.3 =
+
+= 3.9.5 =
 Added new JavaScript API methods to YMCFilterGrid.
+= 3.9.3 =
+Added new JavaScript API methods to YMCFilterGrid (internal improvements).
 = 3.9.0 =
 Optimized asset management; scripts and styles are now enqueued conditionally per shortcode to prevent global duplication.
 = 3.8.11 =

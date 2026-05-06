@@ -102,6 +102,7 @@ class FG_Shortcodes {
 		<div id="ymc-filter-<?php echo esc_attr(self::$counter_filter); ?>"
              class="ymc ymc-filter-grids ymc-container js-ymc-container ymc-filter-<?php echo esc_attr($filter_id); ?> ymc-filter-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?><?php echo esc_attr($custom_container_class); ?>"
              data-params="<?php echo esc_attr(Json_Builder::build($filter_id, self::$counter_filter)); ?>"
+             data-initial-params="<?php echo esc_attr(Json_Builder::build($filter_id, self::$counter_filter)); ?>"
              data-loading-enabled="true"
              data-grid-style="<?php echo esc_attr($grid_style); ?>"
              data-filter-id="<?php echo esc_attr($filter_id); ?>">

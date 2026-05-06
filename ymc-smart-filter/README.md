@@ -693,6 +693,35 @@ grid2.filterByTerm('author_book', '10');
 ```
 The `.init()` method uses a shared global instance. If you are working with multiple grids on the same page, it is recommended to use `.create()` to avoid state overwriting (e.g. filters or container reference).
 
+`YMCFilterGrid.version`
+
+The version property provides the current version of the YMCFilterGrid JavaScript API.
+This value is useful for debugging, compatibility checks, and ensuring that your integration works with the expected API version.
+
+Notes
+The API version is independent from the WordPress plugin version.
+It reflects only the JavaScript API layer (YMCFilterGrid).
+The version value is shared across all instances created via YMCFilterGrid.create().
+
+
+Usage Example:
+```js
+// Output: "3.0.1"
+console.log(YMCFilterGrid.version);
+```
+
+`YMCFilterGrid.getVersion()`
+
+The getVersion() method returns the current version of the YMCFilterGrid API.
+This method is useful when working with instances or when you want to access the version in a consistent
+
+Usage Example:
+```js
+// Output: "3.0.1"
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+console.log(grid.getVersion());
+```
+
 
 `YMCFilterGrid.filterByTerm(taxonomy, termId, sendRequest = true)`
 
@@ -1135,13 +1164,6 @@ YMCFilterGrid.setExtraArgs(
 The resetFilter() method resets the grid to its default (initial) state by clearing all active filters and restoring base query parameters.
 It ensures that all filtering-related parameters are returned to their default values and reloads the grid.
 
-This method is useful when you need a full reset similar to a “Reset All Filters” button.
-
-Note:
-This method clears all filtering-related parameters such as taxonomies, terms, meta queries, search, sorting, and more.
-Pagination is automatically reset to the first page (paged: 1).
-Unlike removeParams(), this method performs a full reset rather than removing specific keys.
-
 Parameters:
 - `sendRequest (boolean)`: Whether to send an AJAX request after resetting filters. Default is true.
 
@@ -1171,6 +1193,186 @@ YMCFilterGrid.resetFilter();
 
 ```
 
+### Events (Hooks)
+The YMCFilterGrid instance provides three lifecycle hooks that allow you to intercept and react to request events:
+
+- `onBeforeRequest`
+- `onAfterRequest`
+- `onError`
+
+These hooks are optional and can be assigned as functions on a per-instance basis.
+
+Notes
+Hooks are executed per instance (each grid has its own handlers)
+Hooks do not interfere with the internal plugin logic
+You can assign or reassign handlers at any time
+The filters object is a shallow copy and safe to read
+
+`onBeforeRequest(container, filters)`
+
+The onBeforeRequest event is triggered before the AJAX request is sent.
+
+Parameters:
+
+- `container (HTMLElement):` The main grid container element
+- `filters (object):` A copy of the current filter parameters
+
+Usage Example:
+
+```js
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onBeforeRequest = (container, filters) => {
+  console.log('Before request');
+  console.log('Container:', container);
+  console.log('Filters:', filters);
+};
+
+grid.filterByTerm('category', '10');
+
+```
+
+`onAfterRequest(container, filters)`
+
+The onAfterRequest event is triggered after the request is successfully completed and the DOM has been updated.
+
+Parameters:
+
+- `container (HTMLElement):` The updated grid container element
+- `filters (object):` A copy of the current filter parameters used in the request
+
+Usage Example:
+```js
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onAfterRequest = (container, filters) => {
+  console.log('Request completed');
+  
+  const posts = container.querySelectorAll('.post-card');
+  console.log('Rendered posts:', posts.length);
+};
+
+grid.getPosts();
+
+```
+
+`onError(error, filters)`
+
+The onError event is triggered if an error occurs during the request.
+
+Parameters:
+
+- `error (Error):` The error object
+- `filters (object):` A copy of the current filter parameters
+
+Usage Example:
+```js
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onError = (error, filters) => {
+  console.error('Request failed:', error);
+  console.log('Filters at error time:', filters);
+};
+
+grid.getPosts();
+
+```
+
+Advanced Usage Examples
+
+```js
+// Show/Hide Custom Loader
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+const loader = document.querySelector('.my-loader');
+
+grid.onBeforeRequest = () => {
+  loader.style.display = 'block';
+};
+
+grid.onAfterRequest = () => {
+  loader.style.display = 'none';
+};
+
+grid.onError = () => {
+  loader.style.display = 'none';
+};
+
+// Analytics / Tracking
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onAfterRequest = (container, filters) => {
+  console.log('Track filters:', filters);
+
+  // Example: send to analytics
+  // analytics.track('Filter Applied', filters);
+};
+
+// Debugging Requests
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onBeforeRequest = (container, filters) => {
+  console.group('YMCFilterGrid Request');
+  console.log('Filters:', filters);
+};
+
+grid.onAfterRequest = () => {
+  console.log('Request finished');
+  console.groupEnd();
+};
+
+grid.onError = (error) => {
+  console.error('Request error:', error);
+};
+
+// Work with Multiple Grids Independently
+const grid1 = YMCFilterGrid.create('#ymc-filter-1');
+const grid2 = YMCFilterGrid.create('#ymc-filter-2');
+
+grid1.onAfterRequest = () => {
+  console.log('Grid 1 updated');
+};
+
+grid2.onAfterRequest = () => {
+  console.log('Grid 2 updated');
+};
+
+grid1.filterByTerm('category', '10');
+grid2.filterByTerm('author_book', '5');
+
+// Conditional Logic Based on Filters
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onBeforeRequest = (container, filters) => {
+  if (filters.search) {
+    console.log('Searching for:', filters.search);
+  }
+
+  if (filters.terms) {
+    console.log('Filtering by terms:', filters.terms);
+  }
+};
+
+// Add click event on button
+const btn = document.querySelector('.my-button'); 
+if( !btn) return;      
+
+btn.addEventListener('click', function(e) {   
+const grid = YMCFilterGrid.create('#ymc-filter-1');
+
+grid.onBeforeRequest = (domNode, filters) => {
+   console.log('Request started:', domNode, filters);
+};
+
+grid.onAfterRequest = (domNode, filters) => {
+   console.log('Success:', domNode, filters);      
+};        
+
+grid.filterByTerm('category, post_tag', '101,50,55', false);
+grid.getPosts();        
+
+});
+
+```
 
 
 ### Advanced Developer Hooks
