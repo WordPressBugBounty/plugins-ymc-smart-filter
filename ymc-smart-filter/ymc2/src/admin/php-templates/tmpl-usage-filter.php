@@ -2,6 +2,12 @@
 
 defined( 'ABSPATH' ) || exit; 
 
+
+/**
+ * PHPDoc variables available in this template:
+ * @var int $post_id
+ */
+
 $edit_url = get_edit_post_link( $post_id );
 $view_url = get_permalink( $post_id );
 

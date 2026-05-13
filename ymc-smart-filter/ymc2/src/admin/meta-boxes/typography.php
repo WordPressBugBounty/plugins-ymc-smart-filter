@@ -3,6 +3,13 @@ use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var string $section_name
+ * @var array $ymc_fg_filter_typography
+ * @var array $ymc_fg_post_typography
+ */
+
 ?>
 
 <div class="inner">

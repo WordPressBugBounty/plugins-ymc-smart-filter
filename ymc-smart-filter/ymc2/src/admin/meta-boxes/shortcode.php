@@ -2,6 +2,12 @@
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var int $post_id
+ * @var string $section_name
+ */
+
 ?>
 
 <div class="inner">

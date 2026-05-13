@@ -4,6 +4,30 @@ use YMCFilterGrids\FG_Data_Store as Data_Store;
 
 if (!defined( 'ABSPATH')) exit;
 
+
+/**
+ * PHPDoc variables available in this template:
+ * @var string $section_name
+ * @var int $post_id
+ * @var string $ymc_fg_enable_advanced_query
+ * @var string $ymc_fg_advanced_query_type
+ * @var string $ymc_fg_advanced_query
+ * @var string $ymc_fg_query_allowed_callback
+ * @var string $ymc_fg_advanced_suppress_filters
+ * @var array $ymc_fg_filter_dropdown_setting
+ * @var string $ymc_fg_enable_sort_posts
+ * @var string $ymc_fg_sort_dropdown_label
+ * @var string $ymc_fg_custom_container_class
+ * @var string $ymc_fg_extra_filter_type
+ * @var string $ymc_fg_extra_taxonomy
+ * @var array $ymc_fg_post_types
+ * @var string $ymc_fg_custom_css
+ * @var string $ymc_fg_custom_js
+ * @var array $ymc_fg_preloader_settings
+ * @var string $ymc_fg_scroll_to_filters_on_load
+ * @var string $ymc_fg_debug_mode
+ */
+
 ?>
 
 <div class="inner">

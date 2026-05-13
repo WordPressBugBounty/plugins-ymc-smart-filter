@@ -4,6 +4,19 @@ use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var int $post_id
+ * @var string $section_name
+ * @var string $ymc_fg_filter_hidden
+ * @var string $ymc_fg_post_layout
+ * @var string $ymc_fg_filter_type
+ * @var string $ymc_fg_post_types
+ * @var array $ymc_fg_custom_layout_builder
+ * @var string $ymc_fg_grid_style
+ * @var array $ymc_fg_carousel_settings
+ */
+
 ?>
 
 <div class="inner">

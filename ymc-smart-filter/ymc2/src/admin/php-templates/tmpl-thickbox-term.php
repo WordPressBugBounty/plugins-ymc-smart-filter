@@ -1,6 +1,14 @@
 <?php 
 
-defined( 'ABSPATH' ) || exit; ?>
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * PHPDoc variables available in this template:
+ * @var string $filter_type
+ * @var array $filter_options
+ */
+
+?>
 
 <div class="thickbox-term-modal" id="thickbox-term-modal" style="display:none;">
     <div class="thickbox-inner">

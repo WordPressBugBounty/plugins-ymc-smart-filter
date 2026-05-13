@@ -122,6 +122,7 @@ class FG_Ajax_Responder {
 		// Get data from DB
 		$post_layout        = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_layout');
 		$no_results_message = Data_Store::get_meta_value($filter_id, 'ymc_fg_no_results_message');
+      $no_results_message = apply_filters('wpml_translate_single_string', $no_results_message, 'ymc-smart-filter', 'No results message - '. $filter_id);
 		$pagination_hidden  = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_hidden');
 		$pagination_type    = Data_Store::get_meta_value($filter_id, 'ymc_fg_pagination_type');
 		$search_mode        = Data_Store::get_meta_value($filter_id, 'ymc_fg_search_mode');

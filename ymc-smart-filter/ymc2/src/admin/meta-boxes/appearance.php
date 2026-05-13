@@ -4,6 +4,48 @@ use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var int $post_id
+ * @var string $section_name
+ * @var string $ymc_fg_filter_hidden
+ * @var string $ymc_fg_display_terms_mode
+ * @var string $ymc_fg_term_sort_direction
+ * @var string $ymc_fg_term_sort_field
+ * @var string $ymc_fg_selection_mode
+ * @var string $ymc_fg_show_post_count
+ * @var string $ymc_fg_filter_type
+ * @var array $ymc_fg_post_types
+ * @var array $ymc_fg_filter_options
+ * @var string $ymc_fg_post_layout
+ * @var string $ymc_fg_post_image_size
+ * @var string $ymc_fg_image_clickable
+ * @var string $ymc_fg_post_button_text
+ * @var string $ymc_fg_target_option
+ * @var string $ymc_fg_truncate_post_excerpt
+ * @var string $ymc_fg_post_excerpt_length
+ * @var string $ymc_fg_filtered_posts_label
+ * @var string $ymc_fg_post_custom_read_time
+ * @var string $ymc_fg_post_order
+ * @var string $ymc_fg_post_order_by
+ * @var string $ymc_fg_order_meta_key
+ * @var string $ymc_fg_order_meta_value
+ * @var string $ymc_fg_post_status
+ * @var string $ymc_fg_no_results_message
+ * @var string $ymc_fg_post_animation_effect
+ * @var string $ymc_fg_popup_enable
+ * @var array $ymc_fg_popup_settings
+ * @var string $ymc_fg_pagination_hidden
+ * @var string $ymc_fg_pagination_type
+ * @var string $ymc_fg_pagination_number_format
+ * @var string $ymc_fg_per_page
+ * @var string $ymc_fg_prev_button_text
+ * @var string $ymc_fg_next_button_text
+ * @var int $ymc_fg_pagination_mid_size
+ * @var int $ymc_fg_pagination_end_size
+ * @var string $ymc_fg_load_more_text
+ */
+
 ?>
 
 <div class="inner">

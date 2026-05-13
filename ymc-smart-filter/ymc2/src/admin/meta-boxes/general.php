@@ -4,6 +4,17 @@ use YMCFilterGrids\admin\FG_Term as Term;
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var string $section_name
+ * @var string $ymc_fg_show_hidden_cpt
+ * @var string $ymc_fg_filter_type
+ * @var array $ymc_fg_post_types
+ * @var array $ymc_fg_taxonomies
+ * @var array $ymc_fg_filter_options
+ * @var int $post_id
+ */
+
 ?>
 <div class="inner">
     <div class="header"><?php echo esc_html($section_name); ?></div>

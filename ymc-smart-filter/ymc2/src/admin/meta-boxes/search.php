@@ -3,6 +3,20 @@ use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
 
 if (!defined( 'ABSPATH')) exit;
 
+/**
+ * PHPDoc variables available in this template:
+ * @var string $section_name
+ * @var string $ymc_fg_search_enable
+ * @var string $ymc_fg_search_mode
+ * @var string $ymc_fg_search_placeholder
+ * @var string $ymc_fg_submit_button_text
+ * @var string $ymc_fg_results_found_text
+ * @var string $ymc_fg_search_meta_fields
+ * @var string $ymc_fg_exact_phrase
+ * @var string $ymc_fg_autocomplete_enabled
+ * @var int $ymc_fg_max_autocomplete_suggestions
+ */
+
 ?>
 
 <div class="inner">
