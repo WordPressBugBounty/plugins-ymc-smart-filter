@@ -153,7 +153,7 @@ defined( 'ABSPATH' ) || exit;
                         <header class="form-label">
                             <span class="heading-text"><?php esc_attr_e('Custom Icon Upload', 'ymc-smart-filter' ); ?></span>
                         </header>
-                        <span class="description"><?php esc_attr_e('Allows uploading a custom icon (SVG, PNG, JPG or WEBP) for this term.', 'ymc-smart-filter' ); ?></span>
+                        <span class="description"><?php esc_attr_e('Allows uploading a custom icon (PNG, JPG or WEBP) for this term.', 'ymc-smart-filter' ); ?></span>
                         <div class="box">
                             <input class="input-file js-upload-file" type="file" id="upload-file" accept=".svg,.png,.jpg,.webp">
                             <label class="label-file" for="upload-file">

@@ -191,10 +191,17 @@ $meta_keys = [
 
 $placeholders = implode(', ', array_fill( 0, count( $meta_keys ), '%s' ));
 $sql = $wpdb->prepare("DELETE FROM {$postmeta_table} WHERE meta_key IN ($placeholders)", $meta_keys);
+
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 $wpdb->query( $sql );
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 $wpdb->delete( $posts_table, [ 'post_type' => 'ymc_filters' ] );
 
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+// phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
 $wpdb->query( "DELETE FROM {$wpdb->termmeta} WHERE meta_key LIKE 'ymc_fg_count_%'" );
 
 delete_option( 'ymc_plugin_legacy_is' );

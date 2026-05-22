@@ -231,7 +231,7 @@ class FG_Meta_Boxes {
 
 	public static function admin_bar_menu($wp_admin_bar) : void {
 
-		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
+		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/menu-icon-20x20.svg';
 		$icon = '<span class="ab-icon" style="background-image: url('. $icon_url . ') !important; background-repeat: no-repeat; background-position: center; width: 18px; height: 18px; margin-top: 3px;"></span>';
 		$title = $icon . '<span class="ab-label">' . esc_html__('YMC Filter', 'ymc-smart-filter') . '</span>';
 

@@ -18,23 +18,23 @@ defined( 'ABSPATH' ) || exit;
 class FG_Ajax_Responder {
 
 	public static function init() : void {
-		add_action('wp_ajax_get_filtered_posts',  array( __CLASS__, 'get_filtered_posts'));
-		add_action('wp_ajax_nopriv_get_filtered_posts', array( __CLASS__, 'get_filtered_posts'));
+		add_action('wp_ajax_get_filtered_posts',  array( __CLASS__, 'get_filtered_posts')); // REST
+		add_action('wp_ajax_nopriv_get_filtered_posts', array( __CLASS__, 'get_filtered_posts')); // REST
 
-		add_action('wp_ajax_get_post_to_popup',  array( __CLASS__, 'get_post_to_popup'));
-		add_action('wp_ajax_nopriv_get_post_to_popup', array( __CLASS__, 'get_post_to_popup'));
+		add_action('wp_ajax_get_post_to_popup',  array( __CLASS__, 'get_post_to_popup')); // REST
+		add_action('wp_ajax_nopriv_get_post_to_popup', array( __CLASS__, 'get_post_to_popup')); // REST
 
-		add_action('wp_ajax_get_autocomplete_suggestions',  array( __CLASS__, 'get_autocomplete_suggestions'));
-		add_action('wp_ajax_nopriv_get_autocomplete_suggestions', array( __CLASS__, 'get_autocomplete_suggestions'));
+		add_action('wp_ajax_get_autocomplete_suggestions',  array( __CLASS__, 'get_autocomplete_suggestions')); // REST
+		add_action('wp_ajax_nopriv_get_autocomplete_suggestions', array( __CLASS__, 'get_autocomplete_suggestions')); // REST
 
-		add_action('wp_ajax_load_dependent_terms',  array( __CLASS__, 'load_dependent_terms'));
-		add_action('wp_ajax_nopriv_load_dependent_terms', array( __CLASS__, 'load_dependent_terms'));
+		add_action('wp_ajax_load_dependent_terms',  array( __CLASS__, 'load_dependent_terms')); // REST
+		add_action('wp_ajax_nopriv_load_dependent_terms', array( __CLASS__, 'load_dependent_terms')); // REST
 
-		add_action('wp_ajax_update_track_view',  array( __CLASS__, 'update_track_view'));
-		add_action('wp_ajax_nopriv_update_track_view', array( __CLASS__, 'update_track_view'));
+		add_action('wp_ajax_update_track_view',  array( __CLASS__, 'update_track_view')); // REST
+		add_action('wp_ajax_nopriv_update_track_view', array( __CLASS__, 'update_track_view')); // REST
 
-		add_action('wp_ajax_get_filter_search_terms',  array( __CLASS__, 'get_filter_search_terms'));
-		add_action('wp_ajax_nopriv_get_filter_search_terms', array( __CLASS__, 'get_filter_search_terms'));
+		add_action('wp_ajax_get_filter_search_terms',  array( __CLASS__, 'get_filter_search_terms')); // REST
+		add_action('wp_ajax_nopriv_get_filter_search_terms', array( __CLASS__, 'get_filter_search_terms')); // REST
 	}
 
 	/**
@@ -44,9 +44,7 @@ class FG_Ajax_Responder {
 	  * @return void
 	 */
 	public static function get_filtered_posts() : void {
-		check_ajax_referer('get_filtered_posts-ajax-nonce', 'nonce_code');
-
-		//$params = isset($_POST['params']) ? json_decode(stripslashes($_POST['params']), true) : [];
+		check_ajax_referer('get_filtered_posts-ajax-nonce', 'nonce_code');		
 
 		$params = [];
 		if (isset($_POST['params'])) {
@@ -108,6 +106,7 @@ class FG_Ajax_Responder {
 
 		// Search query
 		$keyword_search      = $params['search'] ?? null;
+      $search_post_id      = $params['search_post_id'] ?? 0;
 
 		// Sort posts by ajax
 		$ajax_orderby        = $params['orderby'] ?? null;
@@ -151,12 +150,14 @@ class FG_Ajax_Responder {
 
 		// Selected Posts
 		if ($selected_posts) {
+         
 			$key = ($excluded_posts === 'no') ? 'post__in' : 'post__not_in';
 			$args[$key] = array_map('intval', (array) $selected_posts);
 		}
 
 		// Post Order
 		if ($post_order_by) {
+
 			switch ($post_order_by) {
 				case 'meta_key':
 					$args['meta_key'] = $order_meta_key;
@@ -182,6 +183,7 @@ class FG_Ajax_Responder {
 
 		// Meta query
 		if (!empty($meta_query_raw) && is_array($meta_query_raw)) {
+
 			$meta_query = [
 				'relation' => in_array($meta_query_relation, ['AND', 'OR']) ? $meta_query_relation : 'AND'
 			];
@@ -211,6 +213,7 @@ class FG_Ajax_Responder {
 
 		// Date filter
 		if ( !empty( $filter_date ) && is_array( $filter_date ) ) {
+
 			$type = $filter_date['type'] ?? '';
 			$date_query = [];
 
@@ -289,6 +292,7 @@ class FG_Ajax_Responder {
 		$search_filters_enabled = false;
 
 		if (!empty($keyword_search)) {
+
 			if($search_meta_fields === 'yes') {
 				self::add_search_filters();
 				$search_filters_enabled = true;
@@ -299,9 +303,11 @@ class FG_Ajax_Responder {
 				unset($args['meta_query']);
 				unset($args['date_query']);
 			}
+
 			if($exact_phrase === 'yes') {
 				$args['exact'] = true;
 			}
+
 			$args['s'] = $keyword_search;
 			$args['sentence'] = true;
 
@@ -311,6 +317,22 @@ class FG_Ajax_Responder {
 			$results_text = apply_filters('ymc/search/results_found_text_'. $filter_id .'_'. $counter, $results_text);
 			$data_response['results_text'] = $results_text;
 		}
+
+      // Search post ID Autocomplete
+      if ( ! empty( $search_post_id ) ) {
+
+         $args['post__in'] = [ absint( $search_post_id ) ];
+
+         unset( $args['s'] );
+         unset( $args['sentence'] );
+         unset( $args['exact'] );
+
+         if($search_mode === 'global') {
+				unset($args['tax_query']);
+				unset($args['meta_query']);
+				unset($args['date_query']);
+			}         
+      }
 
 		// Advanced query
 		if ($advanced_query === 'yes') {
@@ -628,6 +650,7 @@ class FG_Ajax_Responder {
 			], 400);
 		}
 
+      $post_types   = Data_Store::get_meta_value($grid_id, 'ymc_fg_post_types');
 		$tax_relation = Data_Store::get_meta_value($grid_id, 'ymc_fg_tax_relation');
 		$taxonomies   = Data_Store::get_meta_value($grid_id, 'ymc_fg_taxonomies');
 		$search_mode  = Data_Store::get_meta_value($grid_id, 'ymc_fg_search_mode');
@@ -642,6 +665,7 @@ class FG_Ajax_Responder {
 		}
 
 		$args = [
+         'post_type'      => $post_types,
 			'post_status'    => 'publish',
 			'posts_per_page' => $max_autocomplete_suggestions,
 			'orderby'        => 'title',

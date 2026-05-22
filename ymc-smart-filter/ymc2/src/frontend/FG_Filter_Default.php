@@ -133,11 +133,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
       $has_posts             = $this->hasAttachedPosts( $term_id, $current_post_types );
       $term_is_disabled      = ! $has_posts ? 'is-disabled' : '';
-      $disabled              = ! $has_posts ? 'disabled' : '';
-      
-      if('yes' === $show_post_count) {
-         $post_count = $this->get_post_count_by_term_id($term_id, [], $current_post_types);
-      }      
+      $disabled              = ! $has_posts ? 'disabled' : '';           
 
 		$classes = array_filter([
 			$icon_alignment,
@@ -156,10 +152,14 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 			<?php
 				// phpcs:ignore WordPress
             echo $term_icon; ?>
+            <span class="label-wrapper">
             <span class="text"><?php echo esc_html( $term_name ); ?></span>
-            <?php if('yes' === $show_post_count) : ?>
+            <?php if('yes' === $show_post_count) : 
+               $post_count = $this->get_post_count_by_term_id($term_id, [], $current_post_types);
+            ?>
                <span class="post-count">(<?php echo esc_html( $post_count ); ?>)</span>
             <?php endif; ?>
+            </span>
         </button>
 		<?php
 		return ob_get_clean();

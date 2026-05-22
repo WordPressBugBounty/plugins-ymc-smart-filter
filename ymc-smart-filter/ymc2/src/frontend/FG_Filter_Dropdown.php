@@ -125,7 +125,8 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = $this->get_term_name( $term_id );
 		$term_icon             = $this->get_icon( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';		
+		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';
+      $post_count            = 0;
 
       if('yes' === $show_post_count) {
          $post_count = $this->get_post_count_by_term_id($term_id, $tax_name, $current_post_types);

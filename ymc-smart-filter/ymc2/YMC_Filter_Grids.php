@@ -13,6 +13,8 @@ defined( 'ABSPATH' ) || exit;
 use YMCFilterGrids\FG_Autoloader;
 use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_Ajax_Admin, FG_General_Settings};
 use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes, FG_Ajax_Responder};
+use YMCFilterGrids\api\FG_REST_Manager;
+
 
 /**
  * YMC_Filter_Grids Class
@@ -197,6 +199,11 @@ final class YMC_Filter_Grids {
 		 * Functions.
 		 */
 		require_once YMC_ABSPATH . 'src/functions/fg-core-functions.php';
+
+      /**
+       * REST API Classes.     
+      */
+      FG_REST_Manager::init();
 
 		/**
 		 * Ajax classes.

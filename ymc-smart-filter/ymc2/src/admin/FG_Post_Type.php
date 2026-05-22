@@ -27,8 +27,16 @@ class FG_Post_Type {
 	public static function register_post_types() {
 
 		if ( post_type_exists( self::post_type) ) return;
+		
+      $svg_path = plugin_dir_path(dirname( __DIR__, 2 )) . 'ymc2/assets/images/menu-icon-20x20.svg';
+      $menu_icon = 'dashicons-screenoptions';
 
-		$icon_url = plugin_dir_url(dirname( __DIR__, 2 )) . 'ymc2/assets/images/icon-20x20.svg';
+      if ( file_exists( $svg_path ) ) {
+         $svg_content = file_get_contents( $svg_path );
+         $base64_svg  = base64_encode( $svg_content );
+         $menu_icon   = 'data:image/svg+xml;base64,' . $base64_svg;
+      }
+
 
 		register_post_type(
 			'ymc_filters',
@@ -52,7 +60,7 @@ class FG_Post_Type {
 				'show_ui'             => current_user_can( 'manage_options' ) ? true : false,
 				'show_in_admin_bar'   => false,
 				'menu_position'       => 7,
-				'menu_icon'           => $icon_url,
+				'menu_icon'           => $menu_icon,
 				'rewrite'             => false,
 				'query_var'           => false,
 				'supports'            => array('title')

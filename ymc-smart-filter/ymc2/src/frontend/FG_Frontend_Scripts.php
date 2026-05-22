@@ -56,7 +56,7 @@ class FG_Frontend_Scripts {
      
       wp_register_script(
          'ymc_script',
-         YMC_PLUGIN_URL . 'assets/js/frontend/main' . $suffix . '.js',
+         YMC_PLUGIN_URL . 'assets/js/frontend/ymc-public' . $suffix . '.js',
          array('jquery', 'wp-hooks', 'ymc_masonry', 'ymc_handlebar'),
          $version,
          true
@@ -71,7 +71,9 @@ class FG_Frontend_Scripts {
          'getFilterSearchTerms_nonce' => wp_create_nonce('get_filter_search_terms-ajax-nonce'),
          'current_page'               => 1,
          'all_dropdown_label'         => __('All', 'ymc-smart-filter'),
-         'path'                       => YMC_PLUGIN_URL
+         'path'                       => YMC_PLUGIN_URL,
+         'rest_url'                   => esc_url_raw(rest_url( 'ymc/v1/' )),
+         'nonce'                      => wp_create_nonce('wp_rest')
       ));      
          
       wp_register_script(

@@ -53,7 +53,7 @@ class FG_Backend_Scripts {
 
       wp_register_script(
          'ymc_script',
-         YMC_PLUGIN_URL . 'assets/js/admin/main' . $suffix . '.js',
+         YMC_PLUGIN_URL . 'assets/js/admin/ymc-admin' . $suffix . '.js',
          ['jquery', 'jquery-ui-tooltip', 'wp-hooks'],
          $version,
          true
@@ -216,7 +216,9 @@ class FG_Backend_Scripts {
 					'savedSchema' 					   => $saved_schema ?: null,
 					'acf_fields' 						=> ymc_get_all_acf_fields_for_builder(),				
 					'loadedFeedPosts_page'        => 2,
-					'path' => YMC_PLUGIN_URL
+					'path'                        => YMC_PLUGIN_URL,
+               'rest_url'                    => esc_url_raw(rest_url( 'ymc/v1/' )),
+               'nonce'                       => wp_create_nonce('wp_rest')
 			));
 		}
 	}

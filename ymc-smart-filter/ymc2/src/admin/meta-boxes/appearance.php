@@ -569,7 +569,7 @@ if (!defined( 'ABSPATH')) exit;
                          $selected_statuses = is_array($ymc_fg_post_status) ? $ymc_fg_post_status : ['publish'];
 			               foreach ($post_status as $key => $value) :
                            $is_selected = in_array($key, $selected_statuses, true) ? 'selected' : ''; ?>
-                            <option value="<?php echo esc_attr($key); ?>" <?php echo $is_selected; ?>>
+                            <option value="<?php echo esc_attr($key); ?>" <?php echo esc_html($is_selected); ?>>
                               <?php echo esc_html($value); ?>
                             </option>
                         <?php			              

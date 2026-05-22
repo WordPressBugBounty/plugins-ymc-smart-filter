@@ -18,23 +18,23 @@ defined( 'ABSPATH' ) || exit;
 class FG_Ajax_Admin {
 
 	public static function init() : void {
-		add_action('wp_ajax_action_get_taxonomies', array( __CLASS__, 'ajax_get_taxonomies'));
-		add_action('wp_ajax_action_get_terms', array( __CLASS__, 'ajax_get_terms'));
-		add_action('wp_ajax_action_remove_terms', array( __CLASS__, 'ajax_remove_terms'));
-		add_action('wp_ajax_action_updated_taxonomies', array( __CLASS__, 'ajax_updated_taxonomies'));
-		add_action('wp_ajax_action_taxonomies_sort', array( __CLASS__, 'ajax_taxonomies_sort'));
-		add_action('wp_ajax_action_terms_sort', array( __CLASS__, 'ajax_terms_sort'));
-		add_action('wp_ajax_action_selected_posts', array( __CLASS__, 'ajax_selected_posts'));
-		add_action('wp_ajax_action_search_feed_posts', array( __CLASS__, 'ajax_search_feed_posts'));
-		add_action('wp_ajax_action_save_taxonomy_attrs', array( __CLASS__, 'ajax_save_taxonomy_attrs'));
-		add_action('wp_ajax_action_save_term_attrs', array( __CLASS__, 'ajax_save_term_attrs'));
-		add_action('wp_ajax_action_clear_terms_cache', array( __CLASS__, 'ajax_clear_terms_cache'));
-		add_action('wp_ajax_action_get_selected_taxonomies', array( __CLASS__, 'ajax_get_selected_taxonomies'));
-		add_action('wp_ajax_action_upload_term_icon', array( __CLASS__, 'ajax_upload_term_icon'));
-		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings'));
-		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));
-		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms'));
-		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms'));
+		add_action('wp_ajax_action_get_taxonomies', array( __CLASS__, 'ajax_get_taxonomies')); // REST
+		add_action('wp_ajax_action_get_terms', array( __CLASS__, 'ajax_get_terms')); // REST
+		add_action('wp_ajax_action_remove_terms', array( __CLASS__, 'ajax_remove_terms')); // REST
+		add_action('wp_ajax_action_updated_taxonomies', array( __CLASS__, 'ajax_updated_taxonomies')); // REST
+		add_action('wp_ajax_action_taxonomies_sort', array( __CLASS__, 'ajax_taxonomies_sort')); // REST
+		add_action('wp_ajax_action_terms_sort', array( __CLASS__, 'ajax_terms_sort')); // REST
+		add_action('wp_ajax_action_selected_posts', array( __CLASS__, 'ajax_selected_posts')); // REST
+		add_action('wp_ajax_action_search_feed_posts', array( __CLASS__, 'ajax_search_feed_posts')); // REST
+		add_action('wp_ajax_action_save_taxonomy_attrs', array( __CLASS__, 'ajax_save_taxonomy_attrs')); // REST
+		add_action('wp_ajax_action_save_term_attrs', array( __CLASS__, 'ajax_save_term_attrs')); // REST
+		add_action('wp_ajax_action_clear_terms_cache', array( __CLASS__, 'ajax_clear_terms_cache')); // REST
+		add_action('wp_ajax_action_get_selected_taxonomies', array( __CLASS__, 'ajax_get_selected_taxonomies')); // REST
+		add_action('wp_ajax_action_upload_term_icon', array( __CLASS__, 'ajax_upload_term_icon')); // REST
+		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings')); 
+		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));  
+		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms')); 
+		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms')); 
 		add_action('wp_ajax_action_load_usage_page', array( __CLASS__, 'ajax_load_usage_pages'));
 		add_action('wp_ajax_action_scan_existing_posts', array( __CLASS__, 'ajax_scan_existing_posts'));
 		add_action('wp_ajax_action_lb_save_layout', array( __CLASS__, 'ajax_lb_save_layout'));
@@ -478,6 +478,8 @@ class FG_Ajax_Admin {
 
       global $wpdb;
 
+      // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery
+      // phpcs:disable WordPress.DB.DirectDatabaseQuery.NoCaching
       $wpdb->query(
          "DELETE FROM {$wpdb->options}
             WHERE option_name LIKE '_transient_ymc_fg_term_post_counts%' 
