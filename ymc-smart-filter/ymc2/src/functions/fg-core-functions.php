@@ -13,13 +13,13 @@ use YMCFilterGrids\FG_Data_Store as Data_Store;
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
- * Get all post types
+ * Get all post types -> MOVE
  * @param array $exclude_posts Array of post types to exclude
  *
  * @return array
  */
-if (! function_exists( 'ymc_get_post_types' )) {
-	function ymc_get_post_types( $exclude_posts = [], $show_admin_only = false ) {
+if (! function_exists( '__ymc_get_post_types' )) {
+	function __ymc_get_post_types( $exclude_posts = [], $show_admin_only = false ) {
 
 		$args = $show_admin_only
 			? [ 'show_ui' => true ]
@@ -40,13 +40,13 @@ if (! function_exists( 'ymc_get_post_types' )) {
 }
 
 /**
- * Get all taxonomies
+ * Get all taxonomies -> MOVE
  * @param $post_types
  *
  * @return array
  */
-if (! function_exists( 'ymc_get_taxonomies')) {
-	function ymc_get_taxonomies($post_types = []) {
+if (! function_exists( '__ymc_get_taxonomies')) {
+	function __ymc_get_taxonomies($post_types = []) {
 		$result = [];
 		$taxonomies = get_object_taxonomies($post_types, 'objects');
 		if( !empty($taxonomies) ) {
@@ -60,14 +60,14 @@ if (! function_exists( 'ymc_get_taxonomies')) {
 }
 
 /**
- * Get posts ids
+ * Get posts ids -> MOVE
  * @param $post_types
  * @param $posts_per_page
  *
  * @return array
  */
-if(! function_exists( 'ymc_get_posts_ids')) {
-	function ymc_get_posts_ids($post_types = [], $posts_per_page = 20) {
+if(! function_exists( '__ymc_get_posts_ids')) {
+	function __ymc_get_posts_ids($post_types = [], $posts_per_page = 20) {
 		$found_posts = 0;
 		$posts_ids = [];
 		if(!empty($post_types)) {
@@ -94,14 +94,14 @@ if(! function_exists( 'ymc_get_posts_ids')) {
 }
 
 /**
- * Render field header
+ * Render field header -> MOVE
  * @param $label
  * @param $tooltip
  *
  * @return void
  */
-if(! function_exists( 'ymc_render_field_header')) {
-	function ymc_render_field_header($label, $tooltip) {
+if(! function_exists( '__ymc_render_field_header')) {
+	function __ymc_render_field_header($label, $tooltip) {
 		$tooltip = preg_replace('/\s+/', ' ', trim($tooltip))
         ?>
 		<header class="form-label">
@@ -118,15 +118,15 @@ if(! function_exists( 'ymc_render_field_header')) {
 
 
 /**
- * Assembles the filter options structure from POST data.
+ * Assembles the filter options structure from POST data. -> MOVE
  *
  * @param int $post_id
  * @param string $filter_type
  * @param array $filter_options
  * @return array
  */
-if (! function_exists( 'ymc_build_filter_options_from_post')) {
-	function ymc_build_filter_options_from_post(int $post_id, string $filter_type, array $filter_options): array {
+if (! function_exists( '__ymc_build_filter_options_from_post')) {
+	function __ymc_build_filter_options_from_post(int $post_id, string $filter_type, array $filter_options): array {
 		$options = [];
 
 		if (!empty($filter_type)) {
@@ -185,13 +185,13 @@ if (! function_exists( 'ymc_build_filter_options_from_post')) {
 
 
 /**
- * Sanitize array recursively
+ * Sanitize array recursively ->MOVE
  * @param $array
  *
  * @return mixed
  */
-if (! function_exists( 'ymc_sanitize_array_recursive')) {
-	function ymc_sanitize_array_recursive($value) {
+if (! function_exists( '__ymc_sanitize_array_recursive')) {
+	function __ymc_sanitize_array_recursive($value) {
 
 		if (! is_array($value)) {
 			return sanitize_text_field($value);
@@ -211,7 +211,7 @@ if (! function_exists( 'ymc_sanitize_array_recursive')) {
 
 
 /**
- * Gets all terms (tags, categories, etc.) of all taxonomies to which the specified post is attached.
+ * Gets all terms (tags, categories, etc.) of all taxonomies to which the specified post is attached. -> MOVE
  *
  * @param int $post_id
  *
@@ -222,8 +222,8 @@ if (! function_exists( 'ymc_sanitize_array_recursive')) {
  *               - term_id (int)  ID term
  *               - link (string)  URL of the link to the term archive
  */
-if (! function_exists( 'ymc_get_all_post_terms')) {
-	function ymc_get_all_post_terms( $post_id ) {
+if (! function_exists( '__ymc_get_all_post_terms')) {
+	function __ymc_get_all_post_terms( $post_id ) {
 		if ( ! $post_id || ! get_post( $post_id ) ) {
 			return [];
 		}
@@ -254,7 +254,7 @@ if (! function_exists( 'ymc_get_all_post_terms')) {
 
 
 /**
- * Truncate post content / excerpt with safer fallbacks.
+ * Truncate post content / excerpt with safer fallbacks. -> MOVE
  *
  * @param int    $post_id      Post ID.
  * @param string $mode_excerpt Mode: '', 'excerpt_first_block', 'excerpt_line_break'.
@@ -262,8 +262,8 @@ if (! function_exists( 'ymc_get_all_post_terms')) {
  * @return string              Trimmed text (may be empty string).
  */
 
-if ( ! function_exists( 'ymc_truncate_post_content' ) ) {
-	function ymc_truncate_post_content( $post_id, $mode_excerpt = '', $length = 30 ) {
+if ( ! function_exists( '__ymc_truncate_post_content' ) ) {
+	function __ymc_truncate_post_content( $post_id, $mode_excerpt = '', $length = 30 ) {
 		$post_id = (int) $post_id;
 		if ( ! $post_id ) {
 			return '';
@@ -352,14 +352,14 @@ if ( ! function_exists( 'ymc_truncate_post_content' ) ) {
 
 
 /**
- * Gets post image.
+ * Gets post image. -> MOVE
  *
  * @param int $post_id
  * @param string $post_image_size Post image size.
  */
 
-if (! function_exists( 'ymc_post_image_size')) {
-	function ymc_post_image_size($post_id, $post_image_size) {
+if (! function_exists( '__ymc_post_image_size')) {
+	function __ymc_post_image_size($post_id, $post_image_size) {
 
 		if ( !has_post_thumbnail($post_id) ) {
 			return '';
@@ -385,12 +385,12 @@ if (! function_exists( 'ymc_post_image_size')) {
 }
 
 /**
- * Get column classes
+ * Get column classes -> MOVE
  *
  * @param $columns
  */
-if (! function_exists( 'ymc_get_column_classes')) {
-	function ymc_get_column_classes( $columns ): string {
+if (! function_exists( '__ymc_get_column_classes')) {
+	function __ymc_get_column_classes( $columns ): string {
 		$output = [];
 		foreach ( $columns as $breakpoint => $count ) {
 			if ( $count ) {
@@ -405,12 +405,12 @@ if (! function_exists( 'ymc_get_column_classes')) {
 
 
 /**
- * Render single popup
+ * Render single popup -> MOVE
  *
  * @param $post_id
  */
-if (! function_exists( 'ymc_render_single_popup')) {
-	function ymc_render_single_popup($filter_id) {
+if (! function_exists( '__ymc_render_single_popup')) {
+	function __ymc_render_single_popup($filter_id) {
 		$settings = Data_Store::get_meta_value($filter_id, 'ymc_fg_popup_settings');
 		if (empty($settings)) return;
 
@@ -454,11 +454,11 @@ if (! function_exists( 'ymc_render_single_popup')) {
 
 
 /**
- * Minify CSS
+ * Minify CSS -> MOVE
  * @param $css
  */
-if (! function_exists( 'ymc_minify_css')) {
-	function ymc_minify_css($css) {
+if (! function_exists( '__ymc_minify_css')) {
+	function __ymc_minify_css($css) {
 		$css = str_replace(["\t", "\n", "\r"], '', $css);
 		$css = preg_replace('/\s+/', ' ', $css);
 		$css = preg_replace('/\s*([{};:,])\s*/', '$1', $css);
@@ -470,14 +470,14 @@ if (! function_exists( 'ymc_minify_css')) {
 
 
 /**
- * Get term settings for the current post.
+ * Get term settings for the current post. -> MOVE
  *
  * @param int $post_id
  * @param array $terms_attr
  * @return array
  */
-if (! function_exists( 'ymc_get_post_terms_settings')) {
-	function ymc_get_post_terms_settings(int $post_id, array $terms_attr): array {
+if (! function_exists( '__ymc_get_post_terms_settings')) {
+	function __ymc_get_post_terms_settings(int $post_id, array $terms_attr): array {
 		$post_terms_settings = [];
 		$taxonomies = get_taxonomies(['public' => true], 'names');
 		$post_term_ids = [];
@@ -506,13 +506,13 @@ if (! function_exists( 'ymc_get_post_terms_settings')) {
 
 
 /**
- * Calculate post read time
+ * Calculate post read time -> MOVE
  * @param $post_id
  * @param int $words_per_minute. Average reading speed. Default: 200
  * @return int
  */
-if (! function_exists( 'ymc_calculate_read_time')) {
-	function ymc_calculate_read_time($post_id, $words_per_minute = 200) : int {
+if (! function_exists( '__ymc_calculate_read_time')) {
+	function __ymc_calculate_read_time($post_id, $words_per_minute = 200) : int {
 		$content = get_post_field('post_content', $post_id);
 		$word_count = str_word_count(strip_tags($content));
 		$minutes = ceil($word_count / $words_per_minute);
@@ -522,7 +522,7 @@ if (! function_exists( 'ymc_calculate_read_time')) {
 
 
 /**
- * Generate accordion with terms grouped by taxonomies (excluding current taxonomy).
+ * Generate accordion with terms grouped by taxonomies (excluding current taxonomy). -> MOVE
  *
  * @param array  $sequence           Ordered list of taxonomy slugs (e.g. ['category','post_tag','author_book'])
  * @param string $current_taxonomy   (OPTIONAL) taxonomy slug — will be overridden by the taxonomy of $current_term_id if possible
@@ -532,8 +532,8 @@ if (! function_exists( 'ymc_calculate_read_time')) {
  * @return string HTML
  */
 
-if (! function_exists( 'ymc_get_terms_accordion')) {
-	function ymc_get_terms_accordion(array $sequence, string $current_taxonomy, int $current_term_id, int $post_id) : string {
+if (! function_exists( '__ymc_get_terms_accordion')) {
+	function __ymc_get_terms_accordion(array $sequence, string $current_taxonomy, int $current_term_id, int $post_id) : string {
 
 		// helper: parse related_terms field in flexible way
 		$parse_related = function($raw) {
@@ -669,15 +669,15 @@ if (! function_exists( 'ymc_get_terms_accordion')) {
 
 
 /**
- * Get list of taxonomies for post
+ * Get list of taxonomies for post -> MOVE
  *
  * @param int $post_id
  * 
  * @return array Array of taxonomies (slug => label)
  */
 
-if (! function_exists( 'ymc_get_attached_post_taxonomies')) {
-	function ymc_get_attached_post_taxonomies( $post_id ) {
+if (! function_exists( '__ymc_get_attached_post_taxonomies')) {
+	function __ymc_get_attached_post_taxonomies( $post_id ) {
 		if ( ! $post_id ) {
 			return array();
 		}
@@ -707,14 +707,14 @@ if (! function_exists( 'ymc_get_attached_post_taxonomies')) {
 }
 
 /**
- * Extracts filter IDs from content
+ * Extracts filter IDs from content --> MOVE
  * 
  * @param string $content
  * 
  * @return array
  */
-if (! function_exists( 'ymc_extract_filter_ids_from_content')) {
-	function ymc_extract_filter_ids_from_content( string $content ) : array {
+if (! function_exists( '__ymc_extract_filter_ids_from_content')) {
+	function __ymc_extract_filter_ids_from_content( string $content ) : array {
 
 		$ids = [];
 
@@ -740,12 +740,12 @@ if (! function_exists( 'ymc_extract_filter_ids_from_content')) {
 }
 
 /**
- * Get all acf fields for builder
+ * Get all acf fields for builder -> MOVE
  * 
  * @return array
  */
-if (! function_exists( 'ymc_get_all_acf_fields_for_builder')) {
-	function ymc_get_all_acf_fields_for_builder() : array {
+if (! function_exists( '__ymc_get_all_acf_fields_for_builder')) {
+	function __ymc_get_all_acf_fields_for_builder() : array {
 
 		if ( ! function_exists('acf_get_field_groups') ) return [];
 
@@ -804,10 +804,10 @@ if (! function_exists( 'ymc_get_all_acf_fields_for_builder')) {
 
 
 /**
- * Sanitize array recursively
+ * Sanitize array recursively -> MOVE
  */
-if (! function_exists( 'ymc_sanitize_deep')) {
-   function ymc_sanitize_deep($value) {
+if (! function_exists( '__ymc_sanitize_deep')) {
+   function __ymc_sanitize_deep($value) {
       if (is_array($value)) {
          return array_map('ymc_sanitize_deep', $value);
       }

@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
 
 use YMCFilterGrids\FG_Autoloader;
 use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_Ajax_Admin, FG_General_Settings};
-use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes, FG_Ajax_Responder};
+use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes};
 use YMCFilterGrids\api\FG_REST_Manager;
 
 
@@ -28,7 +28,7 @@ final class YMC_Filter_Grids {
 	 *
 	 * @var string
 	 */
-	public string $version = '3.9.6';
+	public string $version = '3.10.1';
 
 
 	/**
@@ -196,9 +196,9 @@ final class YMC_Filter_Grids {
 		require_once YMC_ABSPATH . 'src/abstracts/FG_Abstract_Filter.php';
 
 		/**
-		 * Functions.
+		 * Load functions.
 		 */
-		require_once YMC_ABSPATH . 'src/functions/fg-core-functions.php';
+      require_once YMC_ABSPATH . 'src/functions/load-functions.php';
 
       /**
        * REST API Classes.     
@@ -207,8 +207,7 @@ final class YMC_Filter_Grids {
 
 		/**
 		 * Ajax classes.
-		 */
-		FG_Ajax_Responder::init();
+		 */		
 		FG_Ajax_Admin::init();
 
 		/**

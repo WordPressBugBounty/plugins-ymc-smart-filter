@@ -63,12 +63,7 @@ class FG_Frontend_Scripts {
       );
      
       wp_localize_script('ymc_script', '_ymc_fg_object', array(
-         'ajax_url'                   => admin_url('admin-ajax.php'),
-         'getPosts_nonce'             => wp_create_nonce('get_filtered_posts-ajax-nonce'),
-         'getPostToPopup_nonce'       => wp_create_nonce('get_post_to_popup-ajax-nonce'),
-         'getAutocompletePosts_nonce' => wp_create_nonce('get_autocomplete_posts-ajax-nonce'),
-         'loadDependentTerms_nonce'   => wp_create_nonce('load_dependent_terms-ajax-nonce'),
-         'getFilterSearchTerms_nonce' => wp_create_nonce('get_filter_search_terms-ajax-nonce'),
+         'ajax_url'                   => admin_url('admin-ajax.php'),        
          'current_page'               => 1,
          'all_dropdown_label'         => __('All', 'ymc-smart-filter'),
          'path'                       => YMC_PLUGIN_URL,
