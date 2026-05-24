@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 use YMCFilterGrids\FG_Autoloader;
-use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_Ajax_Admin, FG_General_Settings};
+use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_General_Settings};
 use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes};
 use YMCFilterGrids\api\FG_REST_Manager;
 
@@ -28,7 +28,7 @@ final class YMC_Filter_Grids {
 	 *
 	 * @var string
 	 */
-	public string $version = '3.10.1';
+	public string $version = '3.10.2';
 
 
 	/**
@@ -183,6 +183,7 @@ final class YMC_Filter_Grids {
 		 * Autoloader loads all the classes needed to run the plugin.
 		 */
 		require_once YMC_ABSPATH . 'src/FG_Autoloader.php';
+
 		FG_Autoloader::init();
 
 		/**
@@ -204,11 +205,7 @@ final class YMC_Filter_Grids {
        * REST API Classes.     
       */
       FG_REST_Manager::init();
-
-		/**
-		 * Ajax classes.
-		 */		
-		FG_Ajax_Admin::init();
+		
 
 		/**
 		 * Core classes.

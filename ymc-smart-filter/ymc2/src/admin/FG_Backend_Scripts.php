@@ -191,15 +191,7 @@ class FG_Backend_Scripts {
 
 			 wp_localize_script( 'ymc_script', '_ymc_fg_object',
 				array(
-					'ajax_url'                    => admin_url('admin-ajax.php'),
-					'exportSettingsAjax_nonce'    => wp_create_nonce('export-settings-ajax-nonce'),
-					'importSettingsAjax_nonce'    => wp_create_nonce('import-settings-ajax-nonce'),
-					'updateRelatedTerms_nonce'    => wp_create_nonce('update-related-terms-ajax-nonce'),
-					'updateRootSourceTerms_nonce' => wp_create_nonce('update-root-source_terms-ajax-nonce'),
-					'usegeFiltersPaginAjax_nonce' => wp_create_nonce('usege-filters-pagin-ajax-nonce'),
-					'scanExistingPostsAjax_nonce' => wp_create_nonce('scan-existing-posts-ajax-nonce'),
-					'lbSaveLayoutAjax_nonce' 	   => wp_create_nonce('lb-save-layout-ajax-nonce'),
-					'classicSnapshotAjax_nonce'   => wp_create_nonce('classic-snapshot-ajax_nonce'),
+					'ajax_url'                    => admin_url('admin-ajax.php'),					
 					'savedSchema' 					   => $saved_schema ?: null,
 					'acf_fields' 						=> ymc_get_all_acf_fields_for_builder(),				
 					'loadedFeedPosts_page'        => 2,

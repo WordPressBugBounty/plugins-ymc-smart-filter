@@ -31,14 +31,14 @@ class FG_Ajax_Admin {
 		add_action('wp_ajax_action_clear_terms_cache', array( __CLASS__, 'ajax_clear_terms_cache')); // REST
 		add_action('wp_ajax_action_get_selected_taxonomies', array( __CLASS__, 'ajax_get_selected_taxonomies')); // REST
 		add_action('wp_ajax_action_upload_term_icon', array( __CLASS__, 'ajax_upload_term_icon')); // REST
-		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings')); 
-		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));  
-		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms')); 
-		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms')); 
-		add_action('wp_ajax_action_load_usage_page', array( __CLASS__, 'ajax_load_usage_pages'));
-		add_action('wp_ajax_action_scan_existing_posts', array( __CLASS__, 'ajax_scan_existing_posts'));
-		add_action('wp_ajax_action_lb_save_layout', array( __CLASS__, 'ajax_lb_save_layout'));
-		add_action('wp_ajax_action_get_classic_snapshot', array( __CLASS__, 'ajax_get_classic_snapshot'));
+		add_action('wp_ajax_action_export_settings', array( __CLASS__, 'ajax_export_settings'));  // REST
+		add_action('wp_ajax_action_import_settings', array( __CLASS__, 'ajax_import_settings'));  // REST
+		add_action('wp_ajax_action_update_related_terms', array( __CLASS__, 'ajax_update_related_terms')); // REST
+		add_action('wp_ajax_action_update_root_source_terms', array( __CLASS__, 'ajax_update_root_source_terms')); // REST
+		add_action('wp_ajax_action_load_usage_page', array( __CLASS__, 'ajax_load_usage_pages')); // REST
+		add_action('wp_ajax_action_scan_existing_posts', array( __CLASS__, 'ajax_scan_existing_posts')); // REST
+		add_action('wp_ajax_action_lb_save_layout', array( __CLASS__, 'ajax_lb_save_layout')); // REST
+		add_action('wp_ajax_action_get_classic_snapshot', array( __CLASS__, 'ajax_get_classic_snapshot')); // REST
 	}
 
 	/**

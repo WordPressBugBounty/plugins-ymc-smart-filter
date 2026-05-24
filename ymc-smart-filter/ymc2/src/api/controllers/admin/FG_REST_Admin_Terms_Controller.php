@@ -65,6 +65,26 @@ class FG_REST_Admin_Terms_Controller extends FG_REST_Abstract_Controller {
          ]
       );
 
+      register_rest_route( $this->namespace, '/' . $this->rest_base . '/related-terms',
+         [
+            [
+               'methods'             => \WP_REST_Server::CREATABLE,
+               'callback'            => [ $this, 'update_related_terms' ],
+               'permission_callback' => [ $this, 'check_admin_permissions' ],
+            ],
+         ]
+      );
+
+      register_rest_route( $this->namespace, '/' . $this->rest_base . '/root-terms',
+         [
+            [
+               'methods'             => \WP_REST_Server::CREATABLE,
+               'callback'            => [ $this, 'update_root_source_terms' ],
+               'permission_callback' => [ $this, 'check_admin_permissions' ],
+            ],
+         ]
+      );
+
    }
 
    /**
@@ -334,6 +354,125 @@ class FG_REST_Admin_Terms_Controller extends FG_REST_Abstract_Controller {
          'Upload failed.',
          400
       );
+   }
+
+
+
+   /**
+    * Update related terms HTML
+    *
+    * @param \WP_REST_Request $request
+    * @return \WP_REST_Response
+    */  
+   public function update_related_terms( \WP_REST_Request $request ) {
+      
+      $params = $request->get_json_params();
+
+      $post_id      = absint( $params['post_id'] ?? 0 );
+      $term_id      = absint( $params['term_id'] ?? 0 );
+      $current_term = sanitize_text_field( $params['current_term'] ?? '' );
+      $current_tax  = sanitize_text_field( $params['current_tax'] ?? '' );
+      $sequence     = $params['sequence'] ?? [];
+     
+      if ( is_string( $sequence ) ) {
+         $sequence = json_decode( $sequence, true );
+      }
+      
+      if ( empty( $sequence ) || empty( $current_term ) || empty( $current_tax ) || empty( $post_id ) || empty( $term_id ) ) {
+         return $this->error_response( 'Invalid data received.', 'invalid_data', 400 );
+      }
+
+      if ( ! is_array( $sequence ) ) {
+         return $this->error_response( 'Invalid sequence format.', 'invalid_sequence', 400 );
+      }
+
+      $term_slug = sanitize_title( $current_term );
+      $tax_slug  = '';
+      
+      foreach ( get_taxonomies( [], 'names' ) as $taxonomy ) {
+         $term = get_term_by( 'slug', $term_slug, $taxonomy );
+         if ( $term && ! is_wp_error( $term ) ) {
+               $tax_slug = $taxonomy;
+               break;
+         }
+      }
+      
+      $html = ymc_get_terms_accordion( $sequence, $tax_slug, $term_id, $post_id );
+      
+      $tax_sequence_label = [];
+      $current_tax_clean  = sanitize_title( $current_tax );
+      
+      foreach ( $sequence as $slug ) {
+         $taxonomy = get_taxonomy( $slug );
+         if ( $taxonomy && ! is_wp_error( $taxonomy ) ) {
+               $is_active = ( $current_tax_clean === $slug ) ? ' is-active' : '';
+               $tax_sequence_label[] = '<span class="' . esc_attr( $taxonomy->name ) . esc_attr( $is_active ) . '">' .
+                                       esc_html( $taxonomy->labels->singular_name ) . '</span>';
+         }
+      }
+      
+      $tax_chain = implode( '', $tax_sequence_label );
+
+      return $this->success_response([
+         'html'      => $html,
+         'tax_chain' => $tax_chain
+      ]);
+   }
+
+
+
+   /**
+    * Update root terms and sources via REST API
+    *
+    * @param \WP_REST_Request $request
+    * @return \WP_REST_Response|\WP_Error
+    */
+   public function update_root_source_terms( \WP_REST_Request $request ) {
+
+      $params = $request->get_json_params();
+
+      if ( empty( $params ) ) {
+         return $this->error_response( 'Invalid data received.', 'invalid_data', 400 );
+      }
+
+      $post_id    = absint( $params['post_id'] ?? 0 );
+      $sequence   = sanitize_text_field( $params['sequence'] ?? '' );
+      $root_terms = '';
+
+      if ( ! empty( $sequence ) ) {
+         $tax_sequence = explode( ',', $sequence );
+         $first_tax    = sanitize_key( $tax_sequence[0] );
+
+         $terms = get_terms([
+            'taxonomy'   => $first_tax,
+            'hide_empty' => false,
+         ]);
+
+         if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+
+            ob_start();
+
+            foreach ( $terms as $term ) { ?>
+               <li class="root-term-item">
+                  <label class="field-label">
+                     <input class="form-checkbox js-root-term"
+                     type="checkbox" name="ymc_fg_filter_dependent_settings[root_terms][]"
+                     value="<?php echo esc_attr( $term->term_id ); ?>"><?php echo esc_html( $term->name ); ?></label></li>
+            <?php }
+
+            $root_terms = ob_get_clean();            
+            $root_terms = preg_replace( '/\s+/', ' ', $root_terms );            
+            $root_terms = str_replace( '> <', '><', trim( $root_terms ) );
+
+         } else {
+            $root_terms = '<li class="notification notification--warning">' .
+               'No terms for first taxonomy.' . '</li>';
+         }
+      }
+      
+      return $this->success_response([
+         'root_terms' => $root_terms
+      ]);
    }
 
    

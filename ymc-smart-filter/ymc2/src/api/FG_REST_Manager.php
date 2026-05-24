@@ -11,6 +11,7 @@ use YMCFilterGrids\api\controllers\admin\FG_REST_Admin_Terms_Controller;
 use YMCFilterGrids\api\controllers\admin\FG_REST_Admin_Posts_Controller;
 use YMCFilterGrids\api\controllers\admin\FG_REST_Admin_Filter_Builder_Controller;
 use YMCFilterGrids\api\controllers\admin\FG_REST_Admin_Settings_Controller;
+use YMCFilterGrids\api\controllers\admin\FG_REST_Admin_Layouts_Controller;
 use YMCFilterGrids\api\controllers\frontend\FG_REST_Frontend_Filter_Controller;
 use YMCFilterGrids\api\controllers\frontend\FG_REST_Frontend_Posts_Controller;
 use YMCFilterGrids\api\controllers\frontend\FG_REST_Frontend_Search_Controller;
@@ -53,6 +54,7 @@ class FG_REST_Manager {
          FG_REST_Admin_Posts_Controller::class,
          FG_REST_Admin_Filter_Builder_Controller::class,
          FG_REST_Admin_Settings_Controller::class,
+         FG_REST_Admin_Layouts_Controller::class,
          FG_REST_Frontend_Filter_Controller::class,
          FG_REST_Frontend_Posts_Controller::class,
          FG_REST_Frontend_Search_Controller::class,
