@@ -443,7 +443,12 @@ class FG_Save_Meta_Boxes {
       // Show Post Count
       $show_post_count = isset($_POST['ymc_fg_show_post_count'])
          ? sanitize_text_field(wp_unslash($_POST['ymc_fg_show_post_count'])) : 'no';
-      update_post_meta($post_id, 'ymc_fg_show_post_count', $show_post_count);      
+      update_post_meta($post_id, 'ymc_fg_show_post_count', $show_post_count);
+      
+      // Flatpickr
+		$flatpickr_settings = isset($_POST['ymc_fg_flatpickr_settings'])
+			? ymc_sanitize_array_recursive(wp_unslash($_POST['ymc_fg_flatpickr_settings'])) : [];
+		update_post_meta($post_id, 'ymc_fg_flatpickr_settings', $flatpickr_settings);
 
 	}
 

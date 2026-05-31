@@ -112,6 +112,9 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
       // Date query
 		$date_query          = $params['date_query'] ?? null;
 
+      // Flatpickr Data Picker
+      $filter_flatpickr = $params['flatpickr_filter'] ?? [];
+
 		// Search query
 		$keyword_search      = $params['search'] ?? null;
       $search_post_id      = $params['search_post_id'] ?? 0;
@@ -218,7 +221,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 			$args['date_query'] = $date_query;
 		}
 
-      // Date filter
+      // Date filter (Legacy / jQuery UI)
 		if ( !empty( $filter_date ) && is_array( $filter_date ) ) {
 
 			$type = $filter_date['type'] ?? '';
@@ -293,7 +296,60 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 			if ( !empty( $date_query ) ) {
 				$args['date_query'] = $date_query;
 			}
-		}
+		}  
+
+      // Flatpickr Date Filter
+      if ( ! empty( $filter_flatpickr ) && is_array( $filter_flatpickr ) ) {
+
+         $source   = sanitize_text_field( $filter_flatpickr['source'] ?? 'post_date' );
+         $meta_key = sanitize_text_field( $filter_flatpickr['meta_key'] ?? '' );
+
+         $from_ts = absint( $filter_flatpickr['from'] ?? 0 );
+         $to_ts   = absint( $filter_flatpickr['to'] ?? 0 );
+
+         if ( $from_ts > 0 && $to_ts > 0 ) {
+
+            $from_date = [
+               'year'  => (int) wp_date( 'Y', $from_ts ),
+               'month' => (int) wp_date( 'm', $from_ts ),
+               'day'   => (int) wp_date( 'd', $from_ts ),
+            ];
+
+            $to_date = [
+               'year'  => (int) wp_date( 'Y', $to_ts ),
+               'month' => (int) wp_date( 'm', $to_ts ),
+               'day'   => (int) wp_date( 'd', $to_ts ),
+            ];
+
+            // Filter by post publish date
+            if ( $source === 'post_date' ) {
+
+               $args['date_query'][] = [
+                  'after'     => $from_date,
+                  'before'    => $to_date,
+                  'inclusive' => true,
+               ];
+            }
+
+            // Filter by custom meta date field
+            elseif ( $source === 'meta_key' && ! empty( $meta_key ) ) {
+
+               if ( ! isset( $args['meta_query'] ) ) {
+                  $args['meta_query'] = [ 'relation' => 'AND' ];
+               }
+
+               $args['meta_query'][] = [
+                  'key'     => $meta_key,
+                  'value'   => [
+                     wp_date( 'Y-m-d', $from_ts ),
+                     wp_date( 'Y-m-d', $to_ts ),
+                  ],
+                  'compare' => 'BETWEEN',
+                  'type'    => 'DATE',
+               ];
+            }
+         }
+      }
 
 		// Search query
 		$search_filters_enabled = false;

@@ -87,6 +87,15 @@ class FG_Frontend_Scripts {
          true
       );
 
+
+      wp_register_script(
+         'ymc_flatpickr',
+         YMC_PLUGIN_URL . 'assets/js/lib/flatpickr.min.js',
+         array(),
+         $version,
+         true
+      );      
+
 	}
 
 
@@ -110,6 +119,55 @@ class FG_Frontend_Scripts {
          array(), 
          $version
       );
+
+      wp_register_style(
+         'ymc_flatpickr', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr.min.css',
+         array(), 
+         $version
+      );
+
+      wp_register_style(
+         'ymc_flatpickr_dark', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-dark.css',
+         array(), 
+         $version
+      );
+
+      wp_register_style(
+         'ymc_flatpickr_material_blue', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-material-blue.css',
+         array(), 
+         $version
+      );
+
+      wp_register_style(
+         'ymc_flatpickr_airbnb', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-airbnb.css',
+         array(), 
+         $version
+      );
+      
+      wp_register_style(
+         'ymc_flatpickr_confetti', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-confetti.css',
+         array(), 
+         $version
+      );
+
+      wp_register_style(
+         'ymc_flatpickr_material_green', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-material-green.css',
+         array(), 
+         $version
+      ); 
+      
+      wp_register_style(
+         'ymc_flatpickr_material_red', 
+         YMC_PLUGIN_URL . 'assets/css/lib/flatpickr-material_red.css',
+         array(), 
+         $version
+      );      
       
 	}
 

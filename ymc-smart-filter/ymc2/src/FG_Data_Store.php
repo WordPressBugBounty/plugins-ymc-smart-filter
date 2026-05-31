@@ -350,7 +350,21 @@ class FG_Data_Store {
 			'start'  => [ 'type' => 'preset', 'preset' => 'standard' ]			
 		],
       
-      'ymc_fg_show_post_count' => 'no'
+      'ymc_fg_show_post_count' => 'no',
+      
+      'ymc_fg_flatpickr_settings' => [
+			'query_source'  => 'post_date',
+			'meta_key'      => '',			
+			'mode'          => 'single',
+			'format'        => 'd.m.Y',
+			'placeholder'   => '',
+			'use_advanced'  => 'false',
+			'inline'        => 'false',			
+			'first_day'     => '1',
+			'week_numbers'  => 'false',
+			'theme'         => 'default',
+			'custom_init'   => 'false'
+		]
 
 	];
 

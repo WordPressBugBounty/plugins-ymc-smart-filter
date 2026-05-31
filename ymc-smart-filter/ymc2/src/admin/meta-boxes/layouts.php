@@ -63,8 +63,8 @@ if (!defined( 'ABSPATH')) exit;
                     </select>
                 </div>
                 <div class="group-elements">
-	                <?php $is_hidden_filter_builder = $ymc_fg_filter_type !== 'composite' ? 'is-hidden' : ''; ?>
-                    <div class="filter-builder <?php echo esc_attr($is_hidden_filter_builder); ?>">
+	                <?php $show_filter_builder = ($ymc_fg_filter_type === 'composite'); ?>
+                    <div class="filter-builder js-filter-builder<?php echo esc_attr(ymc_get_hidden_class( $show_filter_builder )); ?>">
                         <div class="spacer-30"></div>
 		                <?php ymc_render_field_header('Filters Settings', 'Set up filters based on taxonomies. 
 	                    Choose a filter type and where it should appear on the page layout.'); ?>
@@ -96,47 +96,46 @@ if (!defined( 'ABSPATH')) exit;
 			                $filter_options = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_options');
 			                ?>
 			                <?php foreach ($filter_options as $index => $option) : ?>
-                                <div class="filter-item">
-                                    <select class="form-select form-select--multiple <?php echo esc_attr($is_disabled_tax); ?>"
-                                            name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][tax_name][]"
-                                            multiple>
-						                <?php if($taxonomies) : ?>
-							                <?php foreach ($taxonomies as $value => $label): ?>
-                                                <option value="<?php echo esc_attr($value); ?>"
-									                <?php echo in_array($value, $option['tax_name'] ?? []) ? 'selected' : ''; ?>>
-									                <?php echo esc_html($label); ?>
-                                                </option>
-							                <?php endforeach; ?>
-						                <?php else : ?>
-                                            <option value="">
-								                <?php esc_html_e('Taxonomy not selected', 'ymc-smart-filter'); ?></option>
-						                <?php endif; ?>
-                                    </select>
+                              <div class="filter-item">
+                                 <select class="form-select form-select--multiple <?php echo esc_attr($is_disabled_tax); ?>"
+                                          name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][tax_name][]"
+                                          multiple>
+                                    <?php if($taxonomies) : ?>
+                                       <?php foreach ($taxonomies as $value => $label): ?>
+                                                   <option value="<?php echo esc_attr($value); ?>"
+                                             <?php echo in_array($value, $option['tax_name'] ?? []) ? 'selected' : ''; ?>>
+                                             <?php echo esc_html($label); ?>
+                                                   </option>
+                                       <?php endforeach; ?>
+                                    <?php else : ?>
+                                       <option value="">
+                                          <?php esc_html_e('Taxonomy not selected', 'ymc-smart-filter'); ?>
+                                       </option>
+                                    <?php endif; ?>
+                                 </select>
 
-                                    <select class="form-select"
-                                            name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][filter_type]">
-						                <?php foreach ($filter_types as $value => $label): ?>
-                                            <option value="<?php echo esc_attr($value); ?>"
-								                <?php selected($option['filter_type'] ?? 'default', $value); ?>>
-								                <?php echo esc_html($label); ?>
-                                            </option>
-						                <?php endforeach; ?>
-                                    </select>
+                                  <select class="form-select" name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][filter_type]">
+                                    <?php foreach ($filter_types as $value => $label): ?>
+                                       <option value="<?php echo esc_attr($value); ?>"
+                                          <?php selected($option['filter_type'] ?? 'default', $value); ?>>
+                                          <?php echo esc_html($label); ?>
+                                       </option>
+                                    <?php endforeach; ?>
+                                  </select>
 
-                                    <select class="form-select"
-                                            name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][placement]">
-						                <?php foreach ($placements as $value => $label): ?>
-                                            <option value="<?php echo esc_attr($value); ?>"
-								                <?php selected($option['placement'] ?? 'top', $value); ?>>
-								                <?php echo esc_html($label); ?>
-                                            </option>
-						                <?php endforeach; ?>
-                                    </select>
+                                  <select class="form-select" name="ymc_fg_filter_options[<?php echo esc_attr($index); ?>][placement]">
+                                    <?php foreach ($placements as $value => $label): ?>
+                                             <option value="<?php echo esc_attr($value); ?>"
+                                          <?php selected($option['placement'] ?? 'top', $value); ?>>
+                                          <?php echo esc_html($label); ?>
+                                             </option>
+                                    <?php endforeach; ?>
+                                  </select>
 
-                                    <button class="button button--secondary js-remove-filter" type="button">
-						                <?php esc_html_e('Delete', 'ymc-smart-filter'); ?>
-                                    </button>
-                                </div>
+                                  <button class="button button--secondary js-remove-filter" type="button">
+						                  <?php esc_html_e('Delete', 'ymc-smart-filter'); ?>
+                                  </button>
+                              </div>
 			                <?php endforeach; ?>
                         </div>
                         <button class="button button--primary js-add-filter" type="button">
@@ -144,7 +143,6 @@ if (!defined( 'ABSPATH')) exit;
 			                <?php esc_html_e('Add Filter', 'ymc-smart-filter'); ?></button>
                     </div>
                 </div>
-
             </fieldset>
         </div>
 

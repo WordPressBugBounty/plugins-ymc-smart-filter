@@ -98,3 +98,14 @@ if (! function_exists( 'ymc_get_column_classes')) {
 }
 
 
+/**
+ * Get hidden class
+ * 
+ * @param bool $is_visible The condition under which the block shoud be displayed.
+ * @return string
+ */
+if (! function_exists( 'ymc_get_hidden_class')) {
+   function ymc_get_hidden_class(bool $is_visible): string {
+      return $is_visible ? '' : ' is-hidden';
+   }
+}

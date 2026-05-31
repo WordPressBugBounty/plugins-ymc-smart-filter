@@ -1,5 +1,6 @@
 <?php
-// Properties object data-params
+
+if (!defined( 'ABSPATH')) exit;
 
 $json = '{ 
 "cpt":"'.esc_attr($ymc_cpt_value).'",

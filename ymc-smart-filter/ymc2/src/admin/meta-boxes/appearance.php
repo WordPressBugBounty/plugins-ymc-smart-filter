@@ -44,6 +44,7 @@ if (!defined( 'ABSPATH')) exit;
  * @var int $ymc_fg_pagination_mid_size
  * @var int $ymc_fg_pagination_end_size
  * @var string $ymc_fg_load_more_text
+ * @var array $ymc_fg_flatpickr_settings
  */
 
 ?>
@@ -71,7 +72,7 @@ if (!defined( 'ABSPATH')) exit;
                     </span>
                 </label>
             </fieldset>
-	        <?php $is_hidden_filter_options = $ymc_fg_filter_hidden === 'yes' ? 'is-hidden' : ''; ?>
+	         <?php $is_hidden_filter_options = $ymc_fg_filter_hidden === 'yes' ? 'is-hidden' : ''; ?>
             <fieldset class="form-group filter-options js-is-disabled-filter-options <?php echo esc_attr($is_hidden_filter_options); ?>">
 
                 <div class="group-elements">
@@ -84,7 +85,8 @@ if (!defined( 'ABSPATH')) exit;
                      <li><b>Selected Terms (Hide Empty)</b> Show selected terms, but hide those with no posts.</li>
                      <li><b>All Terms (Auto Populate)</b> Display all terms, with an option to hide empty terms.</li>
                      <li><b>All Terms (Hide Empty)</b> Auto display all terms, excluding those with no posts.</li>
-                     </ul><br> Impotent: This option does not apply to filter type: <b>Dependent Filter.</b>'); ?>
+                     </ul><br> Impotent: This option does not apply to filter type: <b>Dependent Filter, Date Picker, 
+                     Custom Filter, Alphabetical Navigation.</b>'); ?>
 	                <?php $display_terms_mode = UiLabels::all('display_terms_mode'); ?>
                     <select class="form-select" name="ymc_fg_display_terms_mode" id="ymc_fg_display_terms_mode">
 		                <?php
@@ -124,8 +126,8 @@ if (!defined( 'ABSPATH')) exit;
                     <div class="spacer-25"></div>
                 </div>
 
-	            <?php $is_hidden = ('manual' === $ymc_fg_term_sort_direction) ? ' is-hidden' : ''; ?>
-                <div class="group-elements js-term-sort-field<?php echo esc_attr($is_hidden); ?>">
+	            <?php $show_field_to_sort = ($ymc_fg_term_sort_direction !== 'manual'); ?>
+                <div class="group-elements js-term-sort-field<?php echo esc_attr(ymc_get_hidden_class( $show_field_to_sort )); ?>">
 	                <?php ymc_render_field_header('Field to Sort by Terms', 'Select the field to use to sort terms.<br> 
 	                If manual sorting is selected, this field will not be taken into account when sorting terms.'); ?>
 	                <?php $term_sort_field_by = UiLabels::all('term_sort_field'); ?>
@@ -167,8 +169,8 @@ if (!defined( 'ABSPATH')) exit;
                   <div class="spacer-25"></div>
                 </div> 
 
-                <?php $is_hidden = ($ymc_fg_filter_type === 'default' || $ymc_fg_filter_type === 'composite') ? '' : ' is-hidden'; ?>
-                <div class="group-elements js-filter-button-all<?php echo esc_attr($is_hidden); ?>">
+                <?php $show_filter_button_all = ($ymc_fg_filter_type === 'default' || $ymc_fg_filter_type === 'composite'); ?>
+                <div class="group-elements js-filter-button-all<?php echo esc_attr(ymc_get_hidden_class( $show_filter_button_all )); ?>">
                     <?php
                         $tax_selected = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
                         $filter_all_button = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_all_button');
@@ -239,7 +241,178 @@ if (!defined( 'ABSPATH')) exit;
                                 esc_html__('This will only apply to the Default filter type.', 'ymc-smart-filter'));
                         endif; ?>
                     </div>
-                </div>
+                </div>                
+                 
+                <?php                
+                  $needs_flatpickr = false;
+                  if ( is_array($ymc_fg_filter_options) ) {
+                     $types = array_column($ymc_fg_filter_options, 'filter_type');
+                     if ( in_array('flatpickr_date_picker', $types, true) ) {
+                        $needs_flatpickr = true;
+                     }
+                  }
+                ?>
+                <?php $show_flatpickr = ( $ymc_fg_filter_type === 'flatpickr_date_picker' || $needs_flatpickr ); ?>
+                <div class="group-elements flatpickr-settings-group js-flatpickr-settings-group<?php echo esc_attr(ymc_get_hidden_class( $show_flatpickr )); ?>">
+                 
+                 <?php
+                  // Base settings    
+                  $fp_query_source = $ymc_fg_flatpickr_settings['query_source'] ?? 'post_date';
+                  $fp_meta_key     = $ymc_fg_flatpickr_settings['meta_key'] ?? '';             
+                  $fp_mode         = $ymc_fg_flatpickr_settings['mode'] ?? 'single';
+                  $fp_format       = $ymc_fg_flatpickr_settings['format'] ?? 'd.m.Y';
+                  $fp_placeholder  = $ymc_fg_flatpickr_settings['placeholder'] ?? '';
+                  $fp_use_adv      = $ymc_fg_flatpickr_settings['use_advanced'] ?? 'false';
+
+                  // Advanced settings
+                  $fp_theme       = $ymc_fg_flatpickr_settings['theme'] ?? '';                  
+                  $fp_inline      = $ymc_fg_flatpickr_settings['inline'] ?? 'false';                  
+                  $fp_first_day   = $ymc_fg_flatpickr_settings['first_day'] ?? '1';
+                  $fp_week_num    = $ymc_fg_flatpickr_settings['week_numbers'] ?? 'false';
+                  $fp_custom_init = $ymc_fg_flatpickr_settings['custom_init'] ?? 'false';
+                  
+                  $show_fp_advanced_settings = $fp_use_adv !== 'false';
+                 ?>
+
+                  <fieldset class="form-group form-group--with-bg" style="margin-top: 20px;">
+                     
+                     <?php $show_fp_standard_settings = ($fp_custom_init === 'false'); ?>
+                     <div class="group-elements js-flatpickr-standard-settings<?php echo esc_attr(ymc_get_hidden_class( $show_fp_standard_settings )); ?>">
+                        <legend class="form-legend"><?php esc_html_e('Date Picker Settings', 'ymc-smart-filter'); ?></legend>
+
+                        <?php ymc_render_field_header('Query Source', 'Select whether to filter by standard Post Date or by a custom Meta Key (e.g., ACF date fields).'); ?>
+                        <select class="form-select js-fp-query-source" name="ymc_fg_flatpickr_settings[query_source]">
+                           <option value="post_date" <?php selected($fp_query_source, 'post_date'); ?>><?php esc_html_e('Post Date', 'ymc-smart-filter'); ?></option>
+                           <option value="meta_key" <?php selected($fp_query_source, 'meta_key'); ?>><?php esc_html_e('Custom Meta Field', 'ymc-smart-filter'); ?></option>
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php $is_meta_hidden = ($fp_query_source !== 'meta_key') ? ' is-hidden' : ''; ?>
+                        <div class="js-fp-meta-key-wrap<?php echo esc_attr($is_meta_hidden); ?>">
+                           <?php ymc_render_field_header('Meta Key', 'Enter the exact meta key name where the dates are stored (e.g., event_date).'); ?>
+                           <input class="form-input" type="text" name="ymc_fg_flatpickr_settings[meta_key]" 
+                                 placeholder="<?php esc_attr_e('event_date', 'ymc-smart-filter'); ?>" 
+                                 value="<?php echo esc_attr($fp_meta_key); ?>">
+                           <div class="spacer-25"></div>
+                        </div>
+
+                        <?php ymc_render_field_header('Filter Mode', 'Select whether the user should pick a single date or a date range.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[mode]">
+                           <option value="single" <?php selected($fp_mode, 'single'); ?>><?php esc_html_e('Single Date', 'ymc-smart-filter'); ?></option>
+                           <option value="range" <?php selected($fp_mode, 'range'); ?>><?php esc_html_e('Date Range (From - To)', 'ymc-smart-filter'); ?></option>
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php ymc_render_field_header('Display Date Format', 'How the date will be displayed to the user on the front-end.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[format]">
+                           <option value="d.m.Y" <?php selected($fp_format, 'd.m.Y'); ?>>dd.mm.yyyy (31.12.2026)</option>
+                           <option value="d-m-Y" <?php selected($fp_format, 'd-m-Y'); ?>>dd-mm-yyyy (31-12-2026)</option>
+                           <option value="m/d/Y" <?php selected($fp_format, 'm/d/Y'); ?>>mm/dd/yyyy (12/31/2026)</option>
+                           <option value="Y-m-d" <?php selected($fp_format, 'Y-m-d'); ?>>yyyy-mm-dd (2026-12-31)</option>                           
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php ymc_render_field_header('Field Placeholder', 'The placeholder text inside the input field when no date is selected.'); ?>
+                        <input class="form-input" type="text" name="ymc_fg_flatpickr_settings[placeholder]" 
+                              placeholder="<?php esc_attr_e('Select date...', 'ymc-smart-filter'); ?>" 
+                              value="<?php echo esc_attr($fp_placeholder); ?>">
+                        <div class="spacer-25"></div>
+
+                        <div class="advanced-settings-toggle-wrap">
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[use_advanced]" value="false">
+                           <input class="form-checkbox js-checkbox-flatpickr-advanced" type="checkbox" value="true" 
+                              name="ymc_fg_flatpickr_settings[use_advanced]"
+                              id="ymc_fg_flatpickr_use_advanced" <?php checked($fp_use_adv, 'true'); ?>>
+                           <label class="field-label" for="ymc_fg_flatpickr_use_advanced">
+                              <strong><?php esc_html_e('Show Advanced Flatpickr Settings', 'ymc-smart-filter'); ?></strong>
+                           </label>
+                        </div>
+                        <div class="spacer-15"></div>
+
+                        <div class="flatpickr-advanced-fields js-flatpickr-advanced-fields<?php echo esc_attr(ymc_get_hidden_class( $show_fp_advanced_settings )); ?>">
+                           
+                           <?php ymc_render_field_header('Inline Calendar', 'Display the calendar in an always-open state with the inline option.'); ?>
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[inline]" value="false">
+                           <input class="form-checkbox" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[inline]"
+                              id="fp_inline_mode" <?php checked($fp_inline, 'true'); ?>>
+                           <label class="field-label" for="fp_inline_mode"><?php esc_html_e('Inline Mode (Always open calendar)', 'ymc-smart-filter'); ?></label>
+                           <div class="spacer-15"></div>                           
+                                 
+                           <?php ymc_render_field_header('First Day of Week', 'Choose whether the calendar week starts on Monday or Sunday.'); ?>
+                           <select class="form-select" name="ymc_fg_flatpickr_settings[first_day]">
+                              <option value="1" <?php selected($fp_first_day, '1'); ?>><?php esc_html_e('Monday', 'ymc-smart-filter'); ?></option>
+                              <option value="0" <?php selected($fp_first_day, '0'); ?>><?php esc_html_e('Sunday', 'ymc-smart-filter'); ?></option>
+                           </select>
+                           <div class="spacer-15"></div>
+
+                           <?php ymc_render_field_header('Calendar Theme', 'Select the visual style of the calendar to match your website design.'); ?>
+
+                           <select class="form-select" name="ymc_fg_flatpickr_settings[theme]">
+                              <option value="default" <?php selected($fp_theme, 'default'); ?>><?php esc_html_e('Default (Light)', 'ymc-smart-filter'); ?></option>
+                              <option value="dark" <?php selected($fp_theme, 'dark'); ?>><?php esc_html_e('Dark', 'ymc-smart-filter'); ?></option>
+                              <option value="material_blue" <?php selected($fp_theme, 'material_blue'); ?>><?php esc_html_e('Material Blue', 'ymc-smart-filter'); ?></option>
+                              <option value="airbnb" <?php selected($fp_theme, 'airbnb'); ?>><?php esc_html_e('Airbnb', 'ymc-smart-filter'); ?></option>
+                              <option value="confetti" <?php selected($fp_theme, 'confetti'); ?>><?php esc_html_e('Confetti', 'ymc-smart-filter'); ?></option>
+                              <option value="material_green" <?php selected($fp_theme, 'material_green'); ?>><?php esc_html_e('Material Green', 'ymc-smart-filter'); ?></option>
+                              <option value="material_red" <?php selected($fp_theme, 'material_red'); ?>><?php esc_html_e('Material Red', 'ymc-smart-filter'); ?></option>
+                           </select>
+                           <div class="spacer-15"></div>
+                           
+                           <?php ymc_render_field_header('Week Numbers', 'Enable the weekNumbers option to display the week number in a column left to the calendar.'); ?>
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[week_numbers]" value="false">
+                           <input class="form-checkbox" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[week_numbers]"
+                                 id="fp_week_numbers" <?php checked($fp_week_num, 'true'); ?>>
+                           <label class="field-label" for="fp_week_numbers"><?php esc_html_e('Show Week Numbers', 'ymc-smart-filter'); ?></label>
+                           <div class="spacer-15"></div>                           
+                          
+                        </div>
+
+                     </div>
+
+                     <div class="group-elements">
+
+                      <?php ymc_render_field_header('Custom Flatpickr Initialization', 'Disable all built-in Flatpickr settings and initialization.
+                        The plugin will output only the calendar markup, allowing you to initialize and configure Flatpickr manually 
+                        in your theme or custom scripts. When enabled, Flatpickr initialization becomes fully manual. The built-in clear button is disabled. 
+                        <hr>Use window.YMCFlatpickr.apply() and window.YMCFlatpickr.reset() in your custom JavaScript. 
+                        <hr>"Note: Date picker only; time selection is not supported."'); ?>                   
+
+                        <div class="field-description"><?php esc_html_e('The calendar is implemented using the', 'ymc-smart-filter') ?> <a href='https://flatpickr.js.org/getting-started/#usage' target='_blank'>Flatpickr API</a>.
+                        <a class="tooltip-trigger js-tooltip-trigger" href="#" >Usage example:</a>
+                        <div class="field-example js-field-example">
+<pre><code class="language-js">if (typeof flatpickr !== 'undefined') {
+   
+   // Initialize and configure Flatpickr
+   const fp = flatpickr(".filter-72 .js-ymc-flatpickr-input", {   
+      dateFormat: "Y-m-d",
+      minDate: "today",
+      // other settings...
+      onChange(selectedDates) {
+         window.YMCFlatpickr.apply(this.input, selectedDates);
+      }
+   });
+   
+   // Create reset calendar button with class "btn-reset-calendar"
+   document.querySelector('.btn-reset-calendar')?.addEventListener('click', async function() {
+      fp.clear();
+      await window.YMCFlatpickr.reset(fp.input);
+   });
+}</code>
+</pre>
+                        </div>
+                        </div>
+                              
+                        <input type="hidden" name="ymc_fg_flatpickr_settings[custom_init]" value="false">
+                        <input class="form-checkbox js-checkbox-fp-custom-init" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[custom_init]" id="fp_custom_init"
+                           <?php checked( $fp_custom_init, 'true' ); ?>>
+                        <label class="field-label" for="fp_custom_init">
+                           <?php esc_html_e('Use Custom Flatpickr Initialization', 'ymc-smart-filter'); ?></label>
+                     </div>
+
+                  </fieldset>                   
+
+                </div>               
+
             </fieldset>
         </div>
 

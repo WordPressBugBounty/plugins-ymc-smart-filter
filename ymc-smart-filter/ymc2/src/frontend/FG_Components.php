@@ -8,6 +8,7 @@ use YMCFilterGrids\abstracts\FG_Creator_Filter_Dropdown as Filter_Dropdown;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Dependent as Filter_Dependent;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Range_Slider as Filter_Range_Slider;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Date_Picker as Filter_Date_Picker;
+use YMCFilterGrids\abstracts\FG_Creator_Filter_Flatpickr as Filter_Flatpickr;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Alphabetical as Filter_Alphabetical;
 use YMCFilterGrids\abstracts\FG_Creator_Filter_Custom as Filter_Custom;
 use YMCFilterGrids\FG_Data_Store as Data_Store;
@@ -83,6 +84,7 @@ class FG_Components {
 			'dropdown'     => Filter_Dropdown::class,
 			'range_slider' => Filter_Range_Slider::class,
 			'date_picker'  => Filter_Date_Picker::class,
+			'flatpickr_date_picker'  => Filter_Flatpickr::class,
 			'dependent'    => Filter_Dependent::class,
 			'alphabetical' => Filter_Alphabetical::class,
 			'custom'       => Filter_Custom::class
@@ -90,7 +92,8 @@ class FG_Components {
 
 		$filters_without_tax = [
 			'alphabetical',
-			'date_picker'			
+			'date_picker',		
+			'flatpickr_date_picker'
 		];
 
 		foreach ($filter_options as $value) {

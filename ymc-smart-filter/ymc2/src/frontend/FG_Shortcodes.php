@@ -58,25 +58,10 @@ class FG_Shortcodes {
 
       // Check if date picker is needed
       $filter_layout = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_type');
-      $ymc_fg_filter_options = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_options');
-      
-      $needs_datepicker = false;
-      
-      if ('date_picker' === $filter_layout) {
-         $needs_datepicker = true;
-      }
-      
-      if ( ! $needs_datepicker && is_array($ymc_fg_filter_options) ) {
-         $types = array_column($ymc_fg_filter_options, 'filter_type');
-         if ( in_array('date_picker', $types, true) ) {
-            $needs_datepicker = true;
-         }
-      }
+      $ymc_fg_filter_options = Data_Store::get_meta_value($filter_id, 'ymc_fg_filter_options');     
 
-      if ($needs_datepicker) {
-         wp_enqueue_script('jquery-ui-datepicker');
-         wp_enqueue_style('query_ui'); 
-      }
+      // Data Picker
+      ymc_enqueue_filter_assets($filter_layout, $ymc_fg_filter_options);
 
       // Activate main script
       wp_enqueue_script('ymc_script');     

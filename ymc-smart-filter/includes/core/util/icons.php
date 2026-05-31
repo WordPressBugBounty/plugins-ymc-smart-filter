@@ -1,4 +1,4 @@
-
+<?php if (!defined( 'ABSPATH')) exit; ?>
 
 <div id="ymc-icons-modal" class="ymc-icons-modal" style="display:none;">
 
