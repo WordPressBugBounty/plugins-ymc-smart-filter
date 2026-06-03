@@ -30,7 +30,7 @@ if (! function_exists('ymc_enqueue_filter_assets')) {
 			],
 
 			'flatpickr_date_picker' => [
-				'scripts' => ['ymc_flatpickr'],
+				'scripts' => ['ymc_flatpickr_confirm_date'],
 				'styles'  => ['ymc_flatpickr'],
 			],
 

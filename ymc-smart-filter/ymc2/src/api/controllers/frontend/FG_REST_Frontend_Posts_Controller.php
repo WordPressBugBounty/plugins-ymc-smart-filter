@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace YMCFilterGrids\api\controllers\frontend;
 
@@ -47,8 +46,9 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
                'permission_callback' => [ $this, 'public_permissions_check' ],
             ],
          ]
-      );
-   }
+      ); 
+
+   }  
 
 
 
@@ -113,7 +113,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		$date_query          = $params['date_query'] ?? null;
 
       // Flatpickr Data Picker
-      $filter_flatpickr = $params['flatpickr_filter'] ?? [];
+      $filter_flatpickr    = $params['flatpickr_filter'] ?? [];
 
 		// Search query
 		$keyword_search      = $params['search'] ?? null;
@@ -298,58 +298,53 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 			}
 		}  
 
-      // Flatpickr Date Filter
+      // Flatpickr Date Filter 
       if ( ! empty( $filter_flatpickr ) && is_array( $filter_flatpickr ) ) {
 
-         $source   = sanitize_text_field( $filter_flatpickr['source'] ?? 'post_date' );
-         $meta_key = sanitize_text_field( $filter_flatpickr['meta_key'] ?? '' );
+         $source      = sanitize_text_field( $filter_flatpickr['source'] ?? 'post_date' );
+         $meta_key    = sanitize_text_field( $filter_flatpickr['meta_key'] ?? '' );
+         $picker_type = sanitize_key( $filter_flatpickr['picker_type'] ?? 'date' );        
+         $from_str    = sanitize_text_field( $filter_flatpickr['from'] ?? '' );
+         $to_str      = sanitize_text_field( $filter_flatpickr['to'] ?? '' );
 
-         $from_ts = absint( $filter_flatpickr['from'] ?? 0 );
-         $to_ts   = absint( $filter_flatpickr['to'] ?? 0 );
-
-         if ( $from_ts > 0 && $to_ts > 0 ) {
-
-            $from_date = [
-               'year'  => (int) wp_date( 'Y', $from_ts ),
-               'month' => (int) wp_date( 'm', $from_ts ),
-               'day'   => (int) wp_date( 'd', $from_ts ),
-            ];
-
-            $to_date = [
-               'year'  => (int) wp_date( 'Y', $to_ts ),
-               'month' => (int) wp_date( 'm', $to_ts ),
-               'day'   => (int) wp_date( 'd', $to_ts ),
-            ];
-
-            // Filter by post publish date
-            if ( $source === 'post_date' ) {
+         if ( ! empty( $from_str ) && ! empty( $to_str ) ) {
+           
+            if ( $source === 'post_date' ) { 
 
                $args['date_query'][] = [
-                  'after'     => $from_date,
-                  'before'    => $to_date,
+                  'column'    => 'post_date',
+                  'after'     => $from_str,
+                  'before'    => $to_str,
                   'inclusive' => true,
                ];
-            }
-
-            // Filter by custom meta date field
+            }            
             elseif ( $source === 'meta_key' && ! empty( $meta_key ) ) {
 
                if ( ! isset( $args['meta_query'] ) ) {
                   $args['meta_query'] = [ 'relation' => 'AND' ];
                }
 
-               $args['meta_query'][] = [
-                  'key'     => $meta_key,
-                  'value'   => [
-                     wp_date( 'Y-m-d', $from_ts ),
-                     wp_date( 'Y-m-d', $to_ts ),
-                  ],
-                  'compare' => 'BETWEEN',
-                  'type'    => 'DATE',
-               ];
+               if ( $picker_type === 'datetime' ) {
+
+                  $args['meta_query'][] = [
+                     'key'     => $meta_key,
+                     'value'   => [ $from_str, $to_str ],
+                     'compare' => 'BETWEEN',
+                     'type'    => 'DATETIME',
+                  ];
+               } 
+               else {
+
+                  $args['meta_query'][] = [
+                     'key'     => $meta_key,
+                     'value'   => [ substr($from_str, 0, 10), substr($to_str, 0, 10) ],
+                     'compare' => 'BETWEEN',
+                     'type'    => 'DATE',
+                  ];
+               }
             }
          }
-      }
+      }      
 
 		// Search query
 		$search_filters_enabled = false;

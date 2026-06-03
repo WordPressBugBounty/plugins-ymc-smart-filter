@@ -92,9 +92,17 @@ class FG_Frontend_Scripts {
          'ymc_flatpickr',
          YMC_PLUGIN_URL . 'assets/js/lib/flatpickr.min.js',
          array(),
-         $version,
+         '4.6.13',
          true
-      );      
+      );   
+      
+      wp_register_script( 
+         'ymc_flatpickr_confirm_date', 
+         YMC_PLUGIN_URL . 'assets/js/lib/flatpickrConfirmDate.js', 
+         array('ymc_flatpickr'),
+         '4.6.13', 
+         true 
+      );
 
 	}
 

@@ -356,6 +356,7 @@ class FG_Data_Store {
 			'query_source'  => 'post_date',
 			'meta_key'      => '',			
 			'mode'          => 'single',
+			'picker_type'   => 'date',
 			'format'        => 'd.m.Y',
 			'placeholder'   => '',
 			'use_advanced'  => 'false',

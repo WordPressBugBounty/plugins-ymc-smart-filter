@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 
 namespace YMCFilterGrids\frontend;
 
@@ -37,10 +37,27 @@ class FG_Filter_Flatpickr extends FG_Abstract_Filter_Impl implements IFilter {
 		 */
 		$fp_mode = sanitize_key($flatpickr_settings['mode'] ?? 'single');
 
+
+      /**
+      * Flatpickr picker type
+      *
+      * date | datetime
+      */
+      $fp_picker_type = sanitize_key($flatpickr_settings['picker_type'] ?? 'date');
+
 		/**
 		 * Date format
 		 */
-		$fp_format = sanitize_text_field($flatpickr_settings['format'] ?? 'd.m.Y');
+		$fp_format = sanitize_text_field($flatpickr_settings['format'] ?? '');
+
+      if ( empty( $fp_format ) ) {
+          $fp_format = 'd.m.Y';
+      }
+
+      if ( $fp_picker_type === 'datetime' ) {
+         $fp_format .= ' H:i';
+      }
+
 
       /**
        * Flatpickr custom initialization
@@ -61,11 +78,21 @@ class FG_Filter_Flatpickr extends FG_Abstract_Filter_Impl implements IFilter {
 
 		if ( empty( $placeholder ) ) {
 
-			$placeholder =
-				$fp_mode === 'range'
-					? __( 'Select date range...', 'ymc-smart-filter' )
-					: __( 'Select date...', 'ymc-smart-filter' );
-		}
+         if ( $fp_picker_type === 'datetime' ) {
+
+            $placeholder =
+               $fp_mode === 'range'
+                  ? __( 'Select date & time range...', 'ymc-smart-filter' )
+                  : __( 'Select date & time...', 'ymc-smart-filter' );
+
+         } else {
+
+            $placeholder =
+               $fp_mode === 'range'
+                  ? __( 'Select date range...', 'ymc-smart-filter' )
+                  : __( 'Select date...', 'ymc-smart-filter' );
+         }
+      }
 
 		/**
 		 * Flatpickr frontend config
@@ -78,6 +105,12 @@ class FG_Filter_Flatpickr extends FG_Abstract_Filter_Impl implements IFilter {
 			'locale'      => ['firstDayOfWeek' => (int) ($flatpickr_settings['first_day'] ?? 1),
 			],
 		];
+
+      if ( $fp_picker_type === 'datetime' ) {
+         $js_options['enableTime'] = true;
+         $js_options['time_24hr']  = true;
+         $js_options['confirmText'] = __( 'Apply', 'ymc-smart-filter' );
+      }
 
       $allowed_themes = [
          'dark',
@@ -102,6 +135,7 @@ class FG_Filter_Flatpickr extends FG_Abstract_Filter_Impl implements IFilter {
 			data-filter-type="flatpickr"			
 			data-query-source="<?php echo esc_attr( $fp_query_source ); ?>"
 			data-meta-key="<?php echo esc_attr( $fp_meta_key ); ?>"
+			data-picker-type="<?php echo esc_attr( $fp_picker_type ); ?>"
          data-custom-init="<?php echo esc_attr( $fp_custom_init ); ?>">
 
 			<div class="filter-flatpickr-inner">

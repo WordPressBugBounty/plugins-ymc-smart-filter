@@ -260,6 +260,7 @@ if (!defined( 'ABSPATH')) exit;
                   $fp_query_source = $ymc_fg_flatpickr_settings['query_source'] ?? 'post_date';
                   $fp_meta_key     = $ymc_fg_flatpickr_settings['meta_key'] ?? '';             
                   $fp_mode         = $ymc_fg_flatpickr_settings['mode'] ?? 'single';
+                  $fp_picker_type  = $ymc_fg_flatpickr_settings['picker_type'] ?? 'date';
                   $fp_format       = $ymc_fg_flatpickr_settings['format'] ?? 'd.m.Y';
                   $fp_placeholder  = $ymc_fg_flatpickr_settings['placeholder'] ?? '';
                   $fp_use_adv      = $ymc_fg_flatpickr_settings['use_advanced'] ?? 'false';
@@ -280,6 +281,18 @@ if (!defined( 'ABSPATH')) exit;
                      <div class="group-elements js-flatpickr-standard-settings<?php echo esc_attr(ymc_get_hidden_class( $show_fp_standard_settings )); ?>">
                         <legend class="form-legend"><?php esc_html_e('Date Picker Settings', 'ymc-smart-filter'); ?></legend>
 
+                        <?php ymc_render_field_header('Picker Type', 'Choose whether the calendar should allow selecting dates only or dates with time. Use Date & Time Picker when filtering content by specific hours and minutes.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[picker_type]">
+                           <option value="date" <?php selected($fp_picker_type, 'date'); ?>>
+                              <?php esc_html_e('Date Picker', 'ymc-smart-filter'); ?>
+                           </option>
+
+                           <option value="datetime" <?php selected($fp_picker_type, 'datetime'); ?>>
+                              <?php esc_html_e('Date & Time Picker', 'ymc-smart-filter'); ?>
+                           </option>
+                        </select>
+                        <div class="spacer-25"></div>
+
                         <?php ymc_render_field_header('Query Source', 'Select whether to filter by standard Post Date or by a custom Meta Key (e.g., ACF date fields).'); ?>
                         <select class="form-select js-fp-query-source" name="ymc_fg_flatpickr_settings[query_source]">
                            <option value="post_date" <?php selected($fp_query_source, 'post_date'); ?>><?php esc_html_e('Post Date', 'ymc-smart-filter'); ?></option>
@@ -289,7 +302,8 @@ if (!defined( 'ABSPATH')) exit;
 
                         <?php $is_meta_hidden = ($fp_query_source !== 'meta_key') ? ' is-hidden' : ''; ?>
                         <div class="js-fp-meta-key-wrap<?php echo esc_attr($is_meta_hidden); ?>">
-                           <?php ymc_render_field_header('Meta Key', 'Enter the exact meta key name where the dates are stored (e.g., event_date).'); ?>
+                           <?php ymc_render_field_header('Meta Key', 'Enter the exact meta key name where the dates are stored (e.g., event_date). <br>
+                           For DateTime Picker, the custom field value must be stored in MySQL DATETIME format: <b>YYYY-MM-DD HH:MM:SS</b> (e.g. 2026-05-28 18:30:00).'); ?>
                            <input class="form-input" type="text" name="ymc_fg_flatpickr_settings[meta_key]" 
                                  placeholder="<?php esc_attr_e('event_date', 'ymc-smart-filter'); ?>" 
                                  value="<?php echo esc_attr($fp_meta_key); ?>">
@@ -299,10 +313,10 @@ if (!defined( 'ABSPATH')) exit;
                         <?php ymc_render_field_header('Filter Mode', 'Select whether the user should pick a single date or a date range.'); ?>
                         <select class="form-select" name="ymc_fg_flatpickr_settings[mode]">
                            <option value="single" <?php selected($fp_mode, 'single'); ?>><?php esc_html_e('Single Date', 'ymc-smart-filter'); ?></option>
-                           <option value="range" <?php selected($fp_mode, 'range'); ?>><?php esc_html_e('Date Range (From - To)', 'ymc-smart-filter'); ?></option>
+                           <option value="range" <?php selected($fp_mode, 'range'); ?>><?php esc_html_e('Date Range (From - To)', 'ymc-smart-filter'); ?></option>                           
                         </select>
-                        <div class="spacer-25"></div>
-
+                        <div class="spacer-25"></div>                        
+                        
                         <?php ymc_render_field_header('Display Date Format', 'How the date will be displayed to the user on the front-end.'); ?>
                         <select class="form-select" name="ymc_fg_flatpickr_settings[format]">
                            <option value="d.m.Y" <?php selected($fp_format, 'd.m.Y'); ?>>dd.mm.yyyy (31.12.2026)</option>
@@ -385,8 +399,13 @@ if (!defined( 'ABSPATH')) exit;
    // Initialize and configure Flatpickr
    const fp = flatpickr(".filter-72 .js-ymc-flatpickr-input", {   
       dateFormat: "Y-m-d",
-      minDate: "today",
+      mode: "range",
+      // enableTime: true/false
       // other settings...
+      onReady(selectedDates, dateStr, instance) {               
+         const targetInput = instance.altInput || instance.input;
+         targetInput.placeholder = "Select date & time...";
+      },
       onChange(selectedDates) {
          window.YMCFlatpickr.apply(this.input, selectedDates);
       }
