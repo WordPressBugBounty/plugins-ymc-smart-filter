@@ -102,8 +102,10 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		$order_meta_value    = $params['order_meta_value'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_order_meta_value');
 		$post_order_multiple = $params['post_order_by_multiple'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_post_order_by_multiple');
 
-		// Post status
-		$post_status         = $params['post_status'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_post_status');
+		// Post status      
+      $configured_statuses = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_status');
+      $requested_statuses  = (array) ($params['post_status'] ?? $configured_statuses);
+      $post_status         = array_intersect($requested_statuses,  $configured_statuses);
 
 		// Meta query
 		$meta_query_raw      = $params['meta_query'] ?? [];
@@ -344,7 +346,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
                }
             }
          }
-      }      
+      }   
 
 		// Search query
 		$search_filters_enabled = false;
