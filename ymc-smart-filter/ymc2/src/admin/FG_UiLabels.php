@@ -36,7 +36,7 @@ class FG_UiLabels {
             'dependent'    => __('Dependent Filter', 'ymc-smart-filter'),
             'alphabetical' => __('Alphabetical Navigation', 'ymc-smart-filter'),
             'custom'       => __('Custom filter', 'ymc-smart-filter'),
-            'composite'    => __('Combined filter', 'ymc-smart-filter')       
+            'composite'    => __('Combined filter', 'ymc-smart-filter')   
          ],
          'placements' => [
             'top'    => __('Top', 'ymc-smart-filter'),
@@ -122,11 +122,7 @@ class FG_UiLabels {
             'pending'    => __('Pending', 'ymc-smart-filter'),
             'draft'      => __('Draft', 'ymc-smart-filter'),
             'future'     => __('Future', 'ymc-smart-filter'),
-            'private'    => __('Private', 'ymc-smart-filter'),
-            'inherit'    => __('Inherit', 'ymc-smart-filter'),
-            'trash'      => __('Trash', 'ymc-smart-filter'),
-            'any'        => __('Any', 'ymc-smart-filter'),
-            'auto-draft' => __('Auto Draft', 'ymc-smart-filter')
+            'private'    => __('Private', 'ymc-smart-filter')            
          ],
          'post_animation_effect' => [
             ''                       => __('None', 'ymc-smart-filter'),
