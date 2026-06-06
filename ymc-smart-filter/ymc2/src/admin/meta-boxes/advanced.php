@@ -238,11 +238,14 @@ if (!defined( 'ABSPATH')) exit;
 		                <?php
 		                if($filter_types) :
 			                foreach ($filter_types as $key => $filter_type) :
-                                if ($key === 'composite' || $key === 'dependent') {
-                                    continue;
-                                }
-				                printf(
-					                '<option value="%s"%s>%s</option>',
+                           if ($key === 'composite' || 
+                              $key === 'dependent' ||
+                              $key === 'date_picker' ||
+                              $key === 'flatpickr_date_picker' ||
+                              $key === 'alphabetical') {
+                              continue;
+                           }
+				                printf('<option value="%s"%s>%s</option>',
 					                esc_attr($key),
 					                selected($ymc_fg_extra_filter_type, $key, false),
 					                esc_html($filter_type)
@@ -255,7 +258,7 @@ if (!defined( 'ABSPATH')) exit;
                 </div>
                 <div class="group-elements">
 	                <?php ymc_render_field_header('Taxonomies for Extra Filter',
-		                'The selected taxonomies will be used to build external (extra) filters on the page. For a filter of the Date Picker type, selecting a category is not required.'); ?>
+		                'The selected taxonomies will be used to build external (extra) filters on the page.'); ?>
                     <?php
                         $tax_name = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
                         $tax_selected = array_intersect_key(ymc_get_taxonomies($ymc_fg_post_types), array_flip($tax_name));
@@ -263,8 +266,7 @@ if (!defined( 'ABSPATH')) exit;
                     <select class="form-select" name="ymc_fg_extra_taxonomy">
                         <?php if($tax_selected) :
                             foreach ($tax_selected as $key => $label) :
-                                printf(
-                                    '<option value="%s"%s>%s</option>',
+                                printf('<option value="%s"%s>%s</option>',
                                     esc_attr($key),
                                     selected($ymc_fg_extra_taxonomy, $key, false),
                                     esc_html($label)

@@ -15,7 +15,8 @@ use YMCFilterGrids\FG_Data_Store as Data_Store;
  */
 if (! function_exists( 'ymc_build_filter_options_from_post')) {
 	function ymc_build_filter_options_from_post(int $post_id, string $filter_type, array $filter_options): array {
-		$options = [];
+		
+      $options = [];
 
 		if (!empty($filter_type)) {
 			if('composite' !== $filter_type) {
@@ -70,3 +71,47 @@ if (! function_exists( 'ymc_build_filter_options_from_post')) {
 		return $options;
 	}
 }
+
+
+/**
+ * Determines the allowed post statuses for a filter based on its configuration and the current user's capabilities.
+ * @param int $filter_id The ID of the filter for which to determine allowed post statuses.
+ * @param array|null $requested_statuses Optional array of requested post statuses to check against the filter's configured statuses. If null, the function will use the filter's configured post statuses.
+ * @return array An array of allowed post statuses for the filter.
+ */
+if (! function_exists( 'ymc_get_allowed_post_statuses')) {   
+   function ymc_get_allowed_post_statuses( int $filter_id, $requested_statuses = null ): array {
+
+      $post_status = [];
+
+      $public_statuses = [ 'publish', 'future' ];
+
+      $configured_statuses = (array) Data_Store::get_meta_value($filter_id, 'ymc_fg_post_status');
+
+      $requested_statuses = (array) ($requested_statuses ?? $configured_statuses);
+
+      $statuses = array_intersect($requested_statuses, $configured_statuses);
+
+      foreach ( $statuses as $status ) {
+
+         if (in_array( $status, $public_statuses, true )) {
+            $post_status[] = $status;
+            continue;
+         }
+
+         if (is_user_logged_in() && current_user_can( 'read_private_posts' )) {
+            $post_status[] = $status;
+         }
+      }
+
+      if ( empty( $post_status ) ) {
+         return [ 'publish' ];
+      }
+
+      return $post_status;
+   }
+}
+
+
+
+

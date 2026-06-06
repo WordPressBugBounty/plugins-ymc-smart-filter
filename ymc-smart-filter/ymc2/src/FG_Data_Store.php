@@ -128,7 +128,7 @@ class FG_Data_Store {
 
 		'ymc_fg_order_meta_key'        => '',
 
-		'ymc_fg_order_meta_value'      => 'meta_value',
+		'ymc_fg_order_meta_value'      => '',
 
 		'ymc_fg_post_order_by_multiple' => [],
 
