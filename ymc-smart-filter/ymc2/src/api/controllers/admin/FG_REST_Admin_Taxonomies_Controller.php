@@ -230,7 +230,8 @@ class FG_REST_Admin_Taxonomies_Controller extends FG_REST_Abstract_Controller {
       $params = $request->get_json_params();
 
       $post_id  = absint( $params['post_id'] ?? 0 );
-      $tax_attrs = $params['tax_attrs'] ?? [];
+      $tax_attrs = $params['tax_attrs'] ?? null;
+      $all_button_payload = $params['all_button'] ?? null;
 
       if (empty( $post_id ) || empty( $tax_attrs ) || ! is_array( $tax_attrs )) {
 
@@ -239,7 +240,30 @@ class FG_REST_Admin_Taxonomies_Controller extends FG_REST_Abstract_Controller {
             'Invalid data received.',
             400
          );
+      }      
+     
+      $all_buttons_meta = Data_Store::get_meta_value( $post_id, 'ymc_fg_filter_all_button' );
+     
+      if ( ! is_array( $all_buttons_meta ) ) {
+         $all_buttons_meta = [];
       }
+
+      if ($all_button_payload && isset($all_button_payload['tax_name'], $all_button_payload['settings'])) {       
+
+         $tax_name = sanitize_text_field( $all_button_payload['tax_name'] );
+         $settings = $all_button_payload['settings'];
+
+         $clean_settings = [
+            'all_label'  => sanitize_text_field( $settings['all_label'] ?? 'All' ),
+            'is_visible' => (($settings['is_visible'] ?? 'yes') === 'yes') ? 'yes' : 'no'
+         ];
+
+         $all_buttons_meta[ $tax_name ] = $clean_settings;
+
+         update_post_meta($post_id, 'ymc_fg_filter_all_button', $all_buttons_meta);
+
+      }
+
 
       /**
        * Normalize taxonomy attributes.
@@ -251,11 +275,13 @@ class FG_REST_Admin_Taxonomies_Controller extends FG_REST_Abstract_Controller {
          $tax_attrs
       );
 
+      $tax_attrs = map_deep( $tax_attrs, 'sanitize_text_field' );
+
       $updated = update_post_meta($post_id, 'ymc_fg_tax_attrs', $tax_attrs);
 
       return $this->success_response([
-         'response' => (bool) $updated,
-         'message'  => 'Taxonomy saved'
+         'response' => (bool) $updated,      
+         'message'  => 'Taxonomy saved'         
       ]);
    }
 

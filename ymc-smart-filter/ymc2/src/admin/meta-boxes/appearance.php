@@ -126,7 +126,7 @@ if (!defined( 'ABSPATH')) exit;
                     <div class="spacer-25"></div>
                 </div>
 
-	            <?php $show_field_to_sort = ($ymc_fg_term_sort_direction !== 'manual'); ?>
+	             <?php $show_field_to_sort = ($ymc_fg_term_sort_direction !== 'manual'); ?>
                 <div class="group-elements js-term-sort-field<?php echo esc_attr(ymc_get_hidden_class( $show_field_to_sort )); ?>">
 	                <?php ymc_render_field_header('Field to Sort by Terms', 'Select the field to use to sort terms.<br> 
 	                If manual sorting is selected, this field will not be taken into account when sorting terms.'); ?>
@@ -167,83 +167,9 @@ if (!defined( 'ABSPATH')) exit;
                   <label class="field-label" for="ymc_fg_show_post_count">
                      <?php esc_html_e('Show post count next to each term', 'ymc-smart-filter'); ?></label>
                   <div class="spacer-25"></div>
-                </div> 
-
-                <?php $show_filter_button_all = ($ymc_fg_filter_type === 'default' || $ymc_fg_filter_type === 'composite'); ?>
-                <div class="group-elements js-filter-button-all<?php echo esc_attr(ymc_get_hidden_class( $show_filter_button_all )); ?>">
-                    <?php
-                        $tax_selected = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
-                        $filter_all_button = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_all_button');
-                        $taxonomies = array_intersect_key(ymc_get_taxonomies($ymc_fg_post_types), array_flip($tax_selected));
-                        $allowed_filter_types = ['default', 'composite'];
-                    ?>
-                    <?php ymc_render_field_header('Button "All" Settings', 'Customize text and visibility for the "All" option in filters.
-                    This will only apply to the Default filter type.'); ?>
-                    <div class="filter-all-settings">
-                        <div class="filter-all-settings__header">
-                            <div class="filter-all-settings__cell filter-all-settings__cell--headline">
-                                <?php ymc_render_field_header('Taxonomy', 'Taxonomy name'); ?>
-                            </div>
-                            <div class="filter-all-settings__cell filter-all-settings__cell--headline">
-                                <?php ymc_render_field_header('"All" button label', 'Set the label for the "All" button'); ?>
-                            </div>
-                            <div class="filter-all-settings__cell filter-all-settings__cell--headline">
-                                <?php ymc_render_field_header('Visibility', 'Set the visibility for the "All" button'); ?>
-                            </div>
-                        </div>
-                        <?php
-                        $number_of_iterations = 0;
-
-                        if(!empty($taxonomies)) :
-                            foreach ($taxonomies as $key => $value) :
-	                            $filter_info = null;
-	                            foreach ($ymc_fg_filter_options as $filter) {
-		                            if (in_array($key, $filter['tax_name'])) {
-			                            $filter_info = $filter;
-			                            break;
-		                            }
-	                            }
-	                            if (!$filter_info || !in_array($filter_info['filter_type'], $allowed_filter_types)) {
-		                            continue;
-	                            }
-                            ?>
-                            <div class="filter-all-settings__body">
-                                <?php printf('<div class="filter-all-settings__cell filter-all-settings__cell--headline">%s</div>',
-                                       esc_attr($value)); ?>
-
-                                <?php printf('<div class="filter-all-settings__cell">
-                                    <input class="form-input" type="text" name="ymc_fg_filter_all_button[%s][all_label]" placeholder="All" value="%s"></div>',
-                                           esc_attr($key), esc_attr($filter_all_button[$key]['all_label'] ?? 'All')); ?>
-
-                                <?php $is_visible_btn_all = $filter_all_button[$key]['is_visible'] ?? 'yes'; ?>
-                                <div class="filter-all-settings__cell">
-                                    <select class="form-select" name="ymc_fg_filter_all_button[<?php echo esc_attr($key); ?>][is_visible]">
-                                    <option value="yes"
-                                        <?php selected($is_visible_btn_all, 'yes'); ?>>
-                                        <?php echo esc_html('Visibile'); ?>
-                                    </option>
-                                    <option value="no"
-                                        <?php selected($is_visible_btn_all, 'no'); ?>>
-                                        <?php echo esc_html('Hidden'); ?>
-                                    </option>
-                                    </select>
-                                </div>
-                            </div>
-                           <?php
-	                            $number_of_iterations ++;
-                           endforeach;
-                        else :
-                            printf('<div class="notification notification--info">%s</div>',
-                                esc_html__('No taxonomies selected', 'ymc-smart-filter'));
-                        endif;
-                        if($number_of_iterations === 0) :
-                            printf('<div class="notification notification--info">%s</div>',
-                                esc_html__('This will only apply to the Default filter type.', 'ymc-smart-filter'));
-                        endif; ?>
-                    </div>
-                </div>                
+                </div>                            
                  
-                <?php                
+                <?php
                   $needs_flatpickr = false;
                   if ( is_array($ymc_fg_filter_options) ) {
                      $types = array_column($ymc_fg_filter_options, 'filter_type');

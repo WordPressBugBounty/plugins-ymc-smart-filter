@@ -134,12 +134,21 @@ class FG_Taxonomy {
 		$selected_tax = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
 		$tax_attrs    = Data_Store::get_meta_value($post_id, 'ymc_fg_tax_attrs');
 		$tax_sort     = Data_Store::get_meta_value($post_id, 'ymc_fg_tax_sort');
+		$all_buttons  = Data_Store::get_meta_value($post_id, 'ymc_fg_filter_all_button');
+      $global_filter_type = Data_Store::get_meta_value( $post_id, 'ymc_fg_filter_type' );
+      $composite_options  = Data_Store::get_meta_value( $post_id, 'ymc_fg_filter_options' );
+
       $tax_attrs    = is_array($tax_attrs) ? $tax_attrs : [];
       $tax_sort     = is_array($tax_sort) ? $tax_sort : [];
 		
       $selected_tax = is_array($selected_tax) ? $selected_tax : [];
 
 		self::sort_taxonomies($tax_sort, $all_tax);
+      
+      $all_button_defaults = [
+         'all_label'  => 'All',
+         'is_visible' => 'yes'
+      ];
 
 		ob_start();
 
@@ -148,20 +157,28 @@ class FG_Taxonomy {
 			echo '<div class="taxonomies-list js-tax-insert js-tax-sortable">';
 
 			foreach($all_tax as $name => $label) {
+
 				self::set_data_attributes($name, $tax_attrs);
 
 				$is_tax_sel = (in_array($name, $selected_tax)) ? 'checked' : '';
 
             $display_label = self::$tax_label !== '' ? self::$tax_label : $label;
             $class_status  = self::$tax_status !== '' ? ' ' . self::$tax_status : '';
+            
+            $current_tax_options = (isset($all_buttons[$name]) && is_array($all_buttons[$name])) ? $all_buttons[$name] : [];
+            $js_all_button_options = wp_parse_args($current_tax_options, $all_button_defaults);
+
+            $current_tax_filter_type = self::get_taxonomy_filter_type( $name, $global_filter_type, $composite_options );
 
 				echo '<div class="taxonomies-list__item'. esc_attr($class_status).'"
-					   data-tax-original-name="'. esc_attr($label) .'"
+					   data-tax-original-name="'. esc_attr($label) .'"                  
 					   data-tax-name="'. esc_attr($name) .'"
 					   data-tax-label="'. esc_attr($display_label) .'"
 					   data-tax-color="'. esc_attr(self::$tax_color) .'"
 					   data-tax-bg="'. esc_attr(self::$tax_background) .'"
-					   data-tax-status="'. esc_attr(self::$tax_status) .'">
+					   data-tax-status="'. esc_attr(self::$tax_status) .'"
+                  data-all-button-options="'. esc_attr(wp_json_encode($js_all_button_options)) .'"
+                  data-filter-type="'. esc_attr( $current_tax_filter_type ) .'">
                   <i class="fa-solid fa-up-down-left-right icon-is-drag js-tax-handle"></i>
 					   <input class="form-checkbox js-tax-checkbox" id="'. esc_attr($name) .'" data-label="'. esc_attr($label) .'" type="checkbox" name="ymc_fg_taxonomies[]" '. esc_attr($is_tax_sel) .' value="'.esc_attr($name).'">
 					   <label class="field-label" for="'. esc_attr($name) .'">'. esc_html($display_label) .'</label>
@@ -172,7 +189,8 @@ class FG_Taxonomy {
 			}
 			echo '</div>';
 
-		} else {
+		} 
+      else {
 			echo '<div class="taxonomies-list js-tax-insert js-tax-sortable">					 
 					 <div class="notification notification--warning">'. esc_html__('No taxonomies found.', 'ymc-smart-filter') .'</div>
 				  </div>';
@@ -207,4 +225,34 @@ class FG_Taxonomy {
 		return $result;
 	}
 
+
+   /**
+    * Gets the filter type for a given taxonomy.
+    *
+    * @param string $tax_slug
+    * @param string $global_type
+    * @param array|string $composite_options
+    * @return string
+    */
+   public static function get_taxonomy_filter_type( $tax_slug, $global_type, $composite_options ) : string {
+      
+      if ( 'composite' !== $global_type ) {
+         return ! empty( $global_type ) ? $global_type : 'default';
+      }
+      
+      if ( is_array( $composite_options ) ) {
+         foreach ( $composite_options as $option ) {            
+            if ( ! empty( $option['tax_name'] ) && is_array( $option['tax_name'] ) ) {              
+               if ( in_array( $tax_slug, $option['tax_name'], true ) ) {
+                  return ! empty( $option['filter_type'] ) ? $option['filter_type'] : 'default';
+               }
+            }
+         }
+      }
+      
+      return 'default';
+   }
+
 }
+
+
