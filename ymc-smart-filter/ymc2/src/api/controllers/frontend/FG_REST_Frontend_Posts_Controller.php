@@ -115,8 +115,8 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
       // Flatpickr Data Picker
       $filter_flatpickr    = $params['flatpickr_filter'] ?? [];
 
-		// Search query
-		$keyword_search      = $params['search'] ?? null;
+		// Search query		
+      $keyword_search      = sanitize_text_field($params['search'] ?? '');
       $search_post_id      = $params['search_post_id'] ?? 0;
 
 		// Sort posts by ajax
@@ -368,6 +368,10 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 
 			$args['s'] = $keyword_search;
 			$args['sentence'] = true;
+
+         if ( $search_meta_fields === 'yes' ) {
+            $args['ymc_search_term'] = $keyword_search;
+         }
 
 			$results_text = Data_Store::get_meta_value($filter_id, 'ymc_fg_results_found_text');
 			$results_text = apply_filters('ymc/search/results_found_text',  $results_text);
@@ -743,7 +747,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * @param string $where The existing WHERE clause of the SQL query.
 	 * @return string The modified WHERE clause including the postmeta table search condition.
 	 */
-	public static function search_where( string $where ) : string {
+	/*public static function search_where( string $where ) : string {
 		global $wpdb;
 
 		$pattern = "/\(\s*{$wpdb->posts}.post_title\s+LIKE\s*'([^']*)'\s*\)/";
@@ -760,7 +764,27 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		}, $where );
 
 		return $where;
-	}
+	}*/
+
+   public static function search_where( string $where, \WP_Query $query ) : string {
+
+      global $wpdb;
+
+      $search_term = $query->get( 'ymc_search_term' );
+
+      if ( empty( $search_term ) ) {
+         return $where;
+      }
+
+      $like = '%' . $wpdb->esc_like( $search_term ) . '%';     
+
+      $where .= $wpdb->prepare(
+         " OR ( pm.meta_value LIKE %s )",
+         $like
+      );
+
+      return $where;
+   }
 
 
 	/**
@@ -780,8 +804,8 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * @return void
 	 */
 	public static function add_search_filters() : void {
-		add_filter('posts_join', [__CLASS__, 'search_join']);
-		add_filter('posts_where', [__CLASS__, 'search_where']);
+		add_filter('posts_join', [__CLASS__, 'search_join']);		
+      add_filter('posts_where', [ __CLASS__, 'search_where' ], 10, 2);
 		add_filter('posts_distinct', [__CLASS__, 'search_distinct']);
 	}
 

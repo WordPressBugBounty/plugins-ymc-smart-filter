@@ -153,7 +153,8 @@ class FG_Save_Meta_Boxes {
          'ymc_fg_scroll_to_filters_on_load' => 'no',
          'ymc_fg_debug_mode' => 'no',
          'ymc_fg_show_hidden_cpt' => 'no',
-         'ymc_fg_show_post_count' => 'no'
+         'ymc_fg_show_post_count' => 'no',
+         'ymc_fg_per_page' => '4'
       ];
 
       foreach ($text_fields as $meta_key => $default) {
@@ -230,8 +231,7 @@ class FG_Save_Meta_Boxes {
     */
    private static function save_numeric_fields(int $post_id) : void {
 
-      $numeric_fields = [
-         'ymc_fg_per_page'                     => 5,
+      $numeric_fields = [         
          'ymc_fg_post_excerpt_length'          => 30,
          'ymc_fg_max_autocomplete_suggestions' => 10,
          'ymc_fg_pagination_mid_size'          => 2,

@@ -97,6 +97,8 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
          's'              => $keyword
       ];
 
+      $args['ymc_search_term'] = $keyword;
+
       if ( $search_mode === 'filtered' ) {
 
          self::add_tax_query_args(
@@ -209,8 +211,8 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 
 
    public static function add_search_filters() : void {
-      add_filter('posts_join', [__CLASS__, 'search_join']);
-      add_filter('posts_where', [__CLASS__, 'search_where']);
+      add_filter('posts_join', [__CLASS__, 'search_join']);      
+      add_filter('posts_where', [ __CLASS__, 'search_where' ], 10, 2);
       add_filter('posts_distinct', [__CLASS__, 'search_distinct']);
    }
 
@@ -245,24 +247,25 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 	 * @param string $where The existing WHERE clause of the SQL query.
 	 * @return string The modified WHERE clause including the postmeta table search condition.
 	 */
-	public static function search_where( string $where ) : string {
-		global $wpdb;
+   public static function search_where( string $where, \WP_Query $query) : string {
 
-		$pattern = "/\(\s*{$wpdb->posts}.post_title\s+LIKE\s*'([^']*)'\s*\)/";
+      global $wpdb;
 
-		$where = preg_replace_callback( $pattern, function( $matches ) use ( $wpdb ) {
-			$raw = $matches[1];
+      $search_term = $query->get( 'ymc_search_term' );
 
-			$raw = wp_unslash( $raw );
-			$like = $wpdb->esc_like( $raw );
+      if ( empty( $search_term ) ) {
+         return $where;
+      }
 
-			$quoted_like = $wpdb->prepare( "'%s'", '%' . $like . '%' );
+      $like = '%' . $wpdb->esc_like( $search_term ) . '%';
 
-			return "({$wpdb->posts}.post_title LIKE {$quoted_like}) OR (pm.meta_value LIKE {$quoted_like})";
-		}, $where );
+      $where .= $wpdb->prepare(
+         " OR ( pm.meta_value LIKE %s )",
+         $like
+      );
 
-		return $where;
-	}
+      return $where;
+   }
 
 
    /**
