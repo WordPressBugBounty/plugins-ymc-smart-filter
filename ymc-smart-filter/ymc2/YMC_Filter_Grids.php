@@ -14,6 +14,7 @@ use YMCFilterGrids\FG_Autoloader;
 use YMCFilterGrids\admin\{FG_Backend_Scripts, FG_Post_Type, FG_Meta_Boxes, FG_Save_Meta_Boxes, FG_General_Settings};
 use YMCFilterGrids\frontend\{FG_Frontend_Scripts, FG_Shortcodes};
 use YMCFilterGrids\api\FG_REST_Manager;
+use YMCFilterGrids\integrations\FG_Builders_Manager;
 
 
 /**
@@ -28,7 +29,7 @@ final class YMC_Filter_Grids {
 	 *
 	 * @var string
 	 */
-	public string $version = '3.11.6';
+	public string $version = '3.12.0';
 
 
 	/**
@@ -205,16 +206,27 @@ final class YMC_Filter_Grids {
        * REST API Classes.     
       */
       FG_REST_Manager::init();
+
+      /**
+       * Page Builders Integrations. 
+      */
+      FG_Builders_Manager::init();
 		
+
+      /**
+       * Request from the Elementor editor.
+       */      
+      $is_elementor_editor = isset( $_GET['elementor-preview'] ) || ( defined( 'DOING_AJAX' ) && DOING_AJAX && ! empty( $_REQUEST['action'] ) && strpos( (string) $_REQUEST['action'], 'elementor_' ) === 0 );
+
 
 		/**
 		 * Core classes.
 		 */
-		if($this->is_request('frontend')) {
+		if( $this->is_request('frontend') || $is_elementor_editor ) {
 			FG_Frontend_Scripts::init();
 			FG_Shortcodes::init();
 		}
-		if($this->is_request('admin')) {
+		if( $this->is_request('admin' )) {
 			FG_Backend_Scripts::init();
 			FG_Post_Type::init();
 			FG_Meta_Boxes::init();

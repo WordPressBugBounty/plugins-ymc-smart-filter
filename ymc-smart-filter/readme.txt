@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.11.6
+Version: 3.12.0
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 3.11.6
+Stable tag: 3.12.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -43,6 +43,7 @@ Whether you’re building a blog, portfolio, news site, or product showcase – 
 - Integration with Elementor, WPBakery, and Gutenberg.
 - Mobile-friendly UI/UX optimization.
 - Visual Card Builder: Create unique post layouts using a drag-and-drop interface.
+- Seamless Page Builder Integration: Easily add and configure smart filters within your favorite editors, including Elementor, WPBakery Page Builder, and native Gutenberg blocks.
 
 
 == Installation ==
@@ -78,6 +79,9 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.12.0 =
+Added native Gutenberg block support for seamless filter integration.
+Enhanced compatibility and dedicated elements for Elementor and WPBakery Page Builders.
 = 3.11.6 =
 Fixed an SQL Injection vulnerability in the search functionality.
 = 3.11.5 =

@@ -42,7 +42,7 @@ class FG_Frontend_Scripts {
 	/**
 	 * Register all scripts.
 	 */
-	private static function register_scripts() : void {
+	public static function register_scripts() : void {
 		$suffix = '.min';
 		$version = YMC_VERSION;
      
@@ -110,7 +110,7 @@ class FG_Frontend_Scripts {
 	/**
 	 * Register all styles.
 	 */
-	private static function register_styles() : void {
+	public static function register_styles() : void {
 		$suffix = '.min';		
 		$version = YMC_VERSION;
 
