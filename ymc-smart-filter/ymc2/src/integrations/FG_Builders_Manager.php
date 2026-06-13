@@ -103,12 +103,10 @@ final class FG_Builders_Manager {
     * @param \Elementor\Widgets_Manager $widgets_manager
     * @return void
     */
-   public static function integrate_elementor( $widgets_manager ) : void {
+   public static function integrate_elementor( $widgets_manager ) : void { 
       
-      require_once dirname( __DIR__ ) . '/integrations/FG_Elementor_Widget.php';
-      
-      $widgets_manager->register(new Elementor_Widget());
-   }
+      $widgets_manager->register(new Elementor_Widget());   
+   } 
 
 
    /**
