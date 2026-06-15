@@ -293,8 +293,8 @@ class FG_Term {
 
 	/**
 	 * Update post counts
-	 * @param string $taxName
-	 * @param int $termId	 
+	 * @param string $tax_name
+	 * @param int $term_id	 
 	 *
 	 * @return void
 	 */
@@ -479,5 +479,26 @@ class FG_Term {
       sort($post_types);
       return 'ymc_fg_term_post_counts_' . $tax_name . '_' . md5(implode('|', $post_types));
    }
+
+
+   public static function get_original_term_id(int $term_id, string $taxonomy): int {
+
+      if (! function_exists('apply_filters') || empty($taxonomy)) {
+         return $term_id;
+      }
+
+      $default_language = apply_filters('wpml_default_language',  null);
+
+      $original_term_id = apply_filters(
+         'wpml_object_id',
+         $term_id,
+         $taxonomy,
+         true,
+         $default_language
+      );
+
+      return $original_term_id  ? (int) $original_term_id : $term_id;
+   }
+   
 
 }

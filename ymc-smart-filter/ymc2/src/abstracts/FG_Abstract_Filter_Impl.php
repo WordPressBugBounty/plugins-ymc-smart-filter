@@ -259,28 +259,19 @@ abstract class FG_Abstract_Filter_Impl {
     *
     * @return bool
     */
-   protected function hasAttachedPosts(int $term_id, array $post_types = [], string $taxonomy = '') {
+   protected function hasAttachedPosts(int $term_id, array $post_types = [], string $taxonomy = '') : bool {
       
       if (empty($post_types)) {         
          $term = get_term($term_id, $taxonomy);
          return !is_wp_error($term) && $term && (int)$term->count > 0;
-      }     
+      }
 
-      $query = new \WP_Query([
-         'post_type'      => $post_types,
-         'post_status'    => 'publish',
-         'posts_per_page' => 1,
-         'fields'         => 'ids',
-         'tax_query'      => [
-            [
-               'taxonomy' => $taxonomy,
-               'field'    => 'term_id',
-               'terms'    => $term_id
-            ]
-         ]
-      ]);
+      // WPML fix
+      $term_id = FG_Term::get_original_term_id($term_id, $taxonomy);
+     
+      $count = FG_Term::get_post_counts($post_types, $term_id);
 
-      return $query->found_posts > 0;
+      return $count > 0;
    }
 
 
@@ -295,28 +286,14 @@ abstract class FG_Abstract_Filter_Impl {
 	 */
    protected function get_post_count_by_term_id(int $term_id, string $taxonomy, array $post_types): int {
 
-      if (function_exists('apply_filters') && ! empty($taxonomy)) {
-
-         $default_language = apply_filters('wpml_default_language',  null);
-
-         $original_term_id = apply_filters(
-               'wpml_object_id',
-               $term_id,
-               $taxonomy,
-               true,
-               $default_language
-         );
-
-         if ($original_term_id) {
-            $term_id = (int) $original_term_id;
-         }
-      }
+      $term_id = FG_Term::get_original_term_id($term_id, $taxonomy);
 
       $count = 0;
-
+      
       foreach ($post_types as $type) {
-         $count += (int) get_term_meta($term_id, "ymc_fg_count_{$type}", true);
-      }     
+         $meta = get_term_meta($term_id, "ymc_fg_count_{$type}", true);
+         $count += (int) $meta;
+      }
 
       return $count;
    }
