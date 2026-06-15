@@ -108,7 +108,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 									continue;
 								}
 								// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-								echo $this->render_term_button( $term_id, $term_label, $this->current_post_types, $show_post_count );
+								echo $this->render_term_button( $term_id, $term_label, $tax, $this->current_post_types, $show_post_count );
 							}
 						}
 					}
@@ -122,7 +122,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		return ob_get_clean();
 	}
 
-	private function render_term_button( int $term_id, string $fallback_name, array $current_post_types, string $show_post_count = 'no' ): string {
+	private function render_term_button( int $term_id, string $fallback_name, string $taxonomy, array $current_post_types, string $show_post_count = 'no' ): string {
 		$term_class_is_default = $this->get_term_default( $term_id );
 		$term_class_is_default = 'true' === $term_class_is_default ? 'is-default' : '';
 		$term_style            = $this->get_term_style( $term_id );
@@ -131,7 +131,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_class            = $this->get_term_class( $term_id );
 		$term_name             = $this->get_term_name( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-      $has_posts             = $this->hasAttachedPosts( $term_id, $current_post_types );
+      $has_posts             = $this->hasAttachedPosts( $term_id, $current_post_types, $taxonomy );
       $term_is_disabled      = ! $has_posts ? 'is-disabled' : '';
       $disabled              = ! $has_posts ? 'disabled' : '';           
 
@@ -155,7 +155,7 @@ class FG_Filter_Default extends FG_Abstract_Filter_Impl implements IFilter {
             <span class="label-wrapper">
             <span class="text"><?php echo esc_html( $term_name ); ?></span>
             <?php if('yes' === $show_post_count) : 
-               $post_count = $this->get_post_count_by_term_id($term_id, [], $current_post_types);
+               $post_count = $this->get_post_count_by_term_id($term_id, $taxonomy, $current_post_types);
             ?>
                <span class="post-count">(<?php echo esc_html( $post_count ); ?>)</span>
             <?php endif; ?>

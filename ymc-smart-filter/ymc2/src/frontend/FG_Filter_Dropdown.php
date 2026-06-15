@@ -100,7 +100,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
                               foreach ($render_terms as $term_id => $term_label) {                                 
                                  if ('false' === $this->get_term_visible($term_id)) continue;
                                  // phpcs:ignore WordPress
-                                 echo $this->render_term_button($term_id, $term_label, [$tax], $filter_id, $this->current_post_types, $show_post_count);
+                                 echo $this->render_term_button($term_id, $term_label, $tax, $filter_id, $this->current_post_types, $show_post_count);
                               }
                            }
                            ?>
@@ -115,7 +115,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
       return ob_get_clean();
    }
 
-	public function render_term_button( int $term_id, string $fallback_name, array $tax_name, int $filter_id, array $current_post_types, string $show_post_count = 'no' ): string {
+	public function render_term_button( int $term_id, string $fallback_name, string $tax_name, int $filter_id, array $current_post_types, string $show_post_count = 'no' ): string {
 		$post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
 
 		$term_class_is_default = $this->get_term_default( $term_id );
@@ -125,7 +125,7 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
 		$term_name             = $this->get_term_name( $term_id );
 		$term_icon             = $this->get_icon( $term_id );
 		$term_name             = ! empty( $term_name ) ? $term_name : $fallback_name;
-		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types ) ? 'is-disabled' : '';
+		$term_is_disabled      = ! $this->hasAttachedPosts( $term_id, $current_post_types, $tax_name ) ? 'is-disabled' : '';
       $post_count            = 0;
 
       if('yes' === $show_post_count) {

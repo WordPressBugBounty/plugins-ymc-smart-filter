@@ -264,11 +264,23 @@ abstract class FG_Abstract_Filter_Impl {
       if (empty($post_types)) {         
          $term = get_term($term_id, $taxonomy);
          return !is_wp_error($term) && $term && (int)$term->count > 0;
-      }
-     
-      $count = FG_Term::get_post_counts($post_types, $term_id);
+      }     
 
-      return $count > 0;
+      $query = new \WP_Query([
+         'post_type'      => $post_types,
+         'post_status'    => 'publish',
+         'posts_per_page' => 1,
+         'fields'         => 'ids',
+         'tax_query'      => [
+            [
+               'taxonomy' => $taxonomy,
+               'field'    => 'term_id',
+               'terms'    => $term_id
+            ]
+         ]
+      ]);
+
+      return $query->found_posts > 0;
    }
 
 
@@ -277,16 +289,34 @@ abstract class FG_Abstract_Filter_Impl {
 	 * taking into account the specified taxonomies and post types.
 	 *
 	 * @param int $term_id
-	 * @param array $tax_names
+	 * @param string $taxonomy
 	 * @param array $post_types
 	 * @return int
 	 */
-   protected function get_post_count_by_term_id(int $term_id, array $tax_names, array $post_types): int {
-      $count = 0;
-      foreach ($post_types as $type) {
-         $meta = get_term_meta($term_id, "ymc_fg_count_{$type}", true);
-         $count += (int) $meta;
+   protected function get_post_count_by_term_id(int $term_id, string $taxonomy, array $post_types): int {
+
+      if (function_exists('apply_filters') && ! empty($taxonomy)) {
+
+         $default_language = apply_filters('wpml_default_language',  null);
+
+         $original_term_id = apply_filters(
+               'wpml_object_id',
+               $term_id,
+               $taxonomy,
+               true,
+               $default_language
+         );
+
+         if ($original_term_id) {
+            $term_id = (int) $original_term_id;
+         }
       }
+
+      $count = 0;
+
+      foreach ($post_types as $type) {
+         $count += (int) get_term_meta($term_id, "ymc_fg_count_{$type}", true);
+      }     
 
       return $count;
    }
