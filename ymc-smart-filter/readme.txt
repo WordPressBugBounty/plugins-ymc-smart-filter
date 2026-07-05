@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.12.3
+Version: 3.12.4 
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 3.12.3
+Stable tag: 3.12.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -97,8 +97,7 @@ Added DateTime Picker support for date and time filtering.
 = 3.11.0 =
 Added Flatpickr Date Picker filter. Improved date filtering performance and stability.
 = 3.10.0 =
-Major refactor: migrated core frontend AJAX requests to REST API endpoints for improved architecture, maintainability, and performance.
-Various bug fixes, stability improvements, and internal optimizations.
+Major refactor: migrated core frontend AJAX requests to REST API endpoints for improved architecture.
 = 3.9.5 =
 Added new JavaScript API methods to YMCFilterGrid.
 = 3.9.3 =
@@ -114,8 +113,7 @@ Added support for the `extra_args` parameter in query modification callbacks.
 = 3.8.6 =
 Added option to display post count next to each term in filter.
 = 3.8.0 =
-Fix: Term counting and display issues for shared taxonomies. 
-Fix: Manual sorting and attribute rendering for terms loaded via AJAX.
+Term counting and display issues for shared taxonomies. 
 = 3.7.0 =
 Security improvements: Fixed escaping and sanitization in frontend and admin templates.
 = 3.6.7 =
@@ -137,8 +135,7 @@ Added Filter Alphabetical.
 = 3.3.4 =
 Refactored Data Store.
 = 3.3.3 =
-* New installations now use the latest plugin version (v3.x) by default.
-* No changes for existing users — legacy installations remain fully supported.
+New installations now use the latest plugin version (v3.x) by default.
 = 3.3.0 =
 Added: New option "Show post types visible only in admin" to allow selecting custom post types that are not public but still visible in the WordPress admin area.
 = 3.2.3 =
@@ -150,7 +147,6 @@ Fixed Security.
 = 3.2.0 =
 Improved Dropdown filter:
 - Added search field with live term lookup.
-- Implemented lazy loading for large term lists.
 = 3.1.6 =
 Fixed translations of components for WPML.
 = 3.1.5 =
