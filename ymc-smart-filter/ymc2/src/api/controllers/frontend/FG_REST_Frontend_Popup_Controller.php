@@ -60,15 +60,58 @@ class FG_REST_Frontend_Popup_Controller extends FG_REST_Abstract_Controller {
                __( 'Invalid data received.', 'ymc-smart-filter' ),
                400
          );
-      }
-
-      ob_start();
+      }      
 
       $post = get_post( $post_id );
-      $post_status = Data_Store::get_meta_value( $grid_id, 'ymc_fg_post_status' );
-      $selected_statuses = is_array( $post_status ) ? $post_status : [ 'publish' ];
+      
+      if ( ! $post instanceof \WP_Post ) {
 
-      if ( ! empty( $post ) && in_array( $post->post_status, $selected_statuses, true ) && ! post_password_required( $post )) {
+         return $this->error_response(
+            'access_denied',
+            'Access denied.',
+            403
+         );
+      }
+
+      $allowed_statuses = ymc_get_allowed_post_statuses( $grid_id );  
+      
+      
+      if ( empty( $allowed_statuses ) || ! in_array($post->post_status,  $allowed_statuses, true)) {
+
+         return $this->error_response(
+            'access_denied',
+            'Access denied.',
+            403
+         );
+      }
+      
+
+      if ( ! is_user_logged_in() ) {
+
+         /*
+         * Guests may access only publicly viewable posts.
+         */
+         if ( ! is_post_publicly_viewable( $post ) ) {
+
+            return $this->error_response(
+               'access_denied',
+               'Access denied.',
+               403
+            );
+         }
+      } 
+      elseif ( ! current_user_can( 'read_post', $post->ID ) ) {
+
+         return $this->error_response(
+            'access_denied',
+            'Access denied.',
+            403
+         );
+      }
+
+      if ( ! post_password_required( $post )) {
+
+         ob_start();
 
          if ( has_post_thumbnail( $post_id ) ) {
             echo '<figure class="post-image">';
@@ -94,9 +137,8 @@ class FG_REST_Frontend_Popup_Controller extends FG_REST_Abstract_Controller {
          ]);
       }
 
-      return $this->error_response('forbidden', 'You do not have permission to view this content.', 403);
+      return $this->error_response('access_denied', 'Access denied.', 403);
 
     }
-
 
 }
