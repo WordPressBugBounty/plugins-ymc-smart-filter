@@ -103,7 +103,20 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		$post_order_multiple = $params['post_order_by_multiple'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_post_order_by_multiple');
 
 		// Post status      
-      $post_status = ymc_get_allowed_post_statuses($filter_id, $params['post_status'] ?? null); 
+      $post_status = ymc_get_allowed_post_statuses($filter_id, $params['post_status'] ?? null);
+      
+      /*
+      * Guests may only query published posts.
+      */
+      if ( ! is_user_logged_in() ) {
+
+         $post_status = array_values(
+            array_intersect(
+               $post_status,
+               [ 'publish' ]
+            )
+         );
+      }
 
 		// Meta query
 		$meta_query_raw      = $params['meta_query'] ?? [];

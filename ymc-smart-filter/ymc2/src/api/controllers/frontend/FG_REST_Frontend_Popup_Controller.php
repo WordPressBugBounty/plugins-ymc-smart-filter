@@ -91,13 +91,44 @@ class FG_REST_Frontend_Popup_Controller extends FG_REST_Abstract_Controller {
          /*
          * Guests may access only publicly viewable posts.
          */
-         if ( ! is_post_publicly_viewable( $post ) ) {
+         $allowed = is_post_publicly_viewable( $post );
 
-            return $this->error_response(
-               'access_denied',
-               'Access denied.',
-               403
+         if ( ! $allowed ) {
+
+            $allowed = apply_filters(
+               'ymc/popup/guest_can_view_post',
+               $allowed,
+               $post,
+               $grid_id,
+               $counter,
+               $request
             );
+
+            $allowed = apply_filters(
+               'ymc/popup/guest_can_view_post_' . $grid_id,
+               $allowed,
+               $post,
+               $grid_id,
+               $counter,
+               $request
+            );
+
+            $allowed = apply_filters(
+               'ymc/popup/guest_can_view_post_' . $grid_id . '_' . $counter,
+               $allowed,
+               $post,
+               $grid_id,
+               $counter,
+               $request
+            );
+
+            if ( ! $allowed ) {
+               return $this->error_response(
+                  'access_denied',
+                  'Access denied.',
+                  403
+               );
+            }
          }
       } 
       elseif ( ! current_user_can( 'read_post', $post->ID ) ) {

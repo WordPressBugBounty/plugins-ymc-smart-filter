@@ -680,7 +680,11 @@ if (!defined( 'ABSPATH')) exit;
 
 	                <?php $post_status = UiLabels::all('post_status'); ?>
 	                <?php ymc_render_field_header('Post Status',
-		                'Select the status of posts to include (e.g., published, draft, pending).'); ?>
+		                'Choose which post statuses are included in the grid. Non-public posts (such as Future, Draft or Private) 
+                      are available in popups only to authorized users with sufficient permissions.
+                      To include Future, Draft, Private, or other non-public posts in the grid, use the Advanced Query → Callback option.
+                      To allow guest access to popup content for non-public posts, use the ymc/popup/guest_can_view_post filter.
+                      '); ?>
                     <select class="form-select form-select--multiple" multiple name="ymc_fg_post_status[]">
 		                <?php
 		                if($post_status) :
