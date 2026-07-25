@@ -11,6 +11,7 @@ require_once __DIR__ . '/helpers/content-helper.php';
 require_once __DIR__ . '/helpers/render-helper.php';
 require_once __DIR__ . '/helpers/acf-helper.php';
 require_once __DIR__ . '/helpers/assets-helper.php';
+require_once __DIR__ . '/helpers/svg-helper.php';
 
 /**
  * Utils

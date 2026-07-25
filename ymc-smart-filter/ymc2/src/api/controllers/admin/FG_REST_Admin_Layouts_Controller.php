@@ -54,8 +54,33 @@ class FG_REST_Admin_Layouts_Controller extends FG_REST_Abstract_Controller {
       $params = $request->get_json_params();
 
       $post_id = absint( $params['post_id'] ?? 0 );
+
       if ( ! $post_id ) {
          return $this->error_response( 'Invalid post ID.', 'invalid_post_id', 400 );
+      }
+
+      $post = get_post( $post_id );
+
+      if ( ! $post || $post->post_type !== 'ymc_filters' ) {
+
+         return $this->error_response(
+            'Invalid filter.',
+            'invalid_filter',
+            400
+         );
+      }
+
+      /*
+      * Check whether the current user is allowed
+      * to edit this specific filter.
+      */
+      if ( ! current_user_can( 'edit_post', $post_id ) ) {
+
+         return $this->error_response(
+            'Access denied.',
+            'access_denied',
+            403
+         );
       }
 
       $data = $params['data'] ?? [];

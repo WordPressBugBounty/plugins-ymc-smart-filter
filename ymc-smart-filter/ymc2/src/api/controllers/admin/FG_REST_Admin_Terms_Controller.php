@@ -304,27 +304,9 @@ class FG_REST_Admin_Terms_Controller extends FG_REST_Abstract_Controller {
          }
       );
 
-      $file = $files['icon'];
-
-      $allowed = [
-         'image/svg+xml',
-         'image/png',
-         'image/jpeg',
-         'image/webp',
-      ];
-
-      if ( ! in_array( $file['type'], $allowed, true ) ) {
-
-         return $this->error_response(
-            'invalid_file_type',
-            'Invalid file type.',
-            400
-         );
-      }
-
       require_once ABSPATH . 'wp-admin/includes/file.php';
 
-      $upload = wp_handle_upload($file,
+      $upload = wp_handle_upload($files['icon'],
          [
             'test_form' => false,
          ]
@@ -334,26 +316,72 @@ class FG_REST_Admin_Terms_Controller extends FG_REST_Abstract_Controller {
 
          return $this->error_response(
             'upload_failed',
-            'Upload failed: ' . $upload['error'],
+            sprintf(
+               __( 'Upload failed: %s', 'ymc-smart-filter' ),
+               $upload['error']
+            ),
             400
          );
       }
 
-      if ( ! empty( $upload['url'] ) ) {
+      /*
+      * Verify the actual uploaded file type.
+      */
+      $filetype = wp_check_filetype_and_ext(
+         $upload['file'],
+         basename( $upload['file'] )
+      );
 
-         $relative_url = str_replace(site_url(), '', $upload['url']);
+      $allowed_types = [
+         'image/svg+xml',
+         'image/png',
+         'image/jpeg',
+         'image/webp',
+      ];
 
-         return $this->success_response([
-            'url'     => esc_url( $relative_url ),
-            'message' =>  'Icon uploaded'
-         ]);
+      if (  empty( $filetype['type'] ) ||
+            empty( $filetype['ext'] ) ||
+            ! in_array( $filetype['type'], $allowed_types, true ) ) {
+
+         @unlink( $upload['file'] );
+
+         return $this->error_response(
+            'invalid_file_type',
+            __( 'Invalid file type.', 'ymc-smart-filter' ),
+            400
+         );
       }
 
-      return $this->error_response(
-         'upload_failed',
-         'Upload failed.',
-         400
+      /*
+      * Sanitize uploaded SVG files.
+      */
+      if ( ! empty( $filetype['ext'] ) && $filetype['ext'] === 'svg' ) {
+
+         if ( ! ymc_sanitize_svg_file( $upload['file'] ) ) {
+
+            @unlink( $upload['file'] );
+
+            return $this->error_response(
+               'upload_failed',
+               __( 'Invalid SVG file.', 'ymc-smart-filter' ),
+               400
+            );
+         }
+      }
+
+      $relative_url = str_replace(
+         site_url(),
+         '',
+         $upload['url']
       );
+
+      return $this->success_response(
+         [
+            'url'     => esc_url( $relative_url ),
+            'message' => __( 'Icon uploaded.', 'ymc-smart-filter' ),
+         ]
+      );
+
    }
 
 
