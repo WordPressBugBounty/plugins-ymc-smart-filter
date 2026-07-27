@@ -4,7 +4,7 @@
  *
  * Plugin Name:       YMC Filter
  * Description:       A powerful and flexible plugin to filter and display posts, custom post types, and other content in responsive grid layouts.
- * Version:           3.12.8
+ * Version:           3.12.9
  * Author:            YMC
  * Author URI:        https://github.com/YMC-22/Filter-Grids
  * License:           GPL-2.0-or-later
@@ -54,6 +54,12 @@ if ( ! defined('YMC_SMART_FILTER_URL') ) {
  *    LOAD PLUGIN
  * -------------------------------------------------------------------------------*/
 
+/**
+ * Load third-party libraries.
+ */
+if ( file_exists( YMC_SMART_FILTER_DIR . 'ymc2/vendor/autoload.php' ) ) {
+    require_once YMC_SMART_FILTER_DIR . 'ymc2/vendor/autoload.php';
+}
 
 
 /**

@@ -1,11 +1,21 @@
 <?php
 
-/**
- * Sanitize SVG file
- */
+use enshrined\svgSanitize\Sanitizer;
 
-if (! function_exists( 'ymc_sanitize_svg_file')) {
-   function ymc_sanitize_svg_file( string $file ) : bool {
+
+if ( ! class_exists( Sanitizer::class ) ) {
+    return;
+}
+
+if ( ! function_exists( 'ymc_sanitize_svg_file' ) ) {
+
+    /**
+     * Sanitize SVG file.
+     *
+     * @param string $file SVG file path.
+     * @return bool
+     */
+    function ymc_sanitize_svg_file( string $file ) : bool {
 
       if ( ! file_exists( $file ) ) {
          return false;
@@ -18,47 +28,29 @@ if (! function_exists( 'ymc_sanitize_svg_file')) {
       }
 
       /*
-      * Remove scripts.
+      * Normalize encoding to UTF-8.
       */
-      $svg = preg_replace(
-         '#<script\b[^>]*>.*?</script>#is',
-         '',
-         $svg
-      );
+      if ( function_exists( 'mb_convert_encoding' ) ) {
+         $svg = mb_convert_encoding( $svg, 'UTF-8', 'UTF-8, ISO-8859-1, UTF-16, UTF-32' );
+      }
 
-      /*
-      * Remove inline events.
-      */
-      $svg = preg_replace(
-         '/\son[a-z]+\s*=\s*(".*?"|\'.*?\'|[^\s>]+)/i',
-         '',
-         $svg
-      );
+      $sanitizer = new Sanitizer();
 
-      /*
-      * Remove javascript: URLs.
-      */
-      $svg = preg_replace(
-         '/javascript\s*:/i',
-         '',
-         $svg
-      );
+      $sanitizer->removeRemoteReferences( true );
+      $sanitizer->removeXMLTag( false );
+      $sanitizer->minify( true );
 
-      /*
-      * Remove foreignObject.
-      */
-      $svg = preg_replace(
-         '#<foreignObject\b[^>]*>.*?</foreignObject>#is',
-         '',
-         $svg
-      );
+      $clean = $sanitizer->sanitize($svg);
 
-      file_put_contents(
-         $file,
-         $svg
-      );
+      if ($clean === false || trim($clean) === '') {
+         return false;
+      }
 
-      return true;
+      if ( stripos( $clean, '<svg' ) === false ) {
+         return false;
+      }
+
+      return file_put_contents($file, $clean) !== false;
    }
 }
 
