@@ -3,10 +3,6 @@
 use enshrined\svgSanitize\Sanitizer;
 
 
-if ( ! class_exists( Sanitizer::class ) ) {
-    return;
-}
-
 if ( ! function_exists( 'ymc_sanitize_svg_file' ) ) {
 
     /**
@@ -16,6 +12,10 @@ if ( ! function_exists( 'ymc_sanitize_svg_file' ) ) {
      * @return bool
      */
     function ymc_sanitize_svg_file( string $file ) : bool {
+
+      if ( ! class_exists( Sanitizer::class ) ) {
+         return false;
+      }
 
       if ( ! file_exists( $file ) ) {
          return false;

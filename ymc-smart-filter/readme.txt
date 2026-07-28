@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.12.9
+Version: 3.12.10
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.0
-Stable tag: 3.12.9
+Stable tag: 3.12.10
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -79,6 +79,9 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.12.10 =
+Security improvements.
+Props to Usama Arshad and Artus KG for responsibly reporting security issues.
 = 3.12.9 =
 Security: Improved SVG upload validation.
 = 3.12.8 =
