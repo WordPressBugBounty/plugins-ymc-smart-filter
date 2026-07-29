@@ -91,7 +91,8 @@ class FG_REST_Frontend_Popup_Controller extends FG_REST_Abstract_Controller {
          /*
          * Guests may access only publicly viewable posts.
          */
-         $allowed = is_post_publicly_viewable( $post );
+         // $allowed = is_post_publicly_viewable( $post );
+         $allowed = ('publish' === get_post_status( $post ) || current_user_can( 'read_post', $post->ID ));
 
          if ( ! $allowed ) {
 
