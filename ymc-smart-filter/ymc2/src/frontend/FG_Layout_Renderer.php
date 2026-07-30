@@ -110,13 +110,13 @@ class FG_Layout_Renderer {
      * Render column
      */
     protected static function renderColumn(array $context, array $node) : void {
-        $settings = $node['settings'] ?? [];
-        $width = $settings['width'] ?? 100;
+        $settings = $node['settings'] ?? [];       
+        $width = (float) ($settings['width'] ?? 100);
 
-        $pt = (int)($settings['padding_top'] ?? 0);
-        $pr = (int)($settings['padding_right'] ?? 15);
-        $pb = (int)($settings['padding_bottom'] ?? 0);
-        $pl = (int)($settings['padding_left'] ?? 15);
+        $pt = (int) ($settings['padding_top'] ?? 0);
+        $pr = (int) ($settings['padding_right'] ?? 15);
+        $pb = (int) ($settings['padding_bottom'] ?? 0);
+        $pl = (int) ($settings['padding_left'] ?? 15);
         
         $padding_style = "padding: {$pt}px {$pr}px {$pb}px {$pl}px;";
         $width_style = "width: {$width}%;";
@@ -272,22 +272,26 @@ class FG_Layout_Renderer {
      * Render title
      */
     protected static function renderTitle(array $context, array $settings) : void {
-        $post_id = $context['post_id'];
-        $tag     = $settings['tag'] ?? 'h2';
-        $has_link = !empty($settings['link']);
-        $custom_class = self::getCustomClass($settings);
-        
-        $allowed_tags = ['h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'];
-        $tag = in_array($tag, $allowed_tags) ? $tag : 'h2';
+         $post_id = $context['post_id'];
+         $tag     = $settings['tag'] ?? 'h2';
+         $has_link = !empty($settings['link']);
+         $custom_class = self::getCustomClass($settings);
+         
+         $allowed_tags = ['h2', 'h3', 'h4', 'h5', 'h6', 'div', 'p'];
+         $tag = in_array($tag, $allowed_tags) ? $tag : 'h2';
 
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '<'. $tag .' class="post-card__title sb-title'. $custom_class .'">';
-        if ($has_link) echo '<a href="' . esc_url(get_permalink($post_id)) . '">';
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo esc_html(get_the_title($post_id));
-        if ($has_link) echo '</a>';
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo '</'. $tag .'>';
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped         
+         printf('<%1$s class="post-card__title sb-title%2$s">',  $tag, $custom_class);
+
+         if ($has_link) echo '<a href="' . esc_url(get_permalink($post_id)) . '">';
+
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+         echo esc_html(get_the_title($post_id));
+
+         if ($has_link) echo '</a>';
+
+         // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped        
+         printf('</%s>', $tag);
     }
 
     /**
@@ -519,12 +523,12 @@ class FG_Layout_Renderer {
      * Render divider
      */
     protected static function renderDivider(array $settings) : void {
-        $custom_class = self::getCustomClass($settings);
-        $style        = $settings['style'] ?? 'solid';
-        $thickness    = ($settings['thickness'] ?? 1) . 'px';
-        $color        = $settings['color'] ?? '#cecece';
-        $m_top        = ($settings['margin_top'] ?? 10) . 'px';
-        $m_bottom     = ($settings['margin_bottom'] ?? 10) . 'px';
+         $custom_class = self::getCustomClass($settings);
+         $style        = $settings['style'] ?? 'solid';        
+         $thickness    = absint($settings['thickness'] ?? 1) . 'px';         
+         $color        = sanitize_hex_color($settings['color'] ?? '#cecece');
+         $m_top        = absint($settings['margin_top'] ?? 10) . 'px';
+         $m_bottom     = absint($settings['margin_bottom'] ?? 10) . 'px';
 
         $inline_styles = sprintf(
             'border-top: %s %s %s; margin-top: %s; margin-bottom: %s; border-bottom: none; border-left: none; border-right: none;',
@@ -535,8 +539,12 @@ class FG_Layout_Renderer {
             $m_bottom      
         );
 
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-        echo "<hr class='post-card__divider sb-divider {$custom_class}' style='{$inline_styles}'>";       
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped         
+        echo sprintf(
+            '<hr class="post-card__divider sb-divider%s" style="%s">',
+            $custom_class,
+            esc_attr( $inline_styles )
+         );
     }
 
     /**
