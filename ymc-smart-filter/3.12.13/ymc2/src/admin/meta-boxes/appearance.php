@@ -1,0 +1,985 @@
+<?php
+use YMCFilterGrids\FG_Data_Store as Data_Store;
+use YMCFilterGrids\admin\FG_UiLabels as UiLabels;
+
+if (!defined( 'ABSPATH')) exit;
+
+/**
+ * PHPDoc variables available in this template:
+ * @var int $post_id
+ * @var string $section_name
+ * @var string $ymc_fg_filter_hidden
+ * @var string $ymc_fg_display_terms_mode
+ * @var string $ymc_fg_term_sort_direction
+ * @var string $ymc_fg_term_sort_field
+ * @var string $ymc_fg_selection_mode
+ * @var string $ymc_fg_show_post_count
+ * @var string $ymc_fg_filter_type
+ * @var array $ymc_fg_post_types
+ * @var array $ymc_fg_filter_options
+ * @var string $ymc_fg_post_layout
+ * @var string $ymc_fg_post_image_size
+ * @var string $ymc_fg_image_clickable
+ * @var string $ymc_fg_post_button_text
+ * @var string $ymc_fg_target_option
+ * @var string $ymc_fg_truncate_post_excerpt
+ * @var string $ymc_fg_post_excerpt_length
+ * @var string $ymc_fg_filtered_posts_label
+ * @var string $ymc_fg_post_custom_read_time
+ * @var string $ymc_fg_post_order
+ * @var string $ymc_fg_post_order_by
+ * @var string $ymc_fg_order_meta_key
+ * @var string $ymc_fg_order_meta_value
+ * @var string $ymc_fg_post_status
+ * @var string $ymc_fg_no_results_message
+ * @var string $ymc_fg_post_animation_effect
+ * @var string $ymc_fg_popup_enable
+ * @var array $ymc_fg_popup_settings
+ * @var string $ymc_fg_pagination_hidden
+ * @var string $ymc_fg_pagination_type
+ * @var string $ymc_fg_pagination_number_format
+ * @var string $ymc_fg_per_page
+ * @var string $ymc_fg_prev_button_text
+ * @var string $ymc_fg_next_button_text
+ * @var int $ymc_fg_pagination_mid_size
+ * @var int $ymc_fg_pagination_end_size
+ * @var string $ymc_fg_load_more_text
+ * @var array $ymc_fg_flatpickr_settings
+ */
+
+?>
+
+<div class="inner">
+	<div class="header"><?php echo esc_html($section_name); ?></div>
+
+	<div class="body">
+        <div class="headline js-headline-accordion" data-hash="filter_settings">
+            <span class="inner">
+                <i class="fas fa-filter"></i>
+                <span class="text"><?php echo esc_html__('Filter Settings', 'ymc-smart-filter'); ?></span>
+            </span>
+            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
+        </div>
+        <div class="form-wrap js-toggle-switch-filter-state">
+            <fieldset class="form-group filter-state">
+                <?php ymc_render_field_header('Disable Filter', 'Disable filter on frontend.'); ?>
+                <label class="toggle-switch js-toggle-switch">
+                    <input type="checkbox" name="ymc_fg_filter_hidden" value="yes"
+                        <?php checked( $ymc_fg_filter_hidden, 'yes' ); ?>>
+                    <span class="slider round">
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
+                    </span>
+                </label>
+            </fieldset>
+	         <?php $is_hidden_filter_options = $ymc_fg_filter_hidden === 'yes' ? 'is-hidden' : ''; ?>
+            <fieldset class="form-group filter-options js-is-disabled-filter-options <?php echo esc_attr($is_hidden_filter_options); ?>">
+
+                <div class="group-elements">
+	                <?php ymc_render_field_header('Display Terms',
+		                'Select how taxonomy terms should be displayed in the filter.
+                     You can choose to show only selected terms or automatically populate all terms, with an option 
+                     to hide empty terms.<hr>
+                     <ul>
+                     <li><b>Selected Terms Only</b> Display only manually selected terms.</li>
+                     <li><b>Selected Terms (Hide Empty)</b> Show selected terms, but hide those with no posts.</li>
+                     <li><b>All Terms (Auto Populate)</b> Display all terms, with an option to hide empty terms.</li>
+                     <li><b>All Terms (Hide Empty)</b> Auto display all terms, excluding those with no posts.</li>
+                     </ul><br> Impotent: This option does not apply to filter type: <b>Dependent Filter, Date Picker, 
+                     Custom Filter, Alphabetical Navigation.</b>'); ?>
+	                <?php $display_terms_mode = UiLabels::all('display_terms_mode'); ?>
+                    <select class="form-select" name="ymc_fg_display_terms_mode" id="ymc_fg_display_terms_mode">
+		                <?php
+		                if($display_terms_mode) :
+			                foreach ($display_terms_mode as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_display_terms_mode, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements">
+	                <?php ymc_render_field_header('Term Sort Direction', 'Choose how to order the terms:<hr>
+                    <ul><li>ascending (A–Z)</li><li>descending (Z–A)</li><li>or manual</li></ul>'); ?>
+	                <?php $term_sort_direction = UiLabels::all('term_sort_direction'); ?>
+                    <select class="form-select js-term-sort-direction" name="ymc_fg_term_sort_direction" id="ymc_fg_term_sort_direction">
+		                <?php
+		                if($term_sort_direction) :
+			                foreach ($term_sort_direction as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_term_sort_direction, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+                </div>
+
+	             <?php $show_field_to_sort = ($ymc_fg_term_sort_direction !== 'manual'); ?>
+                <div class="group-elements js-term-sort-field<?php echo esc_attr(ymc_get_hidden_class( $show_field_to_sort )); ?>">
+	                <?php ymc_render_field_header('Field to Sort by Terms', 'Select the field to use to sort terms.<br> 
+	                If manual sorting is selected, this field will not be taken into account when sorting terms.'); ?>
+	                <?php $term_sort_field_by = UiLabels::all('term_sort_field'); ?>
+                    <select class="form-select" name="ymc_fg_term_sort_field" id="ymc_fg_term_sort_field">
+		                <?php
+		                if($term_sort_field_by) :
+			                foreach ($term_sort_field_by as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_term_sort_field, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements">
+	                <?php ymc_render_field_header('Multiple Taxonomy',
+		                'Allow users to filter posts using more than one taxonomy at the same time
+                     (e.g., categories and tags together.'); ?>
+                    <input class="form-checkbox" type="checkbox" value="multiple" name="ymc_fg_selection_mode"
+                           id="ymc_fg_selection_mode" <?php checked( $ymc_fg_selection_mode, 'multiple' );  ?>>
+                    <label class="field-label" for="ymc_fg_selection_mode">
+                        <?php esc_html_e('Use multiple taxonomy filters', 'ymc-smart-filter'); ?></label>
+                    <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements">
+                  <?php ymc_render_field_header('Post Count',
+                     'Displays the number of posts assigned to each term in parentheses (e.g. Category (5)).'); ?>
+                      <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_show_post_count"
+                        id="ymc_fg_show_post_count" <?php checked( $ymc_fg_show_post_count, 'yes' );  ?>>
+                  <label class="field-label" for="ymc_fg_show_post_count">
+                     <?php esc_html_e('Show post count next to each term', 'ymc-smart-filter'); ?></label>
+                  <div class="spacer-25"></div>
+                </div>                            
+                 
+                <?php
+                  $needs_flatpickr = false;
+                  if ( is_array($ymc_fg_filter_options) ) {
+                     $types = array_column($ymc_fg_filter_options, 'filter_type');
+                     if ( in_array('flatpickr_date_picker', $types, true) ) {
+                        $needs_flatpickr = true;
+                     }
+                  }
+                ?>
+                <?php $show_flatpickr = ( $ymc_fg_filter_type === 'flatpickr_date_picker' || $needs_flatpickr ); ?>
+                <div class="group-elements flatpickr-settings-group js-flatpickr-settings-group<?php echo esc_attr(ymc_get_hidden_class( $show_flatpickr )); ?>">
+                 
+                 <?php
+                  // Base settings    
+                  $fp_query_source = $ymc_fg_flatpickr_settings['query_source'] ?? 'post_date';
+                  $fp_meta_key     = $ymc_fg_flatpickr_settings['meta_key'] ?? '';             
+                  $fp_mode         = $ymc_fg_flatpickr_settings['mode'] ?? 'single';
+                  $fp_picker_type  = $ymc_fg_flatpickr_settings['picker_type'] ?? 'date';
+                  $fp_format       = $ymc_fg_flatpickr_settings['format'] ?? 'd.m.Y';
+                  $fp_placeholder  = $ymc_fg_flatpickr_settings['placeholder'] ?? '';
+                  $fp_use_adv      = $ymc_fg_flatpickr_settings['use_advanced'] ?? 'false';
+
+                  // Advanced settings
+                  $fp_theme       = $ymc_fg_flatpickr_settings['theme'] ?? '';                  
+                  $fp_inline      = $ymc_fg_flatpickr_settings['inline'] ?? 'false';                  
+                  $fp_first_day   = $ymc_fg_flatpickr_settings['first_day'] ?? '1';
+                  $fp_week_num    = $ymc_fg_flatpickr_settings['week_numbers'] ?? 'false';
+                  $fp_custom_init = $ymc_fg_flatpickr_settings['custom_init'] ?? 'false';
+                  
+                  $show_fp_advanced_settings = $fp_use_adv !== 'false';
+                 ?>
+
+                  <fieldset class="form-group form-group--with-bg" style="margin-top: 20px;">
+                     
+                     <?php $show_fp_standard_settings = ($fp_custom_init === 'false'); ?>
+                     <div class="group-elements js-flatpickr-standard-settings<?php echo esc_attr(ymc_get_hidden_class( $show_fp_standard_settings )); ?>">
+                        <legend class="form-legend"><?php esc_html_e('Date Picker Settings', 'ymc-smart-filter'); ?></legend>
+
+                        <?php ymc_render_field_header('Picker Type', 'Choose whether the calendar should allow selecting dates only or dates with time. Use Date & Time Picker when filtering content by specific hours and minutes.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[picker_type]">
+                           <option value="date" <?php selected($fp_picker_type, 'date'); ?>>
+                              <?php esc_html_e('Date Picker', 'ymc-smart-filter'); ?>
+                           </option>
+
+                           <option value="datetime" <?php selected($fp_picker_type, 'datetime'); ?>>
+                              <?php esc_html_e('Date & Time Picker', 'ymc-smart-filter'); ?>
+                           </option>
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php ymc_render_field_header('Query Source', 'Select whether to filter by standard Post Date or by a custom Meta Key (e.g., ACF date fields).'); ?>
+                        <select class="form-select js-fp-query-source" name="ymc_fg_flatpickr_settings[query_source]">
+                           <option value="post_date" <?php selected($fp_query_source, 'post_date'); ?>><?php esc_html_e('Post Date', 'ymc-smart-filter'); ?></option>
+                           <option value="meta_key" <?php selected($fp_query_source, 'meta_key'); ?>><?php esc_html_e('Custom Meta Field', 'ymc-smart-filter'); ?></option>
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php $is_meta_hidden = ($fp_query_source !== 'meta_key') ? ' is-hidden' : ''; ?>
+                        <div class="js-fp-meta-key-wrap<?php echo esc_attr($is_meta_hidden); ?>">
+                           <?php ymc_render_field_header('Meta Key', 'Enter the exact meta key name where the dates are stored (e.g., event_date). <br>
+                           For DateTime Picker, the custom field value must be stored in MySQL DATETIME format: <b>YYYY-MM-DD HH:MM:SS</b> (e.g. 2026-05-28 18:30:00).'); ?>
+                           <input class="form-input" type="text" name="ymc_fg_flatpickr_settings[meta_key]" 
+                                 placeholder="<?php esc_attr_e('event_date', 'ymc-smart-filter'); ?>" 
+                                 value="<?php echo esc_attr($fp_meta_key); ?>">
+                           <div class="spacer-25"></div>
+                        </div>
+
+                        <?php ymc_render_field_header('Filter Mode', 'Select whether the user should pick a single date or a date range.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[mode]">
+                           <option value="single" <?php selected($fp_mode, 'single'); ?>><?php esc_html_e('Single Date', 'ymc-smart-filter'); ?></option>
+                           <option value="range" <?php selected($fp_mode, 'range'); ?>><?php esc_html_e('Date Range (From - To)', 'ymc-smart-filter'); ?></option>                           
+                        </select>
+                        <div class="spacer-25"></div>                        
+                        
+                        <?php ymc_render_field_header('Display Date Format', 'How the date will be displayed to the user on the front-end.'); ?>
+                        <select class="form-select" name="ymc_fg_flatpickr_settings[format]">
+                           <option value="d.m.Y" <?php selected($fp_format, 'd.m.Y'); ?>>dd.mm.yyyy (31.12.2026)</option>
+                           <option value="d-m-Y" <?php selected($fp_format, 'd-m-Y'); ?>>dd-mm-yyyy (31-12-2026)</option>
+                           <option value="m/d/Y" <?php selected($fp_format, 'm/d/Y'); ?>>mm/dd/yyyy (12/31/2026)</option>
+                           <option value="Y-m-d" <?php selected($fp_format, 'Y-m-d'); ?>>yyyy-mm-dd (2026-12-31)</option>                           
+                        </select>
+                        <div class="spacer-25"></div>
+
+                        <?php ymc_render_field_header('Field Placeholder', 'The placeholder text inside the input field when no date is selected.'); ?>
+                        <input class="form-input" type="text" name="ymc_fg_flatpickr_settings[placeholder]" 
+                              placeholder="<?php esc_attr_e('Select date...', 'ymc-smart-filter'); ?>" 
+                              value="<?php echo esc_attr($fp_placeholder); ?>">
+                        <div class="spacer-25"></div>
+
+                        <div class="advanced-settings-toggle-wrap">
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[use_advanced]" value="false">
+                           <input class="form-checkbox js-checkbox-flatpickr-advanced" type="checkbox" value="true" 
+                              name="ymc_fg_flatpickr_settings[use_advanced]"
+                              id="ymc_fg_flatpickr_use_advanced" <?php checked($fp_use_adv, 'true'); ?>>
+                           <label class="field-label" for="ymc_fg_flatpickr_use_advanced">
+                              <strong><?php esc_html_e('Show Advanced Flatpickr Settings', 'ymc-smart-filter'); ?></strong>
+                           </label>
+                        </div>
+                        <div class="spacer-15"></div>
+
+                        <div class="flatpickr-advanced-fields js-flatpickr-advanced-fields<?php echo esc_attr(ymc_get_hidden_class( $show_fp_advanced_settings )); ?>">
+                           
+                           <?php ymc_render_field_header('Inline Calendar', 'Display the calendar in an always-open state with the inline option.'); ?>
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[inline]" value="false">
+                           <input class="form-checkbox" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[inline]"
+                              id="fp_inline_mode" <?php checked($fp_inline, 'true'); ?>>
+                           <label class="field-label" for="fp_inline_mode"><?php esc_html_e('Inline Mode (Always open calendar)', 'ymc-smart-filter'); ?></label>
+                           <div class="spacer-15"></div>                           
+                                 
+                           <?php ymc_render_field_header('First Day of Week', 'Choose whether the calendar week starts on Monday or Sunday.'); ?>
+                           <select class="form-select" name="ymc_fg_flatpickr_settings[first_day]">
+                              <option value="1" <?php selected($fp_first_day, '1'); ?>><?php esc_html_e('Monday', 'ymc-smart-filter'); ?></option>
+                              <option value="0" <?php selected($fp_first_day, '0'); ?>><?php esc_html_e('Sunday', 'ymc-smart-filter'); ?></option>
+                           </select>
+                           <div class="spacer-15"></div>
+
+                           <?php ymc_render_field_header('Calendar Theme', 'Select the visual style of the calendar to match your website design.'); ?>
+
+                           <select class="form-select" name="ymc_fg_flatpickr_settings[theme]">
+                              <option value="default" <?php selected($fp_theme, 'default'); ?>><?php esc_html_e('Default (Light)', 'ymc-smart-filter'); ?></option>
+                              <option value="dark" <?php selected($fp_theme, 'dark'); ?>><?php esc_html_e('Dark', 'ymc-smart-filter'); ?></option>
+                              <option value="material_blue" <?php selected($fp_theme, 'material_blue'); ?>><?php esc_html_e('Material Blue', 'ymc-smart-filter'); ?></option>
+                              <option value="airbnb" <?php selected($fp_theme, 'airbnb'); ?>><?php esc_html_e('Airbnb', 'ymc-smart-filter'); ?></option>
+                              <option value="confetti" <?php selected($fp_theme, 'confetti'); ?>><?php esc_html_e('Confetti', 'ymc-smart-filter'); ?></option>
+                              <option value="material_green" <?php selected($fp_theme, 'material_green'); ?>><?php esc_html_e('Material Green', 'ymc-smart-filter'); ?></option>
+                              <option value="material_red" <?php selected($fp_theme, 'material_red'); ?>><?php esc_html_e('Material Red', 'ymc-smart-filter'); ?></option>
+                           </select>
+                           <div class="spacer-15"></div>
+                           
+                           <?php ymc_render_field_header('Week Numbers', 'Enable the weekNumbers option to display the week number in a column left to the calendar.'); ?>
+                           <input type="hidden" name="ymc_fg_flatpickr_settings[week_numbers]" value="false">
+                           <input class="form-checkbox" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[week_numbers]"
+                                 id="fp_week_numbers" <?php checked($fp_week_num, 'true'); ?>>
+                           <label class="field-label" for="fp_week_numbers"><?php esc_html_e('Show Week Numbers', 'ymc-smart-filter'); ?></label>
+                           <div class="spacer-15"></div>                           
+                          
+                        </div>
+
+                     </div>
+
+                     <div class="group-elements">
+
+                      <?php ymc_render_field_header('Custom Flatpickr Initialization', 'Disable all built-in Flatpickr settings and initialization.
+                        The plugin will output only the calendar markup, allowing you to initialize and configure Flatpickr manually 
+                        in your theme or custom scripts. When enabled, Flatpickr initialization becomes fully manual. The built-in clear button is disabled. 
+                        <hr>Use window.YMCFlatpickr.apply() and window.YMCFlatpickr.reset() in your custom JavaScript. 
+                        <hr>"Note: Date picker only; time selection is not supported."'); ?>                   
+
+                        <div class="field-description"><?php esc_html_e('The calendar is implemented using the', 'ymc-smart-filter') ?> <a href='https://flatpickr.js.org/getting-started/#usage' target='_blank'>Flatpickr API</a>.
+                        <a class="tooltip-trigger js-tooltip-trigger" href="#" >Usage example:</a>
+                        <div class="field-example js-field-example">
+<pre><code class="language-js">if (typeof flatpickr !== 'undefined') {
+   
+   // Initialize and configure Flatpickr
+   const fp = flatpickr(".filter-72 .js-ymc-flatpickr-input", {   
+      dateFormat: "Y-m-d",
+      mode: "range",
+      // enableTime: true/false
+      // other settings...
+      onReady(selectedDates, dateStr, instance) {               
+         const targetInput = instance.altInput || instance.input;
+         targetInput.placeholder = "Select date & time...";
+      },
+      onChange(selectedDates) {
+         window.YMCFlatpickr.apply(this.input, selectedDates);
+      }
+   });
+   
+   // Create reset calendar button with class "btn-reset-calendar"
+   document.querySelector('.btn-reset-calendar')?.addEventListener('click', async function() {
+      fp.clear();
+      await window.YMCFlatpickr.reset(fp.input);
+   });
+}</code>
+</pre>
+                        </div>
+                        </div>
+                              
+                        <input type="hidden" name="ymc_fg_flatpickr_settings[custom_init]" value="false">
+                        <input class="form-checkbox js-checkbox-fp-custom-init" type="checkbox" value="true" name="ymc_fg_flatpickr_settings[custom_init]" id="fp_custom_init"
+                           <?php checked( $fp_custom_init, 'true' ); ?>>
+                        <label class="field-label" for="fp_custom_init">
+                           <?php esc_html_e('Use Custom Flatpickr Initialization', 'ymc-smart-filter'); ?></label>
+                     </div>
+
+                  </fieldset>                   
+
+                </div>               
+
+            </fieldset>
+        </div>
+
+        <div class="headline js-headline-accordion" data-hash="post_settings">
+            <span class="inner">
+                <i class="far fa-address-card"></i>
+                <span class="text"><?php echo esc_html__('Post Settings', 'ymc-smart-filter'); ?></span>
+            </span>
+            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
+        </div>
+        <div class="form-wrap">
+				<?php 
+					$current_mode = $ymc_fg_custom_layout_builder['mode']['type'] ?? 'classic'; 
+					$is_hidden_start_mode = ($current_mode === 'structural' && 
+                  !in_array($ymc_fg_post_layout, ['layout_standard','layout_carousel'], true)) ? '' : ' is-hidden';				
+				?>
+				<div class="notification notification--warning<?php echo esc_attr($is_hidden_start_mode); ?>">
+               <?php
+						printf(
+							wp_kses(											
+								__( '<strong>Attention:</strong> Post display settings are not applied because the <strong>Structural Builder</strong> is active. 
+								Manage card elements directly within the builder interface.', 
+								'ymc-smart-filter' ),
+								array('strong' => array())
+							));
+					?> 
+				</div>
+				<div class="spacer-20"></div>
+
+            <fieldset class="form-group form-group--with-bg post-display-settings">
+                <div class="group-elements">
+                    <legend class="form-legend">
+		            <?php esc_html_e('Post Elements','ymc-smart-filter'); ?></legend>
+	                <?php ymc_render_field_header('Post Display Settings',
+		                'Control which elements of the post are visible on the front end. This applies only to the Standard post layout.'); ?>
+	                <?php $post_display_settings = UiLabels::all('post_display_settings'); ?>
+                    <div class="post-settings-section">
+                        <div class="post-elements-grid">
+			                <?php foreach ($post_display_settings as $key => $item): ?>
+                                <div class="post-element">
+	                                <?php ymc_render_field_header($item['label'], $item['tooltip']); ?>
+                                    <select class="form-select" name="ymc_fg_post_display_settings[<?php echo esc_attr($key); ?>]">
+                                        <option value="show" <?php selected($ymc_fg_post_display_settings[$key] ?? 'show', 'show'); ?>>
+                                            <?php esc_html_e('Show', 'ymc-smart-filter'); ?></option>
+                                        <option value="hide" <?php selected($ymc_fg_post_display_settings[$key] ?? 'hide', 'hide'); ?>>
+                                            <?php esc_html_e('Hide', 'ymc-smart-filter'); ?></option>
+                                    </select>
+                                </div>
+			                <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <fieldset class="form-group form-group--with-bg">
+                <div class="group-elements">
+                    <legend class="form-legend">
+                        <?php esc_html_e('Image settings','ymc-smart-filter'); ?></legend>
+	                <?php ymc_render_field_header('Post Image Size',
+                        'Select the size of the image to display in the post. Options: Thumbnail, Medium, Large, 
+                        or Full size based on your media settings.'); ?>
+	                <?php $post_image_size = UiLabels::all('post_image_size'); ?>
+                    <select class="form-select" name="ymc_fg_post_image_size">
+		                <?php
+		                if($post_image_size) :
+			                foreach ($post_image_size as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_post_image_size, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Image Clickable',
+		                'Enable this option to make the post image clickable and link to the post or a custom URL.'); ?>
+                    <input class="form-checkbox" type="checkbox" value="yes" name="ymc_fg_image_clickable" id="ymc_fg_image_clickable"
+                    <?php checked( $ymc_fg_image_clickable, 'yes' ); ?>>
+                    <label class="field-label" for="ymc_fg_image_clickable">
+		                <?php esc_html_e('Make Image Clickable', 'ymc-smart-filter'); ?></label>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group form-group--with-bg">
+                <div class="group-elements">
+                    <legend class="form-legend">
+		                <?php esc_html_e('Button settings','ymc-smart-filter'); ?></legend>
+
+	                <?php ymc_render_field_header('Button Text','Edit button text.'); ?>
+                    <input class="form-input" type="text" placeholder="Read More" name="ymc_fg_post_button_text"
+                           value="<?php echo esc_attr($ymc_fg_post_button_text); ?>">
+                    <div class="spacer-25"></div>
+	                <?php ymc_render_field_header('Link Target',
+                        'Select whether the link opens in a new tab or the current one.'); ?>
+	                <?php $target_option = UiLabels::all('target_option'); ?>
+                    <select class="form-select" name="ymc_fg_target_option">
+		                <?php
+		                if($target_option) :
+			                foreach ($target_option as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_target_option, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group form-group--with-bg">
+                <div class="group-elements">
+                    <legend class="form-legend">
+		                <?php esc_html_e('Post settings','ymc-smart-filter'); ?></legend>
+
+	                <?php ymc_render_field_header('Truncate Post Excerpt',
+		                'Limit the post excerpt to a specific length, ending with an ellipsis if it exceeds the set limit.
+				        Set the post excerpt truncate method:
+				        <ul><li>Truncate text: truncate text to the specified number of words (default 30 words).</li>
+				        <li>The first block of content: the first block of content (tags p or h1,h2,h3,h4,h5,h6).</li>
+				        <li>At the first line break: at the first line break (tag: br)</li></ul>'); ?>
+	                <?php $truncate_post_excerpt = UiLabels::all('truncate_post_excerpt'); ?>
+                    <select class="form-select" name="ymc_fg_truncate_post_excerpt">
+		                <?php
+		                if($truncate_post_excerpt) :
+			                foreach ($truncate_post_excerpt as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_truncate_post_excerpt, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+                    <?php ymc_render_field_header('Post Excerpt Length',
+                        'Limit the post excerpt to a specific length, ending with an ellipsis if it exceeds the set limit.'); ?>
+                    <input class="form-input" type="number" placeholder="30" min="0" name="ymc_fg_post_excerpt_length"
+                           value="<?php echo esc_attr($ymc_fg_post_excerpt_length); ?>">
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Filtered Posts Counter Label',
+		                'Text shown before the number of filtered posts (e.g., "Results:"). 
+		                Enter "none" to hide this text.'); ?>
+                    <input class="form-input" type="text" placeholder="Results" name="ymc_fg_filtered_posts_label"
+                           value="<?php echo esc_attr($ymc_fg_filtered_posts_label); ?>">
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Custom Read Time (minutes)',
+		                'Estimated time (in minutes) it takes to read this post. Leave empty to calculate automatically. Default is 200 words per minute.'); ?>
+                    <input class="form-input" type="number" placeholder="200" min="0" name="ymc_fg_post_custom_read_time"
+                           value="<?php echo esc_attr($ymc_fg_post_custom_read_time); ?>">
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Post Order Type',
+		                'Choose whether to show posts in ascending (ASC) or descending (DESC) order.'); ?>
+	                <?php $post_order = UiLabels::all('post_order'); ?>
+                    <select class="form-select" name="ymc_fg_post_order">
+		                <?php
+		                if($post_order) :
+			                foreach ($post_order as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_post_order, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php $post_order_by = UiLabels::all('post_order_by'); ?>
+	                <?php ymc_render_field_header('Post Order By',
+		                'Choose the sorting method for posts (e.g., date, title, random).'); ?>
+                    <select class="form-select js-post-order-by" name="ymc_fg_post_order_by">
+	                    <?php
+	                    if($post_order_by) :
+		                    foreach ($post_order_by as $key => $value) :
+			                    printf(
+				                    '<option value="%s"%s>%s</option>',
+				                    esc_attr($key),
+				                    selected($ymc_fg_post_order_by, $key, false),
+				                    esc_html($value)
+			                    );
+		                    endforeach;
+	                    endif;
+	                    ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php $is_hidden = ($ymc_fg_post_order_by === 'meta_key') ? '' : ' is-hidden'; ?>
+                    <div class="order-fields-meta-key js-order-fields-meta-key<?php echo esc_attr($is_hidden); ?>">
+	                    <?php ymc_render_field_header('Meta Key',
+		                    'Set value of meta_key parameter (field data key).'); ?>
+                        <input class="form-input" type="text" placeholder="meta_key" name="ymc_fg_order_meta_key"
+                               value="<?php echo esc_attr($ymc_fg_order_meta_key); ?>">
+                        <div class="spacer-25"></div>
+
+	                    <?php ymc_render_field_header('Meta Value',
+		                    'Set options: meta_value or meta_value_num (for numbers) to sort by meta field.'); ?>
+                        <input class="form-input" type="text" placeholder="meta_value or meta_value_num" name="ymc_fg_order_meta_value"
+                               value="<?php echo esc_attr($ymc_fg_order_meta_value); ?>">
+                        <div class="spacer-25"></div>
+                    </div>
+
+	                <?php $is_hidden = ($ymc_fg_post_order_by === 'multiple_fields') ? '' : ' is-hidden'; ?>
+                    <div class="order-fields-multiple-fields js-order-fields-multiple-fields<?php echo esc_attr($is_hidden); ?>">
+                        <div class="post-order-fields-inner">
+	                        <?php if(!empty($ymc_fg_post_order_by_multiple['fields'])) : ?>
+		                        <?php foreach ($ymc_fg_post_order_by_multiple['fields'] as $index => $field) : ?>
+                                    <div class="field-group">
+                                        <div class="cel">
+	                                        <?php ymc_render_field_header('Field name','Select field name'); ?>
+                                            <select class="form-select" name="ymc_fg_post_order_by_multiple[fields][<?php echo esc_attr($index); ?>][field_name]">
+	                                            <?php
+	                                            $post_order_by = UiLabels::all('post_order_by');
+	                                            if($post_order_by) :
+		                                            foreach ($post_order_by as $key => $value) :
+			                                            if($key === 'meta_key' || $key === 'multiple_fields') {
+				                                            continue;
+			                                            }
+			                                            printf(
+				                                            '<option value="%s"%s>%s</option>',
+				                                            esc_attr($key),
+				                                            selected($field['field_name'], $key, false),
+				                                            esc_html($value)
+			                                            );
+		                                            endforeach;
+	                                            endif;
+	                                            ?>
+                                            </select>
+                                        </div>
+                                        <div class="cel">
+	                                        <?php ymc_render_field_header('Post Order Type','Select post order type'); ?>
+                                            <select class="form-select" name="ymc_fg_post_order_by_multiple[fields][<?php echo esc_attr($index); ?>][order_type]">
+	                                            <?php
+	                                            $post_order = UiLabels::all( 'post_order' );
+	                                            if($post_order) :
+		                                            foreach ($post_order as $key => $value) :
+			                                            printf(
+				                                            '<option value="%s"%s>%s</option>',
+				                                            esc_attr($key),
+				                                            selected($field['order_type'], $key, false),
+				                                            esc_html($value)
+			                                            );
+		                                            endforeach;
+	                                            endif;
+	                                            ?>
+                                            </select>
+                                        </div>
+                                        <div class="cel">
+                                            <button type="button" class="button--secondary js-remove-order-field">
+			                                    <?php esc_html_e('Delete','ymc-smart-filter'); ?></button>
+                                        </div>
+                                    </div>
+		                        <?php endforeach;
+	                         endif; ?>
+                        </div>
+                        <template class="field-multiple-template">
+                            <div class="field-group">
+                                <div class="cel">
+	                                <?php ymc_render_field_header('Field name','Select field name'); ?>
+                                    <select class="form-select" name="ymc_fg_post_order_by_multiple[fields][index][field_name]">
+	                                    <?php
+	                                    $post_order_by = UiLabels::all('post_order_by');
+	                                    if($post_order_by) :
+		                                    foreach ($post_order_by as $key => $value) :
+                                                if($key === 'meta_key' || $key === 'multiple_fields') {
+                                                    continue;
+                                                }
+			                                    printf(
+				                                    '<option value="%s">%s</option>',
+				                                    esc_attr($key),
+				                                    esc_html($value)
+			                                    );
+		                                    endforeach;
+	                                    endif;
+	                                    ?>
+                                    </select>
+                                </div>
+                                <div class="cel">
+	                                <?php ymc_render_field_header('Post Order Type','Select post order type'); ?>
+                                    <select class="form-select" name="ymc_fg_post_order_by_multiple[fields][index][order_type]">
+	                                    <?php
+	                                    $post_order = UiLabels::all( 'post_order' );
+	                                    if($post_order) :
+		                                    foreach ($post_order as $key => $value) :
+			                                    printf(
+				                                    '<option value="%s">%s</option>',
+				                                    esc_attr($key),
+				                                    esc_html($value)
+			                                    );
+		                                    endforeach;
+	                                    endif;
+	                                    ?>
+                                    </select>
+                                </div>
+                                <div class="cel">
+                                    <button type="button" class="button--secondary js-remove-order-field">
+                                        <?php esc_html_e('Delete','ymc-smart-filter'); ?></button>
+                                </div>
+                            </div>
+                        </template>
+                        <button type="button" class="button button--primary js-add-order-multiple-field">
+                            <i class="fa-solid fa-plus"></i> <?php esc_html_e('Add Field', 'ymc-smart-filter'); ?></button>
+                        <div class="spacer-25"></div>
+                    </div>
+
+	                <?php $post_status = UiLabels::all('post_status'); ?>
+	                <?php ymc_render_field_header('Post Status',
+		                'Choose which post statuses are included in the grid. Non-public posts (such as Future, Draft or Private) 
+                      are available in popups only to authorized users with sufficient permissions.
+                      To include Future, Draft, Private, or other non-public posts in the grid, use the Advanced Query → Callback option.
+                      To allow guest access to popup content for non-public posts, use the ymc/popup/guest_can_view_post filter.
+                      '); ?>
+                    <select class="form-select form-select--multiple" multiple name="ymc_fg_post_status[]">
+		                <?php
+		                if($post_status) :
+                         $selected_statuses = is_array($ymc_fg_post_status) ? $ymc_fg_post_status : ['publish'];
+			               foreach ($post_status as $key => $value) :
+                           $is_selected = in_array($key, $selected_statuses, true) ? 'selected' : ''; ?>
+                            <option value="<?php echo esc_attr($key); ?>" <?php echo esc_html($is_selected); ?>>
+                              <?php echo esc_html($value); ?>
+                            </option>
+                        <?php			              
+			               endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('No posts found',
+		                'Customize the text shown when no posts are found.'); ?>
+                    <input class="form-input" type="text" placeholder="No posts found" name="ymc_fg_no_results_message"
+                           value="<?php echo esc_attr($ymc_fg_no_results_message); ?>">
+                </div>
+
+            </fieldset>
+
+            <fieldset class="form-group form-group--with-bg">
+                <div class="group-elements">
+                    <legend class="form-legend">
+		                <?php esc_html_e('Animation settings','ymc-smart-filter'); ?></legend>
+	                <?php ymc_render_field_header('Animation Effect',
+		                'Select how posts animate when they appear (e.g., Fade In, Bounce, Zoom).'); ?>
+	                <?php $post_animation_effect = UiLabels::all('post_animation_effect'); ?>
+                    <select class="form-select" name="ymc_fg_post_animation_effect">
+		                <?php
+		                if($post_animation_effect) :
+			                foreach ($post_animation_effect as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_post_animation_effect, $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                </div>
+            </fieldset>
+
+        </div>
+
+        <div class="headline js-headline-accordion" data-hash="popup_settings">
+            <span class="inner">
+                <i class="fas fa-window-restore"></i>
+                <span class="text"><?php echo esc_html__('Popup Settings', 'ymc-smart-filter'); ?></span>
+            </span>
+            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
+        </div>
+        <div class="form-wrap js-toggle-switch-popup">
+            <fieldset class="form-group popup-state">
+                <div class="group-elements">
+					<?php ymc_render_field_header('Enable Popup', 'Enable popup on frontend.'); ?>
+
+                    <label class="toggle-switch js-toggle-switch">
+                        <input type="checkbox" name="ymc_fg_popup_enable" value="yes"
+			                <?php checked( $ymc_fg_popup_enable, 'yes' ); ?>>
+                        <span class="slider round">
+                        <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                        <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
+                    </span>
+                    </label>
+                </div>
+            </fieldset>
+
+	        <?php $is_enable_popup = $ymc_fg_popup_enable === 'no' ? ' is-hidden' : ''; ?>
+            <fieldset class="form-group popup-settings js-is-enable-popup<?php echo esc_attr($is_enable_popup); ?>">
+                <div class="group-elements">
+	                <?php ymc_render_field_header('Animation Type',
+                        'If the <b>Popup Position</b> is <b>"Center Right"</b> or <b>"Center Left"</b>, only the "Slide" animation type will work.<br> 
+                        For other positions, Fade In, Rotate, and Zoom In are available.'); ?>
+	                <?php $popup_animation_type = UiLabels::all('popup_fields')['animation_type']; ?>
+                    <select class="form-select" name="ymc_fg_popup_settings[animation_type]">
+		                <?php
+		                if($popup_animation_type) :
+			                foreach ($popup_animation_type as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_popup_settings['animation_type'], $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Animation Origin', 'Set the animation speed for the popup.'); ?>
+	                <?php $popup_animation_origin = UiLabels::all('popup_fields')['animation_origin']; ?>
+                    <select class="form-select" name="ymc_fg_popup_settings[animation_origin]">
+		                <?php
+		                if($popup_animation_origin) :
+			                foreach ($popup_animation_origin as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_popup_settings['animation_origin'], $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Popup Position', 'Choose where the popup will be displayed on the screen.'); ?>
+	                <?php $popup_position = UiLabels::all('popup_fields')['position']; ?>
+                    <select class="form-select" name="ymc_fg_popup_settings[position]">
+		                <?php
+		                if($popup_position) :
+			                foreach ($popup_position as $key => $value) :
+				                printf(
+					                '<option value="%s"%s>%s</option>',
+					                esc_attr($key),
+					                selected($ymc_fg_popup_settings['position'], $key, false),
+					                esc_html($value)
+				                );
+			                endforeach;
+		                endif;
+		                ?>
+                    </select>
+                    <div class="spacer-25"></div>
+
+                    <div class="group-input">
+	                    <?php ymc_render_field_header('Popup Width', 'Set the width of the popup window. You can use units like px, %'); ?>
+                        <input class="form-input popup-width" type="number" placeholder="600" name="ymc_fg_popup_settings[width][default]"
+                               value="<?php echo esc_attr($ymc_fg_popup_settings['width']['default']); ?>">
+	                    <?php $popup_unit_width = UiLabels::all('popup_fields')['width']['unit']; ?>
+                        <select class="form-select popup-unit" name="ymc_fg_popup_settings[width][unit]">
+		                    <?php
+		                    if($popup_unit_width) :
+			                    foreach ($popup_unit_width as $key => $value) :
+				                    printf(
+					                    '<option value="%s"%s>%s</option>',
+					                    esc_attr($key),
+					                    selected($ymc_fg_popup_settings['width']['unit'], $key, false),
+					                    esc_html($value)
+				                    );
+			                    endforeach;
+		                    endif;
+		                    ?>
+                        </select>
+                    </div>
+                    <div class="spacer-25"></div>
+
+                    <div class="group-input">
+	                    <?php ymc_render_field_header('Popup Height', 'Set the height of the popup window. You can use units like px, %'); ?>
+                        <input class="form-input popup-height" type="number" placeholder="600" name="ymc_fg_popup_settings[height][default]"
+                               value="<?php echo esc_attr($ymc_fg_popup_settings['height']['default']); ?>">
+	                    <?php $popup_unit_height = UiLabels::all('popup_fields')['height']['unit']; ?>
+                        <select class="form-select popup-unit" name="ymc_fg_popup_settings[height][unit]">
+		                    <?php
+		                    if($popup_unit_height) :
+			                    foreach ($popup_unit_height as $key => $value) :
+				                    printf(
+					                    '<option value="%s"%s>%s</option>',
+					                    esc_attr($key),
+					                    selected($ymc_fg_popup_settings['height']['unit'], $key, false),
+					                    esc_html($value)
+				                    );
+			                    endforeach;
+		                    endif;
+		                    ?>
+                        </select>
+                    </div>
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Popup Background Overlay', 'Set a custom background overlay for the popup.'); ?>
+                    <input class="js-picker-color-alpha" type="text" name='ymc_fg_popup_settings[background_overlay]'
+                           data-alpha-enabled="true" value="<?php echo esc_attr($ymc_fg_popup_settings['background_overlay']); ?>" />
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="headline js-headline-accordion" data-hash="pagination_settings">
+            <span class="inner">
+                <i class="fas fa-sort-numeric-down-alt"></i>
+                <span class="text"><?php echo esc_html__('Pagination Settings', 'ymc-smart-filter'); ?></span>
+            </span>
+            <i class="fa-solid fa-chevron-down js-icon-accordion"></i>
+        </div>
+        <div class="form-wrap js-toggle-switch-pagination">
+            <fieldset class="form-group">
+                <div class="group-elements">
+					<?php ymc_render_field_header('Disable Pagination', 'Disable pagination on frontend.'); ?>
+                    <label class="toggle-switch js-toggle-switch">
+                        <input type="checkbox" name="ymc_fg_pagination_hidden" value="yes"
+			                <?php checked( $ymc_fg_pagination_hidden, 'yes' ); ?>>
+                        <span class="slider round">
+                            <span class="on"><?php esc_html_e('ON', 'ymc-smart-filter'); ?></span>
+                            <span class="off"><?php esc_html_e('OFF', 'ymc-smart-filter'); ?></span>
+                        </span>
+                    </label>
+                </div>
+            </fieldset>
+
+	        <?php $is_pagination_hidden = $ymc_fg_pagination_hidden === 'yes' ? 'is-hidden' : ''; ?>
+            <fieldset class="form-group js-is-disabled-pagination <?php echo esc_attr($is_pagination_hidden); ?>">
+                <div class="group-elements">
+                  <?php ymc_render_field_header('Pagination Type', 'Select pagination type.'); ?>
+                  <?php $pagination_type = UiLabels::all('pagination_type'); ?>
+                  <select class="form-select js-pagination_type" name="ymc_fg_pagination_type" id="ymc_fg_pagination_type">
+                     <?php
+                     if($pagination_type) :
+                        foreach ($pagination_type as $key => $value) :
+                           printf(
+                              '<option value="%s"%s>%s</option>',
+                              esc_attr($key),
+                              selected($ymc_fg_pagination_type, $key, false),
+                              esc_html($value)
+                           );
+                        endforeach;
+                     endif;
+                     ?>
+                  </select>
+                  <div class="spacer-25"></div>
+                </div>
+
+               <?php $is_numeric_hidden = (in_array($ymc_fg_pagination_type, ['loadmore', 'infinite'], true )) ? ' is-hidden' : ''; ?>
+               <div class="group-elements js-pagination-number-format<?php echo esc_attr($is_numeric_hidden); ?>">
+                  <?php ymc_render_field_header('Number Format', 'Select the format for the pagination numbers.'); ?>
+                  <?php $pagination_number_format = UiLabels::all('number_format'); ?>
+                  <select class="form-select js-pagination_number_format" name="ymc_fg_pagination_number_format" id="ymc_fg_pagination_number_format">
+                     <?php
+                     if($pagination_number_format) :
+                        foreach ($pagination_number_format as $key => $value) :
+                           printf(
+                              '<option value="%s"%s>%s</option>',
+                              esc_attr($key),
+                              selected($ymc_fg_pagination_number_format, $key, false),
+                              esc_html($value)
+                           );
+                        endforeach;
+                     endif;
+                     ?>
+                  </select>
+                  <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements">
+                  <?php ymc_render_field_header('Posts Per Page',
+                     'Number of posts to display per page before pagination or loading more. Use -1 to display all posts.'); ?>
+                  <input class="form-input" type="text" placeholder="5" name="ymc_fg_per_page"
+                        value="<?php echo esc_attr($ymc_fg_per_page); ?>">
+                  <div class="spacer-25"></div>
+                </div>
+	             
+                <div class="group-elements js-navigation-buttons<?php echo esc_attr($is_numeric_hidden); ?>">
+	                <?php ymc_render_field_header('Previous Button Text',
+                        'Text displayed on the button to navigate to the previous item or page.'); ?>
+                    <input class="form-input" type="text" placeholder="Prev" name="ymc_fg_prev_button_text"
+                           value="<?php echo esc_attr($ymc_fg_prev_button_text); ?>">
+                    <div class="spacer-25"></div>
+
+	                <?php ymc_render_field_header('Next Button Text',
+		                'Text displayed on the button to navigate to the next item or page.'); ?>
+                    <input class="form-input" type="text" placeholder="Prev" name="ymc_fg_next_button_text"
+                           value="<?php echo esc_attr($ymc_fg_next_button_text); ?>">
+                    <div class="spacer-25"></div>
+                </div>
+
+                <div class="group-elements js-pagination-range<?php echo esc_attr($is_numeric_hidden); ?>">
+                  <?php ymc_render_field_header('Pages Around Current',
+                        'Number of page links displayed on each side of the current page. Example: 1 ... 4 5 [6] 7 8 ... 20'); ?>
+                        <input class="form-input" type="number" name="ymc_fg_pagination_mid_size" min="1" max="5"
+                           value="<?php echo esc_attr($ymc_fg_pagination_mid_size); ?>">
+                    <div class="spacer-25"></div>
+
+                     <?php ymc_render_field_header('Pages at Start & End',
+                           'Number of page links shown at the beginning and end of the pagination.'); ?>
+                           <input class="form-input" type="number" name="ymc_fg_pagination_end_size" min="1" max="3"
+                              value="<?php echo esc_attr($ymc_fg_pagination_end_size); ?>">
+                     <div class="spacer-25"></div>                    
+                </div>
+
+	             <?php $is_load_more_hidden = (in_array($ymc_fg_pagination_type, ['numeric'], true )) ? ' is-hidden' : ''; ?>
+                <div class="group-elements js-load-more-button<?php echo esc_attr($is_load_more_hidden); ?>">
+		            <?php ymc_render_field_header('Load More Button Text',
+			            'Text shown on the button that loads additional items or content.'); ?>
+                     <input class="form-input" type="text" placeholder="Load More" name="ymc_fg_load_more_text"
+                           value="<?php echo esc_attr($ymc_fg_load_more_text); ?>">
+                     <div class="spacer-25"></div>
+                </div>
+
+            </fieldset>
+
+        </div>
+    </div>
+</div>
