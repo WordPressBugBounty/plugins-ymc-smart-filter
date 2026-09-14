@@ -171,7 +171,7 @@ class FG_REST_Frontend_Filter_Controller extends FG_REST_Abstract_Controller {
             echo $filter->render_term_button(
                   $term_id,
                   $term_name,
-                  [$taxonomy],
+                  $taxonomy,
                   $filter_id,
                   $post_types,
                   $show_post_count
