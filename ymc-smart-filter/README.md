@@ -73,6 +73,7 @@ This documentation describes available **WordPress filter hooks** for customizin
     - [Custom Post Layout](#custom-post-layout)
     - [JavaScript Integration Hooks](#javascript-integration-hooks)
     - [Advanced Developer Hooks](#advanced-developer-hooks)
+- [Hook Visual Guides](#hook-visual-guides)
 - [YMCFilterGrid: Global Object API](#ymcfiltergrid-global-object-api)
 - [Changelog](#changelog)
 
@@ -688,6 +689,18 @@ ymcHooks.addAction('ymc/grid/after_update_72', function(data, container) {
 
 ```
 
+### Hook Visual Guides
+
+These visual guides show where YMC Filter hooks are located within the filter layout, posts grid, filter sidebars, search results, and pagination.
+
+### Overview
+
+[**View YMC Filter Hook Visual Guide — Overview**](docs/images/ymc-filter-hook-visual-guide-overview.png)
+
+### Detailed Layout
+
+[**View YMC Filter Hook Visual Guide — Detailed**](docs/images/ymc-filter-hook-visual-guide-detailed.png)
+
 
 ### YMCFilterGrid: Global Object API
 
@@ -1046,7 +1059,7 @@ Usage Example:
 YMCFilterGrid.setParams({ paged: 2 });
 
 // Change posts per page
-YMCFilterGrid.setParams({ posts_per_page: 12 });
+YMCFilterGrid.setParams({ per_page: 12 });
 
 // Apply custom ordering
 YMCFilterGrid.setParams({
