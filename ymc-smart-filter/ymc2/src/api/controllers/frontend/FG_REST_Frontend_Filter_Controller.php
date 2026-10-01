@@ -63,7 +63,12 @@ class FG_REST_Frontend_Filter_Controller extends FG_REST_Abstract_Controller {
       $params = $request->get_json_params();
 
       $query     = sanitize_text_field( $params['query'] ?? '' );
-      $taxonomy  = sanitize_key( $params['taxonomy'] ?? '' );
+
+      $raw_tax = $params['taxonomy'] ?? '';
+      $taxonomy = is_array( $raw_tax ) ? 
+         sanitize_key( (string) reset( $raw_tax ) ) : 
+         sanitize_key( (string) $raw_tax );
+    
       $filter_id = absint( $params['filter_id'] ?? 0 );
 
       if ( empty( $taxonomy ) || empty( $filter_id ) ) {

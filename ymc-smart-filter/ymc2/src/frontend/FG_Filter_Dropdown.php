@@ -116,7 +116,12 @@ class FG_Filter_Dropdown extends FG_Abstract_Filter_Impl implements IFilter {
    }
 
 	public function render_term_button( int $term_id, string $fallback_name, string $tax_name, int $filter_id, array $current_post_types, string $show_post_count = 'no' ): string {
-		$post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
+		
+      if ( is_array( $tax_name ) ) {
+         $tax_name = (string) reset( $tax_name );
+      }
+   
+      // $post_types = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_types');
 
 		$term_class_is_default = $this->get_term_default( $term_id );
 		$term_class_is_default = 'true' === $term_class_is_default ? 'is-default' : '';
