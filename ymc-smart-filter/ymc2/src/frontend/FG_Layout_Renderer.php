@@ -539,12 +539,13 @@ class FG_Layout_Renderer {
             $m_bottom      
         );
 
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped         
+        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped         
         echo sprintf(
             '<hr class="post-card__divider sb-divider%s" style="%s">',
             $custom_class,
             esc_attr( $inline_styles )
          );
+         // phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     /**

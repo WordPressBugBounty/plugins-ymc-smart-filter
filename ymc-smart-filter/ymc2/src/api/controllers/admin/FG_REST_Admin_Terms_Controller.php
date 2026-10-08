@@ -317,6 +317,7 @@ class FG_REST_Admin_Terms_Controller extends FG_REST_Abstract_Controller {
          return $this->error_response(
             'upload_failed',
             sprintf(
+               /* translators: %s: Upload error message. */
                __( 'Upload failed: %s', 'ymc-smart-filter' ),
                $upload['error']
             ),
