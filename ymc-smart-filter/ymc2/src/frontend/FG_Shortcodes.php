@@ -75,13 +75,19 @@ class FG_Shortcodes {
       <?php $custom_css = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_css'); ?>
 		<?php if (!empty($custom_css)) :
 			$minified_css = ymc_minify_css($custom_css); ?>
-            <style id="ymc-custom-css-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>"><?php echo esc_html($minified_css); ?></style>
+            <style id="ymc-custom-css-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>">
+            <?php 
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Custom CSS is sanitized on save and stripped of HTML tags here.
+		      echo wp_strip_all_tags( $minified_css ); ?>
+            </style>
 		<?php endif; ?>
 
         <?php $custom_js = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_js'); ?>
         <?php if (!empty($custom_js)) : ?>
             <?php // phpcs:ignore WordPress ?>
-            <script id="ymc-custom-js-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>"><?php echo $custom_js; ?></script>
+            <script id="ymc-custom-js-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>">
+            <?php echo $custom_js; ?>
+            </script>
         <?php endif; ?>
 
 		<div id="ymc-filter-<?php echo esc_attr(self::$counter_filter); ?>"

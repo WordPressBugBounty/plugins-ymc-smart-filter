@@ -275,16 +275,32 @@ class FG_Save_Meta_Boxes {
 			$grid_style = sanitize_text_field(wp_unslash($_POST['ymc_fg_grid_style']));
 			update_post_meta($post_id, 'ymc_fg_grid_style', $grid_style);			
 		}
-
+ 
+      
       // Advanced: Custom CSS
-		$custom_css = isset($_POST['ymc_fg_custom_css'])
-			? wp_kses_post(wp_unslash($_POST['ymc_fg_custom_css'])) : '';
-		update_post_meta($post_id, 'ymc_fg_custom_css', $custom_css);
+      if ( isset( $_POST['ymc_fg_custom_css'] ) ) {
+         if ( current_user_can( 'unfiltered_html' ) ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Custom CSS raw input for admins.
+            $custom_css = wp_unslash( $_POST['ymc_fg_custom_css'] );
+         } else {
+            $custom_css = wp_strip_all_tags( wp_unslash( $_POST['ymc_fg_custom_css'] ) );
+         }
+
+         update_post_meta( $post_id, 'ymc_fg_custom_css', $custom_css );
+      }
+
 
       // Advanced: Custom Action
-		$custom_js = isset($_POST['ymc_fg_custom_js'])
-			? wp_kses_post(wp_unslash($_POST['ymc_fg_custom_js'])) : '';
-		update_post_meta($post_id, 'ymc_fg_custom_js', $custom_js); 
+      if ( isset( $_POST['ymc_fg_custom_js'] ) ) {        
+         if ( current_user_can( 'unfiltered_html' ) ) {
+            // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Custom JS code requires raw input.
+            $custom_js = wp_unslash( $_POST['ymc_fg_custom_js'] );
+         } else {            
+            $custom_js = get_post_meta( $post_id, 'ymc_fg_custom_js', true );
+         }
+
+         update_post_meta( $post_id, 'ymc_fg_custom_js', $custom_js );
+      }
 
    }
 
