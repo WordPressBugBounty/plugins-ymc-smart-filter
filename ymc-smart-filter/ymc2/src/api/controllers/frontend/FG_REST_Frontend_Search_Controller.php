@@ -49,9 +49,7 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 
       $keyword = sanitize_text_field( $params['keyword'] ?? '' );
       $grid_id = absint( $params['grid_id'] ?? 0 );
-      $terms   = $params['terms'] ?? [];
-
-      $terms = array_map( 'absint', $terms );
+      $terms   = $params['terms'] ?? [];     
 
       $suggestions = [];
 
@@ -66,6 +64,9 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 
       if ( ! is_array( $terms ) ) {
          $terms = [];
+      } 
+      else {
+         $terms = array_map('absint', $terms);
       }
 
       $tax_relation = Data_Store::get_meta_value($grid_id, 'ymc_fg_tax_relation');
@@ -85,6 +86,19 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
          self::add_search_filters();
 
          $search_filters_enabled = true;
+      }
+
+      if (is_array($post_types)) {
+         $post_types = array_values(array_diff($post_types, ['revision']));
+      } 
+      elseif ($post_types === 'revision') {
+         $post_types = [];
+      }
+
+      if (empty($post_types)) {
+         return $this->success_response([
+            'results' => []
+         ]);
       }
 
       $args = [
@@ -115,11 +129,9 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
       }     
 
       try {
-
          $query = new \WP_Query( $args );
-
-      } finally {
-
+      } 
+      finally {
          if ( $search_filters_enabled ) {
             static::remove_search_filters();
          }
@@ -183,7 +195,7 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
                         continue;
                      }
 
-                     $fragment = self::extract_and_highlight_fragment($meta_value, $keyword);
+                     $fragment = self::extract_and_highlight_fragment( (string) $meta_value, $keyword);                     
 
                      if ( $fragment ) {
 
@@ -191,7 +203,7 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
                            'id'      => $post_id,
                            'context' => $fragment,
                            'title'   => wp_strip_all_tags( $title ),
-                           'source'  => 'meta (' . esc_html($key) . ')'
+                           'source'  => 'meta (' . $key . ')'
                         ];
 
                         break 2;
@@ -211,9 +223,9 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 
 
    public static function add_search_filters() : void {
-      add_filter('posts_join', [__CLASS__, 'search_join']);      
-      add_filter('posts_where', [ __CLASS__, 'search_where' ], 10, 2);
-      add_filter('posts_distinct', [__CLASS__, 'search_distinct']);
+      add_filter('posts_join', [__CLASS__, 'search_join'], 10, 2);      
+      add_filter('posts_search', [ __CLASS__, 'search_where' ], 10, 2);
+      add_filter('posts_distinct', [__CLASS__, 'search_distinct'], 10, 2);
    }
 
 
@@ -222,9 +234,9 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 	 * @return void
 	 */
 	public static function remove_search_filters() : void {
-		remove_filter('posts_join', [__CLASS__, 'search_join']);
-		remove_filter('posts_where', [__CLASS__, 'search_where']);
-		remove_filter('posts_distinct', [__CLASS__, 'search_distinct']);
+		remove_filter('posts_join', [__CLASS__, 'search_join'], 10);
+		remove_filter('posts_search', [__CLASS__, 'search_where'], 10);
+		remove_filter('posts_distinct', [__CLASS__, 'search_distinct'], 10);
 	}
 
 
@@ -232,50 +244,66 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 	 * Modify the SQL JOIN statement to include the postmeta table for custom meta data retrieval.
 	 *
 	 * @param string $join The existing SQL JOIN statement.
+    * @param \WP_Query $query
 	 * @return string The modified SQL JOIN statement.
 	 */
-	public static function search_join( string $join ) : string {
-		global $wpdb;
-		$join .= " LEFT JOIN $wpdb->postmeta AS pm ON ID = pm.post_id ";
-		return $join;
-	}
+   public static function search_join( string $join, \WP_Query $query): string {
+      global $wpdb;
+
+      if (empty($query->get('ymc_search_term'))) {
+         return $join;
+      }
+
+      $join .= " LEFT JOIN {$wpdb->postmeta} AS pm ON {$wpdb->posts}.ID = pm.post_id ";
+
+      return $join;
+   }
 
 
    /**
 	 * Modify the WHERE clause of the SQL query to include postmeta table for custom meta data search.
 	 *
 	 * @param string $where The existing WHERE clause of the SQL query.
+    * @param \WP_Query $query
 	 * @return string The modified WHERE clause including the postmeta table search condition.
 	 */
-   public static function search_where( string $where, \WP_Query $query) : string {
+   public static function search_where( string $where, \WP_Query $query ): string {
 
       global $wpdb;
 
-      $search_term = $query->get( 'ymc_search_term' );
+      $search_term = $query->get('ymc_search_term');
 
-      if ( empty( $search_term ) ) {
+      if (empty($search_term)) {
          return $where;
       }
 
-      $like = '%' . $wpdb->esc_like( $search_term ) . '%';
+      // Remove the leading AND from the WordPress search clause.
+      $search_sql = trim($where);
+      $search_sql = preg_replace( '/^AND\s+/i', '', $search_sql );
 
-      $where .= $wpdb->prepare(
-         " OR ( pm.meta_value LIKE %s )",
-         $like
-      );
+      if (empty($search_sql)) {
+         return $where;
+      }
 
-      return $where;
+      $like = '%' . $wpdb->esc_like($search_term) . '%';
+      $meta_sql = $wpdb->prepare('pm.meta_value LIKE %s', $like);
+
+      return ' AND ((' . $search_sql . ') OR (' . $meta_sql . '))';
    }
 
 
    /**
 	 * Returns the DISTINCT keyword used in SQL queries.
 	 *
-	 * @param string $where
+	 * @param string $distinct
+    * @param \WP_Query $query
 	 * @return string The DISTINCT keyword
 	 */
-	public static function search_distinct( string $where ) : string {
-		return  'DISTINCT';	
+   public static function search_distinct( string $distinct, \WP_Query $query): string {
+      if (empty($query->get('ymc_search_term'))) {
+         return $distinct;
+      }
+      return 'DISTINCT';
    }
 
 
@@ -325,41 +353,58 @@ class FG_REST_Frontend_Search_Controller extends FG_REST_Abstract_Controller {
 
 
    /**
-	 * Gets text fragments containing a keyword and highlights them.
-	 *
-	 * @param string $text — text to search
-	 * @param string $keyword — keyword
-	 * @param int $padding — number of characters before/after the word
-	 *
-	 * @since 3.0.0
-	 * @return string|null — fragment with backlight
-	 */
-	public static function extract_and_highlight_fragment(string $text, string $keyword, int $padding = 60) : ?string {
-		$text = strip_tags($text);
-		$text = preg_replace('/\[[\/]?[^\]]+\]/', '', $text);
-		$text_lower = mb_strtolower($text);
-		$keyword_lower = mb_strtolower($keyword);
-		$pos = mb_strpos($text_lower, $keyword_lower);
+    * Gets text fragments containing a keyword and highlights them.
+    *
+    * @param string $text — text to search
+    * @param string $keyword — keyword
+    * @param int $padding — number of characters before/after the word
+    *
+    * @since 3.0.0
+    * @return string|null — fragment with backlight
+    */   
+   public static function extract_and_highlight_fragment( string $text, string $keyword, int $padding = 60 ): ?string {
+      $text = strip_tags($text);
+      $text = preg_replace('/\[[\/]?[^\]]+\]/', '', $text);
 
-		if ($pos === false) return null;
+      if ($keyword === '' || $text === '') {
+         return null;
+      }
 
-		//$start = max(0, $pos - $padding);
-		$start = $pos;
-		$length = mb_strlen($keyword);
-		$end = $pos + $length + $padding;
+      // Find the keyword in the original text.
+      // PREG_OFFSET_CAPTURE returns a byte offset, so use substr() below.
+      $matched = preg_match(
+         '/' . preg_quote($keyword, '/') . '/iu',
+         $text,
+         $matches,
+         PREG_OFFSET_CAPTURE
+      );
 
-		$fragment = mb_substr($text, $start, $end - $start);
-		$fragment = preg_replace(
-			'/' . preg_quote($keyword, '/') . '/iu',
-			'<b>$0</b>',
-			$fragment
-		);
+      if ($matched !== 1) {
+         return null;
+      }
 
-		//if ($start > 0) $fragment = '...' . $fragment;
-		if ($end < mb_strlen($text)) $fragment .= '...';
+      $match_text = $matches[0][0];
+      $match_offset = $matches[0][1];
 
-		return $fragment;
-	}
+      // Keep the existing behavior: start the snippet at the keyword.
+      $tail = substr(
+         $text,
+         $match_offset + strlen($match_text)
+      );
+
+      $padding = max(0, $padding);
+      $tail_fragment = mb_substr($tail, 0, $padding);
+
+      // Escape all source text; only the plugin-generated <b> remains HTML.
+      $fragment = '<b>' . esc_html($match_text) . '</b>'
+         . esc_html($tail_fragment);
+
+      if (mb_strlen($tail) > $padding) {
+         $fragment .= '...';
+      }
+
+      return $fragment;
+   }
 
 
    	/**

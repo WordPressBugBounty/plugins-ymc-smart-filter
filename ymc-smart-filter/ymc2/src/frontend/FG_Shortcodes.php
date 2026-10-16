@@ -85,9 +85,7 @@ class FG_Shortcodes {
         <?php $custom_js = Data_Store::get_meta_value($filter_id, 'ymc_fg_custom_js'); ?>
         <?php if (!empty($custom_js)) : ?>
             <?php // phpcs:ignore WordPress ?>
-            <script id="ymc-custom-js-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>">
-            <?php echo $custom_js; ?>
-            </script>
+            <script id="ymc-custom-js-<?php echo esc_attr($filter_id); ?>-<?php echo esc_attr(self::$counter_filter); ?>"><?php echo $custom_js; ?></script>
         <?php endif; ?>
 
 		<div id="ymc-filter-<?php echo esc_attr(self::$counter_filter); ?>"
