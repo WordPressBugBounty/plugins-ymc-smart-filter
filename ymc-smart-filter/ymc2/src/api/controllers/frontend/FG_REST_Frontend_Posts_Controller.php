@@ -746,11 +746,19 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * Modify the SQL JOIN statement to include the postmeta table for custom meta data retrieval.
 	 *
 	 * @param string $join The existing SQL JOIN statement.
+    * @param \WP_Query $query
 	 * @return string The modified SQL JOIN statement.
 	 */
-	public static function search_join( string $join ) : string {
+	public static function search_join( string $join, \WP_Query $query ) : string {
+      
 		global $wpdb;
-		$join .= " LEFT JOIN $wpdb->postmeta AS pm ON ID = pm.post_id ";
+
+      if (empty($query->get('ymc_search_term'))) {
+         return $join;
+      }
+		
+      $join .= " LEFT JOIN {$wpdb->postmeta} AS pm ON {$wpdb->posts}.ID = pm.post_id ";
+      
 		return $join;
 	}
 
@@ -758,55 +766,46 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * Modify the WHERE clause of the SQL query to include postmeta table for custom meta data search.
 	 *
 	 * @param string $where The existing WHERE clause of the SQL query.
+    * @param \WP_Query $query
 	 * @return string The modified WHERE clause including the postmeta table search condition.
 	 */
-	/*public static function search_where( string $where ) : string {
-		global $wpdb;
-
-		$pattern = "/\(\s*{$wpdb->posts}.post_title\s+LIKE\s*'([^']*)'\s*\)/";
-
-		$where = preg_replace_callback( $pattern, function( $matches ) use ( $wpdb ) {
-			$raw = $matches[1];
-
-			$raw = wp_unslash( $raw );
-			$like = $wpdb->esc_like( $raw );
-
-			$quoted_like = $wpdb->prepare( "'%s'", '%' . $like . '%' );
-
-			return "({$wpdb->posts}.post_title LIKE {$quoted_like}) OR (pm.meta_value LIKE {$quoted_like})";
-		}, $where );
-
-		return $where;
-	}*/
-
    public static function search_where( string $where, \WP_Query $query ) : string {
-
+         
       global $wpdb;
 
-      $search_term = $query->get( 'ymc_search_term' );
+      $search_term = $query->get('ymc_search_term');
 
-      if ( empty( $search_term ) ) {
+      if (empty($search_term)) {
          return $where;
       }
 
-      $like = '%' . $wpdb->esc_like( $search_term ) . '%';     
+      $search_sql = trim($where);
+      $search_sql = preg_replace( '/^AND\s+/i', '', $search_sql );
 
-      $where .= $wpdb->prepare(
-         " OR ( pm.meta_value LIKE %s )",
-         $like
-      );
+      if (empty($search_sql)) {
+         return $where;
+      }
 
-      return $where;
+      $like = '%' . $wpdb->esc_like($search_term) . '%';
+      $meta_sql = $wpdb->prepare('pm.meta_value LIKE %s', $like);
+
+      return ' AND ((' . $search_sql . ') OR (' . $meta_sql . '))';       
+     
    }
 
 
 	/**
 	 * Returns the DISTINCT keyword used in SQL queries.
 	 *
-	 * @param string $where
+	 * @param string $distinct
+    * @param \WP_Query $query
 	 * @return string The DISTINCT keyword
 	 */
-	public static function search_distinct( string $where ) : string {
+	public static function search_distinct( string $distinct, \WP_Query $query ) : string {
+
+      if (empty($query->get('ymc_search_term'))) {
+         return $distinct;
+      }
 		return  'DISTINCT';	
    }
 
@@ -817,9 +816,9 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * @return void
 	 */
 	public static function add_search_filters() : void {
-		add_filter('posts_join', [__CLASS__, 'search_join']);		
-      add_filter('posts_where', [ __CLASS__, 'search_where' ], 10, 2);
-		add_filter('posts_distinct', [__CLASS__, 'search_distinct']);
+		add_filter('posts_join', [__CLASS__, 'search_join'], 10, 2);		
+      add_filter('posts_search', [ __CLASS__, 'search_where' ], 10, 2);
+		add_filter('posts_distinct', [__CLASS__, 'search_distinct'], 10, 2);
 	}
 
 
@@ -828,9 +827,9 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * @return void
 	 */
 	public static function remove_search_filters() : void {
-		remove_filter('posts_join', [__CLASS__, 'search_join']);
-		remove_filter('posts_where', [__CLASS__, 'search_where']);
-		remove_filter('posts_distinct', [__CLASS__, 'search_distinct']);
+		remove_filter('posts_join', [__CLASS__, 'search_join'], 10);
+		remove_filter('posts_search', [__CLASS__, 'search_where'], 10);
+		remove_filter('posts_distinct', [__CLASS__, 'search_distinct'], 10);
 	}
 
 

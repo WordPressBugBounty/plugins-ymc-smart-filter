@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.12.20
+Version: 3.12.21
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 3.12.20
+Stable tag: 3.12.21
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -79,6 +79,9 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.12.21 =
+Security: Fixed a stored DOM-based XSS in search autocomplete.
+Fixed: Improved SQL query logic to correctly respect post statuses and exclude revisions.
 = 3.12.20 =
 Security: Fixed a stored DOM-based XSS in autocomplete search and improved query logic to respect post statuses.
 = 3.12.19 =
