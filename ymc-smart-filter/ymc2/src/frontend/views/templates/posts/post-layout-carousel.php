@@ -22,6 +22,7 @@ $post_layout = $post_layout ?? 'carousel';
         $target_option         = Data_Store::get_meta_value($filter_id, 'ymc_fg_target_option');
         $post_display_settings = Data_Store::get_meta_value($filter_id, 'ymc_fg_post_display_settings');
         $popup_enable          = Data_Store::get_meta_value($filter_id, 'ymc_fg_popup_enable');
+        $carousel_settings     = Data_Store::get_meta_value($filter_id, 'ymc_fg_carousel_settings');      
         $popup_class_trigger   = $popup_enable === 'no' ? '' : ' js-ymc-popup-trigger';
         $popup_class           = $popup_class_trigger;
 
@@ -172,11 +173,18 @@ $post_layout = $post_layout ?? 'carousel';
         <?php endwhile; ?>
     </div>
 
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
+      <?php if ( isset( $carousel_settings['navigation']['visible'] ) && $carousel_settings['navigation']['visible'] === 'true' ) : ?>
+         <div class="swiper-button-prev"></div>
+         <div class="swiper-button-next"></div>
+      <?php endif; ?>
 
-    <div class="swiper-pagination"></div>
-    <div class="swiper-scrollbar"></div>
+      <?php if ( isset( $carousel_settings['pagination']['visible'] ) && $carousel_settings['pagination']['visible'] === 'true' ) : ?>
+         <div class="swiper-pagination"></div>
+      <?php endif; ?>
+
+      <?php if ( isset( $carousel_settings['scrollbar']['visible'] ) && $carousel_settings['scrollbar']['visible'] === 'true' ) : ?>
+         <div class="swiper-scrollbar"></div>
+      <?php endif; ?>
 
 </div>
 
