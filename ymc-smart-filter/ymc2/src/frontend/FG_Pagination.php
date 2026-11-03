@@ -65,15 +65,15 @@ class FG_Pagination {
 		$next_button_text = apply_filters('ymc/pagination/next_text_'. $filter_id .'_'. $counter, $next_button_text);
 
 		$pagination = paginate_links([
-			'base'      => '%_%',
+			'base'      => '#page=%#%',
+			'format'    => '',
 			'type'      => 'array',
 			'total'     => $query->max_num_pages,
-			'format'    => '#page=%#%',
 			'current'   => max(1, $paged),
 			'prev_text' => $prev_button_text,
 			'next_text' => $next_button_text,
 			'mid_size'  => $pagin_mid_size,
-         'end_size'  => $pagin_end_size
+			'end_size'  => $pagin_end_size
 		]);
 
 		if (empty($pagination)) {
@@ -85,6 +85,9 @@ class FG_Pagination {
 
 		foreach ($pagination as $page) {
 			$class = 'pagination__item';
+
+			// Ensure links only contain the hash part, removing any auto-prepended base URLs
+			$page = preg_replace('/href=["\'][^#]*#page=/', 'href="#page=', $page);
 
 			if (preg_match('/<span[^>]*>.*<\/span>/', $page)) {
 				$class .= ' current-item';
