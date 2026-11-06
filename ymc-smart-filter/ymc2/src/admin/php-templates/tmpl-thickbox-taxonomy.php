@@ -48,9 +48,10 @@
          <div class="all-button-settings js-all-button-settings">
 
             <header class="headline all-button-settings__title">
-               <?php esc_attr_e('"All" Button Settings', 'ymc-smart-filter' ); ?></header>
+               <?php esc_attr_e('"All" Button Settings', 'ymc-smart-filter' ); ?>
+            </header>
 
-            <p><?php echo wp_kses_post("Customize the label and visibility for the 'All' button. This only applies to the <b>Default filter type</b>." ); ?></p>
+            <p><?php echo wp_kses_post("Customize the label and visibility for the 'All' button. This only applies to the <b>Default filter type</b>."); ?></p>
 
             <div class="spacer-15"></div>
 
@@ -80,6 +81,35 @@
             </div>
 
          </div>
+
+         <div class="spacer-30"></div>
+
+         <div class="hierarchical-taxonomy-settings js-hierarchical-taxonomy-settings">
+
+            <header class="headline hierarchical-taxonomy-settings__title">
+               <?php esc_html_e('Hierarchical Filter Behavior', 'ymc-smart-filter' ); ?>
+            </header>
+            <p><?php echo wp_kses_post("Manage how the filter handles relationships between parent and child items (like Categories and Sub-categories)."); ?></p>
+            
+            <div class="spacer-15"></div>
+
+            <div class="hierarchical-taxonomy-settings__row">
+               <div class="form-item"> 
+                  
+                  <header class="form-label">
+                     <span class="heading-text"><?php esc_html_e('Include Sub-item Posts', 'ymc-smart-filter'); ?></span>
+                  </header>
+                  <span class="description"><?php esc_html_e('If enabled, selecting a parent item will automatically display posts from all its sub-items and descendants. If disabled, only posts strictly assigned to the selected item will be shown.', 'ymc-smart-filter' ); ?></span>
+
+                  <div class="group-elements">
+                     <input class="form-checkbox js-include-children" type="checkbox" value="1">
+                     <label class="field-label" for="include_children"><?php esc_html_e('Enable', 'ymc-smart-filter' ); ?></label>
+                  </div> 
+
+               </div>
+            </div>        
+         
+         </div> 
 
     </div>
 

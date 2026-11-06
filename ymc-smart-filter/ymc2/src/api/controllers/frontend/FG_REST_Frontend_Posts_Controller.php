@@ -157,6 +157,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		$scroll_to_filters_on_load  = Data_Store::get_meta_value($filter_id, 'ymc_fg_scroll_to_filters_on_load');
 		$debug_mode         = Data_Store::get_meta_value($filter_id, 'ymc_fg_debug_mode');
 		$filtered_posts_label = Data_Store::get_meta_value($filter_id, 'ymc_fg_filtered_posts_label');
+      $tax_attrs          = Data_Store::get_meta_value($filter_id, 'ymc_fg_tax_attrs');
 
 		// Arguments
 		$args = [
@@ -169,7 +170,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		];
 
       // Taxonomies and terms
-		self::add_tax_query_args($args, $taxonomies, $terms, $tax_relation, $filter_id);
+		self::add_tax_query_args($args, $taxonomies, $terms, $tax_relation, $filter_id, $tax_attrs);
 
 		// Selected Posts
 		if ($selected_posts) {
@@ -673,14 +674,17 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 	 * @param array $terms
 	 * @param string $tax_relation
 	 * @param int $filter_id
+    * @param array $tax_attrs
 	 *
 	 * @since 3.0.0
 	 * @return void
 	 */
-	private static function add_tax_query_args(array &$args, array $taxonomies,	array $terms, string $tax_relation = 'AND', int $filter_id = 0): void {
-		if (!empty($taxonomies) && !empty($terms)) {
+	private static function add_tax_query_args(array &$args, array $taxonomies, array $terms, string $tax_relation = 'AND', int $filter_id = 0, $tax_attrs = []): void {
+		
+      if (!empty($taxonomies) && !empty($terms)) {
+         
 			$tax_query = ['relation' => $tax_relation];
-			$term_tax_map = [];
+			$term_tax_map = [];         
 
 			foreach ($terms as $term_id) {
 				$term = get_term((int) $term_id);
@@ -688,12 +692,27 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 					$term_tax_map[$term->taxonomy][] = (int) $term->term_id;
 				}
 			}
+
 			foreach ($taxonomies as $taxonomy) {
+
+            $include_children = true;
+           
+            if (is_array($tax_attrs)) {
+               foreach ($tax_attrs as $attr) {
+                  if (isset($attr['name']) && $attr['name'] === $taxonomy) {                     
+                     $include_children = (isset($attr['include_children']) && $attr['include_children'] === '0') ? false : true;
+                     break;
+                  }
+               }
+            }
+
 				if (!empty($term_tax_map[$taxonomy])) {
+
 					$tax_query[] = [
 						'taxonomy' => $taxonomy,
 						'field'    => 'term_id',
 						'terms'    => $term_tax_map[$taxonomy],
+                  'include_children' => $include_children
 					];
 				}
 				else {
@@ -701,9 +720,11 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 						'taxonomy' => $taxonomy,
 						'field'    => 'term_id',
 						'terms'    => self::get_terms_by_taxonomy($taxonomy, $filter_id),
+                  'include_children' => $include_children
 					];
 				}
 			}
+
 			if (count($tax_query) > 1) {
 				$args['tax_query'] = $tax_query;
 			}

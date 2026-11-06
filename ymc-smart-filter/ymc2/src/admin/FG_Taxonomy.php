@@ -36,6 +36,11 @@ class FG_Taxonomy {
 	 */
 	private static ?string $tax_status = '';
 
+   /**
+    * @var string
+    */
+   private static ?string $tax_include_children = '1';
+
 
 	/**
 	 * Clear data attributes for taxonomy
@@ -47,6 +52,7 @@ class FG_Taxonomy {
 		self::$tax_color      = '';
 		self::$tax_label      = '';
 		self::$tax_status     = '';
+      self::$tax_include_children = '1';
 	}
 
 
@@ -87,6 +93,10 @@ class FG_Taxonomy {
             self::$tax_status = isset($items['status']) && is_scalar($items['status'])
                ? (string)$items['status']
                : '';
+
+            self::$tax_include_children = isset($items['include_children'])
+               ? (string)$items['include_children']
+               : '1';            
 
             break;
          }
@@ -177,6 +187,7 @@ class FG_Taxonomy {
 					   data-tax-color="'. esc_attr(self::$tax_color) .'"
 					   data-tax-bg="'. esc_attr(self::$tax_background) .'"
 					   data-tax-status="'. esc_attr(self::$tax_status) .'"
+                  data-tax-include-children="'. esc_attr(self::$tax_include_children) .'"
                   data-all-button-options="'. esc_attr(wp_json_encode($js_all_button_options)) .'"
                   data-filter-type="'. esc_attr( $current_tax_filter_type ) .'">
                   <i class="fa-solid fa-up-down-left-right icon-is-drag js-tax-handle"></i>

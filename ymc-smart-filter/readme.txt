@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.12.24
+Version: 3.13.0
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 3.12.24
+Stable tag: 3.13.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -79,6 +79,8 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.13.0 =
+Added: "Include Children" option for individual taxonomies. Improved hierarchical filter logic to manage sub-term post visibility.
 = 3.12.24 =
 Fixed: Resolved numeric pagination link issues when using Plain Permalinks or REST API.
 = 3.12.23 =
