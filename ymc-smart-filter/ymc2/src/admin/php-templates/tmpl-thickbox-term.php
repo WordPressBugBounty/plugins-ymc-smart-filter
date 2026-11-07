@@ -15,87 +15,87 @@ defined( 'ABSPATH' ) || exit;
         <div class="toolbar">
             <div class="toolbar-inner">
                 <div class="info-bar">
-                    <p>
+                  <p>
 					    <?php esc_html_e('Manage and customize your terminal settings, including appearance, behavior, 
 					    visibility, identification, and icons.', 'ymc-smart-filter' ); ?>
-                    </p>
+                  </p>
                 </div>
                 <div class="actions">
-                    <button class="button button--secondary js-btn-term-reset" type="button">
-					    <?php esc_attr_e('Reset', 'ymc-smart-filter' ); ?></button>
+                   <button class="button button--secondary js-btn-term-reset" type="button">
+					    <?php esc_html_e('Reset', 'ymc-smart-filter' ); ?></button>
                     <button class="button button--primary js-btn-term-save" type="button">
-					    <?php esc_attr_e('Save', 'ymc-smart-filter' ); ?></button>
+					    <?php esc_html_e('Save', 'ymc-smart-filter' ); ?></button>
                 </div>
             </div>
         </div>
         <div class="form-term">
             <div class="tabs">
                 <div class="tab-buttons">
-                    <button class="tab-button is-active" data-tab="tabTerm"><?php esc_attr_e('Term', 'ymc-smart-filter' ); ?></button>
-                    <button class="tab-button" data-tab="tabIcon"><?php esc_attr_e('Icon', 'ymc-smart-filter' ); ?></button>
+                    <button class="tab-button is-active" data-tab="tabTerm"><?php esc_html_e('Term', 'ymc-smart-filter' ); ?></button>
+                    <button class="tab-button" data-tab="tabIcon"><?php esc_html_e('Icon', 'ymc-smart-filter' ); ?></button>
                 </div>
                 <div class="tab-content is-active" id="tabTerm">
                     <div class="tab tab-term-inner">
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Term Background', 'ymc-smart-filter' ); ?></span>
+                                <span class="heading-text"><?php esc_html_e('Term Background', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Set a custom background color for the term button in the filter.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Set a custom background color for the term button in the filter.', 'ymc-smart-filter' ); ?></span>
                             <input class="js-picker-color-alpha js-term-bg" data-alpha-enabled="true" type="text" name='term_bg' value="" />
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Term Color', 'ymc-smart-filter' ); ?></span>
+                                <span class="heading-text"><?php esc_html_e('Term Color', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Set a custom text color for the term label in the filter.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Set a custom text color for the term label in the filter.', 'ymc-smart-filter' ); ?></span>
                             <input class="js-picker-color-alpha js-term-color" data-alpha-enabled="true" type="text" name='term_color' value="" />
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Term Class', 'ymc-smart-filter' ); ?></span>
+                                <span class="heading-text"><?php esc_html_e('Term Class', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Add a custom CSS class to the term for advanced styling.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Add a custom CSS class to the term for advanced styling.', 'ymc-smart-filter' ); ?></span>
                             <input class="form-input js-term-class" type="text" name='term_class' />
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Default Term', 'ymc-smart-filter' ); ?></span>
+                              <span class="heading-text"><?php esc_html_e('Default Term', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Default Term is applied only for the initial grid load and is not used after filtering or resetting filters.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Default Term is applied only for the initial grid load and is not used after filtering or resetting filters.', 'ymc-smart-filter' ); ?></span>
                             <div class="group-elements">
                                 <input class="form-checkbox js-term-default" type="checkbox" value="false" name="term_default" id="term_default">
                                 <label class="field-label" for="term_default">
-                                    <?php esc_attr_e('Enable', 'ymc-smart-filter' ); ?></label>
+                                   <?php esc_html_e('Enable', 'ymc-smart-filter' ); ?></label>
                             </div>
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Visible Term', 'ymc-smart-filter' ); ?></span>
+                                <span class="heading-text"><?php esc_html_e('Visible Term', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('If disabled, the term will be hidden in the filter interface but will still be included in the filtering logic and "all terms" list.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('If disabled, the term will be hidden in the filter interface but will still be included in the filtering logic and "all terms" list.', 'ymc-smart-filter' ); ?></span>
                             <div class="group-elements">
                                 <input class="form-checkbox js-term-visible" type="checkbox" value="true" name="term_visible" checked id="term_visible">
                                 <label class="field-label" for="term_visible">
-				                    <?php esc_attr_e('Enable', 'ymc-smart-filter' ); ?></label>
+				                    <?php esc_html_e('Enable', 'ymc-smart-filter' ); ?></label>
                             </div>
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Term Name', 'ymc-smart-filter' ); ?></span>
+                              <span class="heading-text"><?php esc_html_e('Term Name', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Allows you to replace the original taxonomy term name with a custom label. This does not change the actual term in WordPress, only how it is displayed in the filter.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Allows you to replace the original taxonomy term name with a custom label. This does not change the actual term in WordPress, only how it is displayed in the filter.', 'ymc-smart-filter' ); ?></span>
                             <input class="form-input js-term-name" type="text" name='term_name' />
                         </div>
                         <?php if( 'dependent' === $filter_type || in_array('dependent', array_column($filter_options, 'filter_type'), true) ) : ?>
                         <div class="form-item js-tax-sequence"
                              data-tax-sequence="<?php echo esc_attr( ! empty( $filter_dependent_settings['tax_sequence'] ) ? 
-					                  wp_json_encode( explode( ',', $filter_dependent_settings['tax_sequence'] ) ) : '[]' ); ?>">
+					              wp_json_encode( explode( ',', $filter_dependent_settings['tax_sequence'] ) ) : '[]' ); ?>">
                             <header class="form-label">
                                 <span class="heading-text">
-                                    <?php esc_attr_e('Related Terms', 'ymc-smart-filter' ); ?></span>
+                                 <?php esc_html_e('Related Terms', 'ymc-smart-filter' ); ?></span>
                             </header>
                             <span class="description">
-                                <?php esc_attr_e('Select terms from the following taxonomies that should be linked with this term.  
+                                <?php esc_html_e('Select terms from the following taxonomies that should be linked with this term.  
                                 These relations override the default taxonomy sequence and hierarchy.  
                                 If left empty, the filter will use the sequence order automatically.', 'ymc-smart-filter' ); ?></span>
                             <div class="tax-dependency-chain js-tax-dependency-chain"></div>
@@ -108,36 +108,36 @@ defined( 'ABSPATH' ) || exit;
                     <div class="tab tab-icon-inner">
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Enable Custom Icon Upload', 'ymc-smart-filter' ); ?></span>
+                              <span class="heading-text"><?php esc_html_e('Enable Custom Icon Upload', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Enable Custom Icon Upload.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Enable Custom Icon Upload.', 'ymc-smart-filter' ); ?></span>
                             <div class="group-elements">
-                                <input class="form-checkbox js-enable-custom-icon" type="checkbox" value="yes" name="enable_custom_icon" id="enable_custom_icon">
-                                <label class="field-label" for="enable_custom_icon">
-			                        <?php esc_attr_e('Enable', 'ymc-smart-filter' ); ?></label>
+                              <input class="form-checkbox js-enable-custom-icon" type="checkbox" value="yes" name="enable_custom_icon" id="enable_custom_icon">
+                              <label class="field-label" for="enable_custom_icon">
+			                     <?php esc_html_e('Enable', 'ymc-smart-filter' ); ?></label>
                             </div>
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Icon Alignment', 'ymc-smart-filter' ); ?></span>
+                              <span class="heading-text"><?php esc_html_e('Icon Alignment', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Set the icon location.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Set the icon location.', 'ymc-smart-filter' ); ?></span>
                             <div class="multi-buttons">
                                 <label class="button-switch">
-                                    <input class="js-icon-alignment" type="radio" name="icon_alignment" value="left" checked>
-                                    <span class="fa-solid fa-align-left button-label"></span>
+                                   <input class="js-icon-alignment" type="radio" name="icon_alignment" value="left" checked>
+                                   <span class="fa-solid fa-align-left button-label"></span>
                                 </label>
                                 <label class="button-switch">
-                                    <input class="js-icon-alignment" type="radio" name="icon_alignment" value="right">
-                                    <span class="fa-solid fa-align-right button-label"></span>
+                                   <input class="js-icon-alignment" type="radio" name="icon_alignment" value="right">
+                                   <span class="fa-solid fa-align-right button-label"></span>
                                 </label>
                             </div>
                         </div>
                         <div class="form-item">
                             <header class="form-label">
-                                <span class="heading-text"><?php esc_attr_e('Icon Color', 'ymc-smart-filter' ); ?></span>
+                              <span class="heading-text"><?php esc_html_e('Icon Color', 'ymc-smart-filter' ); ?></span>
                             </header>
-                            <span class="description"><?php esc_attr_e('Set icon color.', 'ymc-smart-filter' ); ?></span>
+                            <span class="description"><?php esc_html_e('Set icon color.', 'ymc-smart-filter' ); ?></span>
                             <div class="icon-selected">
                                 <input class="js-picker-color-alpha js-icon-color" data-alpha-enabled="true" type="text" name='icon_color' value="" />
                                 <input class="js-icon-class" type="hidden" name="icon_class" value="">
@@ -151,9 +151,9 @@ defined( 'ABSPATH' ) || exit;
 
                     <div class="upload-term-icon js-upload-icon-wrap is-hidden">
                         <header class="form-label">
-                            <span class="heading-text"><?php esc_attr_e('Custom Icon Upload', 'ymc-smart-filter' ); ?></span>
+                           <span class="heading-text"><?php esc_html_e('Custom Icon Upload', 'ymc-smart-filter' ); ?></span>
                         </header>
-                        <span class="description"><?php esc_attr_e('Allows uploading a custom icon (PNG, JPG or WEBP) for this term.', 'ymc-smart-filter' ); ?></span>
+                        <span class="description"><?php esc_html_e('Allows uploading a custom icon (PNG, JPG or WEBP) for this term.', 'ymc-smart-filter' ); ?></span>
                         <div class="box">
                             <input class="input-file js-upload-file" type="file" id="upload-file" accept=".svg,.png,.jpg,.webp">
                             <label class="label-file" for="upload-file">
@@ -164,9 +164,9 @@ defined( 'ABSPATH' ) || exit;
                     </div>
                     <div class="term-icon-selector js-term-icon-selector">
                         <header class="form-label">
-                            <span class="heading-text"><?php esc_attr_e('Search Icon', 'ymc-smart-filter' ); ?></span>
+                           <span class="heading-text"><?php esc_html_e('Search Icon', 'ymc-smart-filter' ); ?></span>
                         </header>
-                        <span class="description"><?php esc_attr_e('Enter the icon name.', 'ymc-smart-filter' ); ?></span>
+                        <span class="description"><?php esc_html_e('Enter the icon name.', 'ymc-smart-filter' ); ?></span>
                         <input class="form-input js-field-search-icon" type="search"
                                placeholder="<?php esc_attr_e('User', 'ymc-smart-filter' ); ?>" name='search_icon' value="" />
                         <div class="icons-wrapper js-icon-item">
