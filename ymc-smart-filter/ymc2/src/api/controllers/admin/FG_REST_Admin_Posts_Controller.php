@@ -80,6 +80,7 @@ class FG_REST_Admin_Posts_Controller extends FG_REST_Abstract_Controller {
          'order'          => 'ASC',
          'paged'          => $paged,
          'posts_per_page' => $posts_per_page,
+         'post_status' => array('publish', 'future', 'draft', 'private', 'pending')
       ]);
 
       if ( $query->have_posts() ) {
@@ -147,6 +148,7 @@ class FG_REST_Admin_Posts_Controller extends FG_REST_Abstract_Controller {
          'order'          => 'ASC',
          'sentence'       => true,
          's'              => $phrase,
+         'post_status'    => array('publish', 'future', 'draft', 'private', 'pending')
       ]);
 
       if ( $query->have_posts() ) {

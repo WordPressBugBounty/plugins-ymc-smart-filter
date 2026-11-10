@@ -44,10 +44,11 @@ if(! function_exists( 'ymc_get_posts_ids')) {
 		$posts_ids = [];
 		if(!empty($post_types)) {
 			$arg = [
-				'post_type' => $post_types,
+				'post_type'      => $post_types,
 				'posts_per_page' => $posts_per_page,
-				'orderby' => 'title',
-				'order' => 'ASC'
+				'orderby'        => 'title',
+				'order'          => 'ASC',
+            'post_status'    => array('publish', 'future', 'draft', 'private', 'pending')
 			];
 			$query = new \WP_query($arg);
 			$found_posts = $query->found_posts;
