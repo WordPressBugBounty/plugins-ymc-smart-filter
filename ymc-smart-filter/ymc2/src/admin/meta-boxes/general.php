@@ -12,6 +12,7 @@ if (!defined( 'ABSPATH')) exit;
  * @var array $ymc_fg_post_types
  * @var array $ymc_fg_taxonomies
  * @var array $ymc_fg_filter_options
+ * @var string $ymc_fg_term_display_mode
  * @var int $post_id
  */
 
@@ -132,12 +133,39 @@ if (!defined( 'ABSPATH')) exit;
 
                 <div class="group-elements">
                     <div class="terms-wrapper ">
-                        <div class="terms-grid js-term-insert">
+                        <?php 
+                           $display_mode = $ymc_fg_term_display_mode ?: 'flat';
+                           $grid_class = ($display_mode === 'tree') ? 
+                              'terms-grid terms-grid--tree js-term-insert' : 
+                              'terms-grid terms-grid--flat js-term-insert';
+                        ?>
+                        <div class="<?php echo esc_attr($grid_class); ?>">
 			                <?php
-			                // phpcs:ignore WordPress
-                            echo Term::output_html($post_id, $ymc_fg_post_types); ?>
+			                  // phpcs:ignore WordPress
+                           echo Term::output_html($post_id, $ymc_fg_post_types); ?>
                         </div>
                     </div>
+                </div>
+
+                <div class="group-elements">
+                  <?php ymc_render_field_header('Term Display', 'Choose how taxonomy terms should be displayed.<br>
+                     • Flat List — displays all terms in a single linear list.<br>
+                     • Hierarchical Tree — displays terms as a parent-child tree structure, preserving the category hierarchy.'); ?>
+                  
+                  <div class="term-display-mode-wrap">
+                     <span class="term-display-mode">
+                        <input class="form-radio" type="radio" value="flat" name="ymc_fg_term_display_mode"
+                           id="ymc_fg_term_display_flat" <?php checked( $ymc_fg_term_display_mode, 'flat' );  ?>>
+                        <label class="field-label" for="ymc_fg_term_display_flat"><?php esc_html_e('Flat List', 'ymc-smart-filter'); ?></label>
+                     </span>
+
+                     <span class="term-display-mode">
+                        <input class="form-radio" type="radio" value="tree" name="ymc_fg_term_display_mode"
+                           id="ymc_fg_term_display_tree" <?php checked( $ymc_fg_term_display_mode, 'tree' );  ?>>
+                        <label class="field-label" for="ymc_fg_term_display_tree"><?php esc_html_e('Hierarchical Tree', 'ymc-smart-filter'); ?></label>
+                     </span>                  
+                  </div>  
+                                 
                 </div>
 
             </fieldset>

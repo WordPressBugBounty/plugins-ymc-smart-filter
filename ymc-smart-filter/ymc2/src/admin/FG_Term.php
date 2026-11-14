@@ -16,362 +16,43 @@ defined( 'ABSPATH' ) || exit;
 
 class FG_Term {
 
-	/**
-	 * Class icon
-	 * Icon associated with the term.
-	 * Value for data attribute is class name by font awesome. Ex.: "fa-solid fa-image".
-	 * @var string
-	 */
-	private static string $icon_class = '';
-
-	/**
-	 * Icon alignment
-	 * Value for data attribute is "left" or "right".
-	 * @var string
-	 */
-	private static string $icon_alignment = '';
-
-	/**
-	 * Icon color
-	 * Value for data attribute is color in hash code. Ex.: "#ff0000".
-	 * @var string
-	 */
-	private static string $icon_color = '';
-
-
-	/**
-	 * Related terms
-	 * Custom related terms for the term
-	 * @var string
-	 */
-	private static string $related_terms = '';
-
-
-	/**
-	 * Icon URL
-	 * The attachment_id value for the loaded term icon
-	 * @var string
-	 */
-	private static string $icon_url = '';
-
-
-	/**
-	 * Term background
-	 * Value for data attribute is background color in hash code. Ex.: "#ff0000".
-	 * @var string
-	 */
-	private static string $term_background = '';
-
-	/**
-	 * Term color
-	 * Value for data attribute is color in hash code. Ex.: "#ff0000".
-	 * @var string
-	 */
-	private static string $term_color = '';
-
-	/**
-	 * Class term
-	 * Value for data attribute is class name. Ex.: "my-class".
-	 * @var string
-	 */
-	private static string $term_class = '';
-
-	/**
-	 * Term default
-	 * Value for data attribute is "true" or "false".
-	 * Determines whether the term will be used by default.
-	 * @var string
-	 */
-	private static string $term_default = '';
-
-	/**
-	 * Term hide
-	 * Value for data attribute is "true" or "false".
-	 * Determines whether the term will be visible.
-	 * @var string
-	 */
-	private static string $term_visible = '';
-
-	/**
-	 * Term name
-	 * Value for data attribute is term name.
-	 * @var string
-	 */
-	private static string $term_name = '';
-
-
-	/**
-	 * Term checked
-	 * Value for data attribute is "true" or "false".
-	 * Determines whether the term will be selected.
-	 * @var string
-	 */
-	private static string $term_checked = '';
-
-
-	/**
-	 * Status term
-	 * Value for data attribute is "changed" or "".
-	 * Determines whether changes have been made to the term settings.
-	 * @var string
-	 */
-	private static string $term_status = '';
-
-
-	/**
-	 * Taxonomy label
-	 * @var string
-	 */
-	private static string $tax_label = '';
-
-
-	/**
-	 * Cache key
-	 * @var string
-	 */
-	private const BASE_CACHE_KEY = 'ymc_fg_term_post_counts';
-
-
-	/**
-	 * Get cache key
-	 * @return string
-	 */
-   public static function get_cache_key(string $tax_name = '', array $post_types = []) : string {
-      if ($tax_name && $post_types) {
-         return self::build_cache_key($tax_name, $post_types);
-      }
-      
-      return self::BASE_CACHE_KEY;
-   }
-
-
-	/**
-	 * Clear data attributes for term
-	 *
-	 * @return void
-	 */
-	private static function clear_data_attributes() : void {
-		self::$icon_class = '';
-		self::$icon_alignment = '';
-		self::$icon_color = '';
-		self::$icon_url = '';
-		self::$term_background = '';
-		self::$term_color = '';
-		self::$term_class = '';
-		self::$term_default = 'false';
-		self::$term_visible = 'true';
-		self::$term_name = '';
-		self::$term_checked = 'false';
-		self::$term_status = '';
-		self::$related_terms = '';
-	}
-
-
-	/**
-	 * Set data attributes for term
-	 * Override default values
-	 *
-	 * @param int $term_id
-	 * @param array $term_attrs
-	 *
-	 * @return void
-	 */
-	private static function set_data_attributes(int $term_id, array &$term_attrs) : void {
-		if($term_attrs) {
-			foreach ($term_attrs as $items) {
-				if($term_id === (int) $items['term_id']) {
-					self::$icon_class      = $items['icon_class'] ?? '';
-					self::$icon_alignment  = $items['icon_alignment'] ?? '';
-					self::$icon_color      = $items['icon_color'] ?? '';
-					self::$icon_url        = $items['icon_url'] ?? '';
-					self::$term_background = $items['term_background'] ?? '';
-					self::$term_color      = $items['term_color'] ?? '';
-					self::$term_class      = $items['term_class'] ?? '';
-					self::$term_default    = $items['term_default'] ?? '';
-					self::$term_visible    = $items['term_visible'] ?? '';
-					self::$term_name       = $items['term_name'] ?? '';
-					self::$term_checked    = $items['term_checked'] ?? '';
-					self::$term_status     = $items['term_status'] ?? '';
-					self::$related_terms   = $items['related_terms'] ?? '';
-					break;
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Set taxonomy label
-	 * @param string $name
-	 * @param array $tax_attrs
-	 *
-	 * @return void
-	 */
-	private static function set_taxonomy_label(string $name, array &$tax_attrs) : void {
-		if($tax_attrs) {
-			foreach ($tax_attrs as $items) {
-				if($name === $items['name']) {
-					self::$tax_label = $items['label'];
-					break;
-				}
-			}
-		}
-	}
-
-
-	/**
-	 * Sort terms manually
-	 *
-	 * @param array $term_sort
-	 * @param array $terms
-	 *
-	 * @return void
-	 */
-	private static function sort_terms_manual(array $term_sort, array &$terms) : void {
-		if($term_sort) {
-			$sorted_terms = [];
-			foreach($term_sort as $id) {
-				$key = (int) $id;
-				if( !array_key_exists($key, $terms) ) continue;
-					$sorted_terms[$key] = $terms[$key];
-			}
-			if($sorted_terms) {
-				$terms = $sorted_terms;
-			}
-		}
-	}
-
-
-	/**
-	 * Determine term sorting
-	 * @param string $term_sort_direction
-	 * @param array  $term_sort
-	 * @param array  $terms
-	 *
-	 * @return void
-	 */
-	private static function determine_term_sorting(string $term_sort_direction, array $term_sort, array &$terms) : void {
-		if ($term_sort_direction === 'asc') {
-			asort($terms);
-		} elseif ($term_sort_direction === 'desc') {
-			arsort($terms);
-		} else {
-			// Manual sorting
-			$temp_array = [];
-			if (!empty($term_sort)) {
-				// Add sorted terms (if they are in $terms)
-				foreach ($term_sort as $term_id) {
-					if (isset($terms[$term_id])) {
-						$temp_array[$term_id] = $terms[$term_id];
-					}
-				}
-			}
-			// Add new terms (which are not in $term_sort)
-			foreach ($terms as $term_id => $term_name) {
-				if (!isset($temp_array[$term_id])) {
-					$temp_array[$term_id] = $term_name;
-				}
-			}
-			$terms = $temp_array;
-		}
-	}
-
-
-	/**
-	 * Check if all terms are selected
-	 * @param array $terms
-	 * @param array $selected_terms
-	 *
-	 * @return bool
-	 */
-	private static function checked_selected_terms(array $terms, array $selected_terms) : bool {
-		$selected_terms = array_map(function ($item) { return (int) $item; }, $selected_terms);
-		$selected_terms = array_flip($selected_terms);
-		return count(array_intersect_key($terms, $selected_terms)) === count($terms);
-	}
-
-
-	/**
-	 * Update post counts
-	 * @param string $tax_name
-	 * @param int $term_id	 
-	 *
-	 * @return void
-	 */
-	public static function update_post_counts(string $tax_name, int $term_id) : void {
-
-      $taxonomy = get_taxonomy($tax_name);
-
-      if (!$taxonomy) {
-         return;
-      }
-
-      $post_types = (array) $taxonomy->object_type;
-      
-      foreach ($post_types as $type) {
-         $args = [
-            'posts_per_page' => 1,
-            'post_status' => 'publish',
-            'post_type' => $type,
-            'fields' => 'ids',
-            'no_found_rows' => false,
-            'update_post_meta_cache' => false,
-            'update_post_term_cache' => false,
-            'tax_query' => [
-               [
-                  'taxonomy' => $tax_name, 
-                  'field' => 'term_id',
-                  'terms' => $term_id
-               ]
-            ]
-         ];
-         $countQuery = new \WP_Query($args);
-         update_term_meta($term_id, "ymc_fg_count_{$type}", (int) $countQuery->found_posts);
-      }
-
-      wp_reset_postdata();		
-	}
-
-
-	/**
-	 * Get post counts
-	 * @param array $post_types
-	 * @param int $term_id
-	 *
-	 * @return int
-	 */
-	public static function get_post_counts(array $post_types, int $term_id): int {
-		$post_count = 0;
-		foreach ($post_types as $type) {
-			$post_count += (int) get_term_meta( $term_id, "ymc_fg_count_{$type}", true);
-		}
-		return $post_count;
-	}
-
+   use FG_Term_Trait;
 
 	/**
 	 * Output HTML term item.
 	 *
 	 * @param int $post_id
-	 * @param string $tax
+	 * @param array $post_types
 	 *
 	 * @return string
 	 */
 	public static function output_html(int $post_id, array $post_types) : string {
 
-		$all_tax = Taxonomy::get_taxonomies($post_types);
-		$selected_tax = Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
-		$selected_terms = Data_Store::get_meta_value($post_id, 'ymc_fg_terms');
-		$term_attrs = Data_Store::get_meta_value($post_id, 'ymc_fg_term_attrs');
-		$term_sort = Data_Store::get_meta_value($post_id, 'ymc_fg_term_sort');
-		$tax_attrs = Data_Store::get_meta_value($post_id, 'ymc_fg_tax_attrs');
-		$term_sort_direction = Data_Store::get_meta_value($post_id, 'ymc_fg_term_sort_direction');
+		$all_tax             = Taxonomy::get_taxonomies($post_types);
+		$selected_tax        = (array) Data_Store::get_meta_value($post_id, 'ymc_fg_taxonomies');
+		$selected_terms      = (array) Data_Store::get_meta_value($post_id, 'ymc_fg_terms');
+		$term_attrs          = (array) Data_Store::get_meta_value($post_id, 'ymc_fg_term_attrs');
+		$term_sort           = (array) Data_Store::get_meta_value($post_id, 'ymc_fg_term_sort');
+		$tax_attrs           = (array) Data_Store::get_meta_value($post_id, 'ymc_fg_tax_attrs');
+		$term_sort_direction = (string) Data_Store::get_meta_value($post_id, 'ymc_fg_term_sort_direction');
+      $display_mode        = Data_Store::get_meta_value($post_id, 'ymc_fg_term_display_mode') ?: 'flat';
 
 		ob_start();
 
 		if($all_tax) {
+
 			foreach( $all_tax as $tax_name => $label ) {
+
 				if( in_array($tax_name, $selected_tax, true) ) {
+              
+					$is_tree_allowed = ($display_mode === 'tree' && is_taxonomy_hierarchical($tax_name));
+
+					if ( $is_tree_allowed ) {
+                  // phpcs:ignore WordPress					
+						echo FG_Term_Tree::output_taxonomy_tree($tax_name, $label, $post_types, $selected_terms, $term_attrs, $term_sort, $tax_attrs, $term_sort_direction);
+						continue;
+					}
+
 					$terms = self::get_terms($tax_name);
 					$checked = (self::checked_selected_terms($terms, $selected_terms)) ? 'checked' : '';
 
@@ -433,9 +114,10 @@ class FG_Term {
 
 							self::clear_data_attributes();
 						}
-					} else {
+					} 
+               else {
 						echo '<div class="no-terms">
-					          <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filter') .'</div></div>';
+					         <div class="notification notification--warning">'. esc_html__('No terms found.', 'ymc-smart-filter') .'</div></div>';
 					}
 					echo '</div></article>';
 					
@@ -449,56 +131,6 @@ class FG_Term {
 
 		return ob_get_clean();
 	}
-
-	/**
-	 * Get terms by taxonomy
-	 * @param string $tax
-	 *
-	 * Key is term id and value is term name
-	 * Sort by term name ASC
-	 * @return array
-	 */
-	public static function get_terms( string $tax ) : array {
-		$args = [
-			'taxonomy' => $tax,
-			'hide_empty' => false
-		];
-		$list_terms = [];
-		$terms = get_terms($args);
-		if( $terms && ! is_wp_error( $terms ) ) {
-			foreach( $terms as $term ) {
-				$list_terms[$term->term_id] = $term->name;
-			}
-		}
-
-		return $list_terms;
-	}
-
-
-   private static function build_cache_key(string $tax_name, array $post_types): string {
-      sort($post_types);
-      return 'ymc_fg_term_post_counts_' . $tax_name . '_' . md5(implode('|', $post_types));
-   }
-
-
-   public static function get_original_term_id(int $term_id, string $taxonomy): int {
-
-      if (! function_exists('apply_filters') || empty($taxonomy)) {
-         return $term_id;
-      }
-
-      $default_language = apply_filters('wpml_default_language',  null);
-
-      $original_term_id = apply_filters(
-         'wpml_object_id',
-         $term_id,
-         $taxonomy,
-         true,
-         $default_language
-      );
-
-      return $original_term_id  ? (int) $original_term_id : $term_id;
-   }
    
 
 }

@@ -154,7 +154,8 @@ class FG_Save_Meta_Boxes {
          'ymc_fg_debug_mode' => 'no',
          'ymc_fg_show_hidden_cpt' => 'no',
          'ymc_fg_show_post_count' => 'no',
-         'ymc_fg_per_page' => '4'
+         'ymc_fg_per_page' => '4',
+         'ymc_fg_term_display_mode' => 'flat'
       ];
 
       foreach ($text_fields as $meta_key => $default) {

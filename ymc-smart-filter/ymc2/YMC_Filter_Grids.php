@@ -29,7 +29,7 @@ final class YMC_Filter_Grids {
 	 *
 	 * @var string
 	 */
-	public string $version = '3.13.2';
+	public string $version = '3.14.0';
 
 
 	/**

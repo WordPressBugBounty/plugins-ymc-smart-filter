@@ -365,7 +365,9 @@ class FG_Data_Store {
 			'week_numbers'  => 'false',
 			'theme'         => 'default',
 			'custom_init'   => 'false'
-		]
+		],
+
+      'ymc_fg_term_display_mode' => 'flat'
 
 	];
 
