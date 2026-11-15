@@ -61,8 +61,12 @@ class FG_Term {
 
 					echo '<article class="cel js-tax-'. esc_attr($tax_name) .'">';
 					echo '<div class="tax-name">
-                          <input class="checkbox-control js-select-all-terms" id="all-terms-'. esc_attr($tax_name) .'" '. esc_attr($checked) .' type="checkbox">
-                          <label class="field-label" for="all-terms-'. esc_attr($tax_name) .'">'. esc_html(self::$tax_label) .'</label></div>';
+                        <input class="checkbox-control js-select-all-terms" id="all-terms-'. esc_attr($tax_name) .'" '. esc_attr($checked) .' type="checkbox">
+                        <label class="field-label" for="all-terms-'. esc_attr($tax_name) .'">'. esc_html(self::$tax_label) .'</label>
+                     </div>
+                     <div class="tax-search-wrap">
+                        <input type="search" class="form-input js-tax-term-search" placeholder="'. esc_html__('Search terms...', 'ymc-smart-filter') .'">
+                     </div>';
 					echo '<div class="terms-inner js-term-sortable">';
 
 					self::$tax_label = '';

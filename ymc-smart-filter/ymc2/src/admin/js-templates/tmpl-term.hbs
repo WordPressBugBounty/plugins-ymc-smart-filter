@@ -3,6 +3,9 @@
         <input class="checkbox-control js-select-all-terms" id="all-terms-{{tax_slug}}" type="checkbox">
         <label class="field-label" for="all-terms-{{tax_slug}}">{{tax_label}}</label>
     </div>
+    <div class="tax-search-wrap">
+      <input type="search" class="form-input js-tax-term-search" placeholder="Search terms...">
+    </div>
     <div class="terms-inner js-term-sortable">
     {{#if isTerms}}
         {{#each terms}}
