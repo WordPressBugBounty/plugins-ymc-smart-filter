@@ -102,18 +102,46 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 		$order_meta_value    = $params['order_meta_value'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_order_meta_value');
 		$post_order_multiple = $params['post_order_by_multiple'] ?? Data_Store::get_meta_value($filter_id, 'ymc_fg_post_order_by_multiple');
 
-		// Post status      
+		
+      // Basic statuses permitted for rendering to the current user
+      $allowed_render_statuses = [ 'publish' ];
+      if ( current_user_can( 'read_private_posts' ) ) {
+         $allowed_render_statuses[] = 'private';
+      }
+      if ( current_user_can( 'edit_posts' ) ) {
+         $allowed_render_statuses[] = 'draft';
+         $allowed_render_statuses[] = 'pending';
+         $allowed_render_statuses[] = 'future';
+      }
+      
+      // Post status      
       $post_status = ymc_get_allowed_post_statuses($filter_id, $params['post_status'] ?? null);
       
       /*
       * Guests may only query published posts.
       */
       if ( ! is_user_logged_in() ) {
-
          $post_status = array_values(
             array_intersect(
                $post_status,
                [ 'publish' ]
+            )
+         );
+      }
+      else {
+         $allowed_statuses = [ 'publish' ];
+         if ( current_user_can( 'read_private_posts' ) ) {
+            $allowed_statuses[] = 'private';
+         }
+         if ( current_user_can( 'edit_posts' ) ) {
+            $allowed_statuses[] = 'draft';
+            $allowed_statuses[] = 'pending';
+            $allowed_statuses[] = 'future';
+         }
+         $post_status = array_values(
+            array_intersect(
+               $post_status,
+               $allowed_statuses
             )
          );
       }
@@ -451,6 +479,11 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 
 					if ( is_array( $query_args ) ) {
 						$args = array_merge( $args, $query_args );
+                 
+                  if ( ! empty( $query_args['post_status'] ) ) {
+                     $callback_statuses = (array) $query_args['post_status'];
+                     $allowed_render_statuses = array_unique( array_merge($allowed_render_statuses, $callback_statuses) );
+                  }
 					}
 				}
 			}
@@ -494,6 +527,21 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 
 
 		$query = new \WP_Query($args);
+     
+      if ( ! empty( $query->posts ) && is_array( $query->posts ) ) {
+
+			$query->posts = array_values( array_filter( $query->posts, function( $post ) use ( $allowed_render_statuses ) {				
+				
+            if ( isset( $post->post_status ) && in_array( $post->post_status, $allowed_render_statuses, true ) ) {
+					return true;
+				}
+				
+				return current_user_can( 'read_post', $post->ID );
+
+			} ));
+
+			$query->post_count = count( $query->posts );
+		}
 
       if ($search_filters_enabled) {
 			self::remove_search_filters();

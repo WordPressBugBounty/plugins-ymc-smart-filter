@@ -1,12 +1,12 @@
 ===  YMC Filter ===
 Plugin Name: YMC Filter
 Contributors: YMC
-Version: 3.14.1
+Version: 3.14.2
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&business=wss.office21@gmail.com&currency_code=USD
 Tags: filter, grid, ajax, search, masonry
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 3.14.1
+Stable tag: 3.14.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://github.com/YMC-22/Filter-Grids/blob/main/LICENSE
@@ -79,6 +79,8 @@ If you prefer using the old version of YMC Filter, you can enable **Legacy Mode*
 
 == Changelog ==
 
+= 3.14.2 =
+Security: Fixed an authorization check issue for non-public post statuses in frontend post queries.
 = 3.14.1 =
 Added: Live search functionality for taxonomy terms in admin settings, supporting both flat and hierarchical display modes.
 = 3.14.0 =
