@@ -12,6 +12,10 @@ global $post_new_file, $post_type_object, $post; ?>
                target="_blank">
                 <i class="fa-solid fa-circle-info"></i>
                 <?php esc_html_e('Documentation', 'ymc-smart-filter'); ?></a>
+                <span class="ymc-header-version" title="Plugin Version">
+                  <span class="ymc-header-version__dot" aria-hidden="true"></span>
+                  <span class="ymc-header-version__text">v<?php echo esc_html( YMC_VERSION ); ?></span>
+               </span>
         </div>
     </div>
 </div>

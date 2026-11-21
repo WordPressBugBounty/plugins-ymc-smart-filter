@@ -104,5 +104,28 @@ if (! function_exists( 'ymc_get_allowed_post_statuses')) {
 }
 
 
+/**
+ * Filter WP_Query posts by allowed render statuses and user capabilities.
+   *
+   * @param \WP_Query $query
+   * @param array $allowed_render_statuses
+   * @return void
+   */
+if ( ! function_exists( 'ymc_filter_readable_posts' ) ) {
 
+   function ymc_filter_readable_posts( \WP_Query $query, array $allowed_render_statuses = [ 'publish' ] ): void {
+      if ( empty( $query->posts ) || ! is_array( $query->posts ) ) {
+         return;
+      }
 
+      $query->posts = array_values( array_filter( $query->posts, static function ( $post ) use ( $allowed_render_statuses ) {
+         if ( isset( $post->post_status ) && in_array( $post->post_status, $allowed_render_statuses, true ) ) {
+            return true;
+         }
+
+         return isset( $post->ID ) && current_user_can( 'read_post', $post->ID );
+      } ));
+
+      $query->post_count = count( $query->posts );
+   }
+}

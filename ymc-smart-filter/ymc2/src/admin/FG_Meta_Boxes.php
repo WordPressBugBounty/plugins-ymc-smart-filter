@@ -63,12 +63,12 @@ class FG_Meta_Boxes {
 
 	public static function current_screen( $screen ) : void {
 
-        // Filter Grids List
+      // Filter Grids List
 		if ( 'ymc_filters' === $screen->post_type && in_array( $screen->id, array('edit-ymc_filters'), true )) {
 			add_action( 'admin_body_class', array(__CLASS__, 'admin_body_class'));
 			add_action('in_admin_header', array(__CLASS__, 'in_admin_header_groups'));
 		}
-        // New or Edit Filter Grid
+      // New or Edit Filter Grid
 		if ( 'ymc_filters' === $screen->post_type && in_array( $screen->id, array('ymc_filters'), true )) {
 			add_action('admin_body_class', array(__CLASS__, 'admin_body_class'));
 			add_action('in_admin_header', array(__CLASS__, 'in_admin_header'));
@@ -77,7 +77,7 @@ class FG_Meta_Boxes {
 			remove_post_type_support( 'ymc_filters', 'title' );
 			remove_meta_box('submitdiv', 'ymc_filters', 'normal');
 		}
-        // License & Updates Page
+      // License & Updates Page
 		if ( 'ymc_filters' === $screen->post_type &&
 		     ( in_array( $screen->id, array('ymc_filters_page_ymc-license'), true ) ||
                in_array( $screen->id, array('ymc_filters_page_ymc-settings'), true )) ) {
@@ -88,8 +88,9 @@ class FG_Meta_Boxes {
 	}
 
 	public static function add_metabox() : void {
-		add_meta_box( 'ymc_main_meta_box' , __('Settings', 'ymc-smart-filter'), array(__CLASS__,'top_meta_box'), 'ymc_filters', 'normal', 'core');
-		add_meta_box( 'ymc_side_meta_box' , __('YMC Filter Features', 'ymc-smart-filter'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
+		add_meta_box( 'ymc_main_meta_box' , __('Settings', 'ymc-smart-filter'), array(__CLASS__,'top_meta_box'), 'ymc_filters', 'normal', 'core');		
+		add_meta_box( 'ymc_side_meta_summary_box' , __('Filter Summary', 'ymc-smart-filter'), array(__CLASS__,'side_meta_summary_box'), 'ymc_filters', 'side', 'core');
+      add_meta_box( 'ymc_side_meta_box' , __('Filter Features', 'ymc-smart-filter'), array(__CLASS__,'side_meta_box'), 'ymc_filters', 'side', 'core');
     }
 
 	public static function top_meta_box() : void {
@@ -225,9 +226,13 @@ class FG_Meta_Boxes {
         </div>
 	<?php }
 
-    public static function side_meta_box() : void {
+   public static function side_meta_box() : void {
 	    Template::render(dirname( __FILE__ ) . '/php-templates/tmpl-side-meta-box.php');
-    }
+   }
+
+   public static function side_meta_summary_box() : void {
+	    Template::render(dirname( __FILE__ ) . '/php-templates/tmpl-side-meta-summary-box.php');
+   }
 
 	public static function admin_bar_menu($wp_admin_bar) : void {
 
@@ -320,7 +325,5 @@ class FG_Meta_Boxes {
         </div>
 		<?php
 	}
-
-
 
 }

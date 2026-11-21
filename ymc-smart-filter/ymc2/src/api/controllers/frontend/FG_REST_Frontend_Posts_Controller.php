@@ -515,8 +515,7 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
       else {
 			$alphabetical_letter = null;
 		}
-
-      // Alphabetical filter
+      
 		$alphabetical_enabled = false;
 
 		if ( ! empty( $alphabetical_letter ) && strtolower( $alphabetical_letter ) !== 'all' ) {
@@ -528,26 +527,12 @@ class FG_REST_Frontend_Posts_Controller extends FG_REST_Abstract_Controller {
 
 		$query = new \WP_Query($args);
      
-      if ( ! empty( $query->posts ) && is_array( $query->posts ) ) {
-
-			$query->posts = array_values( array_filter( $query->posts, function( $post ) use ( $allowed_render_statuses ) {				
-				
-            if ( isset( $post->post_status ) && in_array( $post->post_status, $allowed_render_statuses, true ) ) {
-					return true;
-				}
-				
-				return current_user_can( 'read_post', $post->ID );
-
-			} ));
-
-			$query->post_count = count( $query->posts );
-		}
+      ymc_filter_readable_posts( $query, $allowed_render_statuses ); 
 
       if ($search_filters_enabled) {
 			self::remove_search_filters();
 		}
-
-		// Remove alphabetical filter
+		
 		if ( $alphabetical_enabled ) {
 			self::remove_alphabetical_filter();
 		}
